@@ -30,7 +30,7 @@ def create_header_for_excels(excel_files):
 
 	sys.path.insert(0, xlsconfig.CONVERTER_PATH)
 
-	for value in xlsconfig.convention_table.CONVENTION_TABLE:
+	for value in xlsconfig.CONVENTION_TABLE:
 		pattern 	= value[0]
 		converter 	= import_file(xlsconfig.CONVERTER_ALIAS + "." + value[1])
 		if not getattr(converter, "AUTO_GEN_HEADER", True): continue

@@ -5,6 +5,7 @@ import xlsconfig
 import install_package
 from logtool import native_str
 from argparse import ArgumentParser
+from load_configure import load_configure
 
 def main():
 	parser = ArgumentParser(description=native_str("导表工具"))
@@ -20,7 +21,7 @@ def main():
 	#parser.print_help()
 
 	try:
-		xlsconfig.load_configure(option.config_file)
+		load_configure(option.config_file)
 	except:
 		traceback.print_exc()
 		print "Error: Failed to load configure file", option.config_file

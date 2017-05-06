@@ -150,7 +150,7 @@ def export_excels(excel_files, output_files):
 
 	file_2_converter = {}
 
-	for value in xlsconfig.convention_table.CONVENTION_TABLE:
+	for value in xlsconfig.CONVENTION_TABLE:
 		pattern 	= value[0]
 		converter_name 	= xlsconfig.CONVERTER_ALIAS + "." + value[1]
 		new_name 	= value[2] if len(value) > 2 else None
@@ -202,7 +202,7 @@ def write_file_list(writer_name, full_path, file_2_converter):
 def merge_sheets(sheet_files):
 	print "=== 合并分表 ..."
 
-	for value in xlsconfig.convention_table.MERGE_TABLE:
+	for value in xlsconfig.MERGE_TABLE:
 		outfile = value[0]
 
 		sub_files = []
