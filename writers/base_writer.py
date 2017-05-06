@@ -1,0 +1,69 @@
+# -*- coding: utf-8 -*-
+
+INDENTS = [" " * (i * 4) for i in xrange(10)]
+
+class BaseWriter(object):
+
+	def __init__(self, file_path, data_module):
+		super(BaseWriter, self).__init__()
+		self.file_path = file_path
+		self.cache = []
+		self.data_module = data_module
+		
+		self.open_file()
+
+	def __fini__(self):
+		if self.handle: self.close()
+
+	def open_file(self):
+		self.handle = open(self.file_path, "w")
+
+	def close(self):
+		self.flush()
+		self.handle.close()
+		self.handle = None
+
+
+	def begin_write(self): pass
+	def end_write(self): pass
+
+	def write_sheet(self, name, sheet): pass
+	def write_value(self, name, value): pass
+	def write_comment(self, comment): pass
+
+	def output(self, *args):
+		self.cache.extend(args)
+
+	def _output(self, indent, *args):
+		assert(type(indent) == int)
+		if indent > 0: self.cache.append(INDENTS[indent])
+		self.cache.extend(args)
+
+	def _output_line(self, indent = 0, *args):
+		assert(type(indent) == int)
+		if indent > 0: self.cache.append(INDENTS[indent])
+		self.cache.extend(args)
+		self.cache.append("\n")
+
+	def write_module(self, module):
+		output = self.output
+
+		for k in sorted(module.iterkeys()):
+			v = module[k]
+			if isinstance(v, dict):
+				self.write_sheet(k, v)
+			else:
+				self.write_value(k, v)
+
+			output("\n")
+
+		self.flush()
+
+	def flush(self):
+		if len(self.cache) == 0: return
+
+		text = "".join(self.cache)
+		self.cache = []
+
+		self.handle.write(text)
+
