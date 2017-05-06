@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-from tps import tp0
 import util
+from base_code_gen import BaseCodeGen
+from tps import tp0
 
 def type2string(tp):
 	if tp == int or tp == tp0.to_int: return "int"
@@ -16,27 +17,21 @@ BUILTIN_TYPES = set((
 
 INDENTS = [" " * (i * 4) for i in xrange(10)]
 
-class JavaCodeGen(object):
-
-	def __init__(self, module, module_path, output_path):
-		super(JavaCodeGen, self).__init__()
-		self.content = []
-
-		src_path = os.path.dirname(module_path)
-		src_name = os.path.basename(module_path)
-		self.class_name = util.to_class_name(src_name)
-
-		self.module = module
-		self.output_path = os.path.join(output_path, self.class_name + ".java")
-
-		path = os.path.dirname(self.output_path)
-		util.safe_makedirs(path)
+class JavaCodeGen(BaseCodeGen):
 
 	def run(self):
+		src_name = os.path.basename(self.module_path)
+		self.class_name = util.to_class_name(src_name)
+
+		self.file_path = os.path.join(self.output_path, self.class_name + ".java")
+
+		path = os.path.dirname(self.file_path)
+		util.safe_makedirs(path)
+
 		self.write_line(0, "// 此文件由导表工具自动生成，禁止手动修改。")
 		self.write_line()
 		
-		self.write_line(0, "package com.wolf.shoot.service.excel;")
+		self.write_line(0, "package com.mygame.excel;")
 		self.write_line()
 
 		type_info = getattr(self.module, "JAVA_TYPE_INFO", {})
@@ -45,30 +40,7 @@ class JavaCodeGen(object):
 
 		self.gen_class(items, 0)
 
-		content = "".join(self.content)
-
-		origin_content = None
-		if os.path.exists(self.output_path):
-			with open(self.output_path, "r") as f:
-				origin_content = f.read()
-
-		if content == origin_content: return
-
-		print self.output_path
-
-		with open(self.output_path, "w") as f:
-			f.write(content)
-
-	def write(self, indent, *args):
-		assert(type(indent) == int)
-		if indent > 0: self.content.append(INDENTS[indent])
-		self.content.extend(args)
-
-	def write_line(self, indent = 0, *args):
-		assert(type(indent) == int)
-		if indent > 0: self.content.append(INDENTS[indent])
-		self.content.extend(args)
-		self.content.append("\n")
+		self.save_to_file(self.file_path)
 
 	def collect_members(self, config, type_info, removed_fields):
 		items = []

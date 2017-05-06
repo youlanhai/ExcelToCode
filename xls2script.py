@@ -8,7 +8,7 @@ import traceback
 
 import xlsconfig
 import xlsparser
-import writer
+import writers
 import util
 from tps import tp0
 
@@ -45,7 +45,7 @@ def export_excel_to_python(infile, outfile, converter, sheet_index = 0):
 		"need_post_check" :  getattr(converter, "post_check", None) != None,
 	}
 
-	wt = writer.PyWriter(output_path, None)
+	wt = writers.PyWriter(output_path, None)
 	wt.begin_write()
 
 	wt.write_sheet("info", info)
@@ -127,7 +127,7 @@ def _output_to_files(stage, name, data_module):
 def _output_to_file(writer_name, output_file, data_module):
 	util.ensure_folder_exist(output_file)
 
-	writer_class = getattr(writer, writer_name)
+	writer_class = getattr(writers, writer_name)
 	wt = writer_class(output_file, data_module)
 	wt.write_comment("此文件由导表工具自动生成，禁止手动修改。")
 	wt.write_comment("from " + data_module.info["infile"])
@@ -191,7 +191,7 @@ def export_excels(excel_files, output_files):
 def write_file_list(writer_name, full_path, file_2_converter):
 	util.ensure_folder_exist(full_path)
 
-	cls = getattr(writer, writer_name)
+	cls = getattr(writers, writer_name)
 	wt = cls(full_path, None)
 	wt.begin_write()
 	wt.write_sheet("files", file_2_converter)
@@ -248,7 +248,7 @@ def merge_sub_files(outfile, sub_files):
 	info["infile"] = ", ".join(infiles)
 	info["outfile"] = outfile
 
-	wt = writer.PyWriter(new_path, None)
+	wt = writers.PyWriter(new_path, None)
 	wt.begin_write()
 	wt.output("\n")
 	wt.write_sheet("info", info)

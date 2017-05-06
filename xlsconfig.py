@@ -42,7 +42,9 @@ CONVERTER_PATH  = "converters"
 CONVERTER_ALIAS = "converter"
 
 # 生成的java代码输出路径
-JAVA_CODE_PATH  = "export/java/code"
+CODE_GENERATORS  = [
+	{"class" : "JavaCodeGen", "file_path" : "export/java/code"}
+]
 
 # 输出数据配置。
 DATA_WRITERS = [
@@ -68,18 +70,24 @@ def load_configure(cfg_file):
 	root_path = os.path.dirname(cfg_file)
 	cur_module = sys.modules[__name__]
 
-	keys = ("INPUT_PATH", "TEMP_PATH", "CONVERTER_PATH", "JAVA_CODE_PATH", )
+	keys = ("INPUT_PATH", "TEMP_PATH", "CONVERTER_PATH", )
 	for key in keys:
 		path = join_path(root_path, cfg[key].encode("utf-8"))
 		print "cfg: %s = %s" % (key, path)
 		setattr(cur_module, key, path)
 
-	global CONVERTER_ALIAS, DATA_WRITERS, convention_table, DEPENDENCIES
+	global CONVERTER_ALIAS, CODE_GENERATORS, DATA_WRITERS, convention_table, DEPENDENCIES
 
 	CONVERTER_ALIAS = cfg["CONVERTER_ALIAS"].encode("utf-8")
 
 	convention_script = os.path.join(CONVERTER_PATH, "convention_table.py")
 	convention_table = imp.load_source("custom_convention_table", convention_script)
+
+	CODE_GENERATORS = cfg.get("CODE_GENERATORS", {})
+	for info in CODE_GENERATORS:
+		path = info["file_path"].encode("utf-8")
+		path = join_path(root_path, path)
+		info["file_path"] = path
 
 	DATA_WRITERS = cfg["DATA_WRITERS"]
 	for info in DATA_WRITERS:

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import shutil
 import xlsconfig
 import util
 
-from codegen.java_code_gen import JavaCodeGen
+import codegen
 
 def generate_code():
-	output_path = xlsconfig.JAVA_CODE_PATH
-	util.safe_makedirs(output_path, xlsconfig.FULL_EXPORT)
+	print "=== 生成代码类文件 ..."
+
+	for generator in xlsconfig.CODE_GENERATORS:
+		util.safe_makedirs(generator["file_path"], xlsconfig.FULL_EXPORT)
 
 	sys.path.insert(0, xlsconfig.CONVERTER_PATH)
 
@@ -27,10 +28,14 @@ def generate_code():
 			module = util.import_file(xlsconfig.CONVERTER_ALIAS + "." + module_name)
 			if getattr(module, "CONFIG", None) is None: continue
 
-			gen = JavaCodeGen(module, module_name, output_path)
-			gen.run()
+			_generate(module, module_name)
 
 	sys.path.remove(xlsconfig.CONVERTER_PATH)
 
-if __name__ == "__main__":
-	generate_code()
+def _generate(module, module_name):
+	for generator in xlsconfig.CODE_GENERATORS:
+		cls = getattr(codegen, generator["class"])
+		output_path = generator["file_path"]
+
+		gen = cls(module, module_name, output_path)
+		gen.run()
