@@ -8,14 +8,7 @@ from distutils.sysconfig import get_python_lib
 
 import xlsconfig
 
-DEPENDENCIES = {
-	"xlrd" : "xlrd-master.zip",
-	"xlwt" : "xlwt-master.zip",
-	"openpyxl" : "openpyxl-2.4.4.zip",
-}
-
-def check_plugin():
-	plugins = ("openpyxl", )
+def check_plugin(plugins):
 	need_restart = False
 	for name in plugins:
 		try:
@@ -35,19 +28,19 @@ def check_plugin():
 	return True
 
 def install(name):
-	path = DEPENDENCIES.get(name)
-	if path is None:
+	package_path = xlsconfig.DEPENDENCIES.get(name)
+	if package_path is None:
 		print "错误：没有找到安装包：'%s'" % (name, )
 		return
 
 	output_path = xlsconfig.TEMP_PATH
 
-	setup_path = os.path.join(output_path, os.path.splitext(path)[0])
+	file_name = os.path.splitext(os.path.basename(package_path))[0]
+	setup_path = os.path.join(output_path, file_name)
 	if os.path.exists(setup_path):
 		shutil.rmtree(setup_path, True)
 
-	path = os.path.join(xlsconfig.DEPENDENCY_PATH, path)
-	with ZipFile(path, "r") as zf:
+	with ZipFile(package_path, "r") as zf:
 		zf.extractall(output_path)
 
 	if not os.path.exists(os.path.join(setup_path, "setup.py")):

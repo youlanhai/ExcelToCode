@@ -32,7 +32,7 @@ def main():
 	if option.encode_log:
 		util.redirect_iostream()
 
-	if not install_package.check_plugin():
+	if not install_package.check_plugin(("openpyxl", )):
 		return
 
 	import xls2script

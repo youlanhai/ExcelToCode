@@ -52,6 +52,8 @@ DATA_WRITERS = [
 # 额外的初始化脚本。
 POST_INIT_SCRIPT = ""
 
+DEPENDENCIES = {}
+
 ######################################################################
 ### 加载配置文件。cfg_file是json格式的文件。
 ######################################################################
@@ -66,15 +68,13 @@ def load_configure(cfg_file):
 	root_path = os.path.dirname(cfg_file)
 	cur_module = sys.modules[__name__]
 
-	keys = ("INPUT_PATH", "TEMP_PATH", "CONVERTER_PATH",
-		"JAVA_CODE_PATH", "DEPENDENCY_PATH")
-
+	keys = ("INPUT_PATH", "TEMP_PATH", "CONVERTER_PATH", "JAVA_CODE_PATH", )
 	for key in keys:
-		path = os.path.normpath(os.path.join(root_path, cfg[key].encode("utf-8")))
+		path = join_path(root_path, cfg[key].encode("utf-8"))
 		print "cfg: %s = %s" % (key, path)
 		setattr(cur_module, key, path)
 
-	global CONVERTER_ALIAS, DATA_WRITERS, convention_table
+	global CONVERTER_ALIAS, DATA_WRITERS, convention_table, DEPENDENCIES
 
 	CONVERTER_ALIAS = cfg["CONVERTER_ALIAS"].encode("utf-8")
 
@@ -84,12 +84,20 @@ def load_configure(cfg_file):
 	DATA_WRITERS = cfg["DATA_WRITERS"]
 	for info in DATA_WRITERS:
 		path = info["file_path"].encode("utf-8")
-		path = os.path.normpath(os.path.join(root_path, path))
+		path = join_path(root_path, path)
 		info["file_path"] = path
 
 	post_init_script = cfg.get("POST_INIT_SCRIPT")
 	if post_init_script:
-		path = os.path.normpath(os.path.join(root_path, post_init_script))
+		path = join_path(root_path, post_init_script)
 		imp.load_source("custom_post_init_script", path)
 
+	DEPENDENCIES = cfg.get("DEPENDENCIES", {})
+	for k in DEPENDENCIES.keys():
+		path = DEPENDENCIES[k]
+		DEPENDENCIES[k] = join_path(root_path, path)
+
 	return
+
+def join_path(*args):
+	return os.path.normpath(os.path.join(*args))
