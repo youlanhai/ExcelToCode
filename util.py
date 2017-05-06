@@ -4,6 +4,33 @@ import sys
 import shutil
 import xlsconfig
 
+def int_to_base26(value):
+	asciiA = ord('A')
+
+	value += 1
+
+	ret = ""
+	while value != 0:
+		mod = value % 26
+		value = value // 26
+		if mod == 0:
+			mod = 26
+			value -= 1
+
+		ret = chr(asciiA + mod - 1) + ret
+
+	return ret
+
+def base26_to_int(value):
+	asciiA = ord('A')
+
+	ret = 0
+	for s in value:
+		ret = ret * 26 + ord(s) - asciiA + 1
+
+	return ret - 1
+
+
 # 转换成类的名称格式。首字母大写驼峰法。
 def to_class_name(name):
 	strs = name.split('_')

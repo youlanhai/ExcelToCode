@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from copy import copy
+import util
 
 INDENTS = [" " * (i * 4) for i in xrange(10)]
 
@@ -17,6 +19,14 @@ class BaseWriter(object):
 
 	def open_file(self):
 		self.handle = open(self.file_path, "w")
+
+	def flush(self):
+		if len(self.cache) == 0: return
+
+		text = "".join(self.cache)
+		self.cache = []
+
+		self.handle.write(text)
 
 	def close(self):
 		self.flush()
@@ -59,11 +69,19 @@ class BaseWriter(object):
 
 		self.flush()
 
-	def flush(self):
-		if len(self.cache) == 0: return
+	def write_types_comment(self, sheet_name):
+		if not self.data_module: return
 
-		text = "".join(self.cache)
-		self.cache = []
+		module_info = self.data_module.info
 
-		self.handle.write(text)
+		sheet_types = module_info["sheet_types"].get(sheet_name)
+		if sheet_types is None: return
+
+		sheet_types = copy(sheet_types)
+		sheet_types.sort(key = lambda v : v[0])
+		for info in sheet_types:
+			col, field, text, type = info
+			col_name = util.int_to_base26(col) if col is not None else "None"
+			comment = "%s\t%-20s%s" %(col_name, field, text)
+			self.write_comment(comment)
 

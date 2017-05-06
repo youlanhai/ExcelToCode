@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from base_writer import BaseWriter
-from xlsparser import intToBase26
-from copy import copy
 
 IndentChar = '\t'
 Indents = [IndentChar * i for i in xrange(1, 10)]
@@ -9,37 +7,14 @@ Indents = [IndentChar * i for i in xrange(1, 10)]
 class LuaWriter(BaseWriter):
 
 	def begin_write(self):
-		output = self.output
-
-		module_info = self.data_module.info
-
-		self.write_comment("key = %s" % module_info["key_name"])
-
-		sheet_types = copy(module_info["sheet_types"]["main_sheet"])
-		sheet_types.sort(key = lambda v : v[0])
-		for info in sheet_types:
-			col, field, text, type = info
-			col_name = intToBase26(col) if col is not None else "None"
-			comment = "%s\t%-20s%s" %(col_name, field, text)
-			self.write_comment(comment)
-
-		output("\n")
-
-		output("local _G = _G\n")
-		output("local module_name = ...\n")
-		output("module(module_name)\n\n")
-
-	def end_write(self):
-		pass
-		# output = self.output
-		# output("_G.print('model loaded:', module_name)\n")
-
+		self.output("\n", "module(...)", "\n\n")
 
 	def write_sheet(self, name, sheet, maxIndent = 1):
+		self.write_types_comment(name)
+
 		output = self.output
 
-		output(name)
-		output(" = {\n")
+		output(name, " = {\n")
 
 		keys = sheet.keys()
 		keys.sort()
@@ -67,19 +42,18 @@ class LuaWriter(BaseWriter):
 		self.flush()
 
 	def write_value(self, name, value):
+		self.write_types_comment(name)
+
 		output = self.output
 
-		output(name)
-		output(" = ")
+		output(name, " = ")
 		self.write(value)
 		output("\n\n")
 
 		self.flush()
 
 	def write_comment(self, comment):
-		self.output("-- ")
-		self.output(comment)
-		self.output("\n")
+		self.output("-- ", comment, "\n")
 
 	def write(self, value, indent = 0, maxIndent = 0):
 		output = self.output

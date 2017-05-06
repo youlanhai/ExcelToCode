@@ -8,10 +8,10 @@ class PyWriter(BaseWriter):
 		self.write_comment("-*- coding: utf-8 -*-\n")
 
 	def write_sheet(self, name, sheet):
+		self.write_types_comment(name)
 		output = self.output
 
-		output(name)
-		output(" = {\n")
+		output(name, " = {\n")
 
 		keys = sheet.keys()
 		keys.sort()
@@ -28,19 +28,17 @@ class PyWriter(BaseWriter):
 		output("}\n\n")
 
 	def write_value(self, name, value):
+		self.write_types_comment(name)
 		output = self.output
 
-		output(name)
-		output(" = ")
+		output(name, " = ")
 		self.write(value)
 		output("\n\n")
 
 		self.flush()
 
 	def write_comment(self, comment):
-		self.output("# ")
-		self.output(comment)
-		self.output("\n")
+		self.output("# ", comment, "\n")
 
 	def write(self, value):
 		output = self.output

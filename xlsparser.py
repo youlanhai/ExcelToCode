@@ -3,6 +3,7 @@
 import traceback
 import numfmt
 import xlsconfig
+import util
 from tps import tp0
 
 def format_number_with_xlrd(f, cell, wb):
@@ -26,32 +27,6 @@ def format_number_with_openpyxl(f, cell, wb):
 		return "%g" % f
 
 format_number = format_number_with_openpyxl
-
-def intToBase26(value):
-	asciiA = ord('A')
-
-	value += 1
-
-	ret = ""
-	while value != 0:
-		mod = value % 26
-		value = value // 26
-		if mod == 0:
-			mod = 26
-			value -= 1
-
-		ret = chr(asciiA + mod - 1) + ret
-
-	return ret
-
-def base26ToInt(value):
-	asciiA = ord('A')
-
-	ret = 0
-	for s in value:
-		ret = ret * 26 + ord(s) - asciiA + 1
-
-	return ret - 1
 
 to_str = tp0.to_str
 
@@ -186,10 +161,8 @@ class Parser(object):
 				except Exception, e:
 					traceback.print_exc()
 
-					msg = "单元格(%d, %s) = [%s] 数据不合法" % (r + 1, intToBase26(c), to_str(value))
-					if not xlsconfig.FORCE_RUN:
-						raise ValueError, msg
-					print msg
+					msg = "单元格(%d, %s) = [%s] 数据不合法" % (r + 1, util.int_to_base26(c), to_str(value))
+					util.log_error(msg)
 
 			self.add_row(current_row_data)
 
@@ -278,7 +251,7 @@ class ParserByFieldName(Parser):
 			self.converters[col] = converter
 
 			if converter is None and not self.is_quiet:
-				print "警告：第(%s)列的表头'%s'没有被解析。%s" % (intToBase26(col), col_name, self.filename, )
+				print "警告：第(%s)列的表头'%s'没有被解析。%s" % (util.int_to_base26(col), col_name, self.filename, )
 
 		self.map_filed_to_col()
 		return
@@ -298,7 +271,7 @@ class ParserByIndex(Parser):
 
 			col_name = to_str(col_name)
 
-			key = intToBase26(col)
+			key = util.int_to_base26(col)
 
 			converter = None
 			cfg = self.header_2_config.get(col_name)
@@ -309,7 +282,7 @@ class ParserByIndex(Parser):
 			self.converters[col] = converter
 
 			if converter is None and not self.is_quiet:
-				print "警告：第(%s)列的表头'%s'没有被解析。%s" % (intToBase26(col), col_name, self.filename, )
+				print "警告：第(%s)列的表头'%s'没有被解析。%s" % (util.int_to_base26(col), col_name, self.filename, )
 
 		self.map_filed_to_col()
 		return
