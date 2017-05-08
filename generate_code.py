@@ -33,9 +33,9 @@ def generate_code():
 	sys.path.remove(xlsconfig.CONVERTER_PATH)
 
 def _generate(module, module_name):
-	for generator in xlsconfig.CODE_GENERATORS:
-		cls = getattr(codegen, generator["class"])
-		output_path = generator["file_path"]
+	for generator_info in xlsconfig.CODE_GENERATORS:
+		cls = getattr(codegen, generator_info["class"])
+		output_path = generator_info["file_path"]
 
-		gen = cls(module, module_name, output_path)
+		gen = cls(module, module_name, output_path, generator_info)
 		gen.run()

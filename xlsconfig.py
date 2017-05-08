@@ -41,7 +41,7 @@ CONVERTER_ALIAS = "converter"
 
 # 生成的java代码输出路径
 CODE_GENERATORS  = [
-	{"class" : "JavaCodeGen", "file_path" : "export/java/code"}
+	{"class" : "JavaCodeGen", "file_path" : "export/java/code", "package" : "com.mygame.excel"}
 ]
 
 # 输出数据配置。

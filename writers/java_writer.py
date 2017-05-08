@@ -2,6 +2,7 @@
 
 from copy import copy
 from json_writer import JsonWriter
+import util
 
 # 当前Writer的功能是生成java专用的json格式，而不是java代码
 # json格式：
@@ -18,7 +19,12 @@ class JavaWriter(JsonWriter):
 	def begin_write(self):
 		super(JavaWriter, self).begin_write()
 
-		sheet_types = self.data_module.info["sheet_types"]["main_sheet"]
+		module_info = self.data_module.info
+		parser_name = module_info["parser"].split('.')[-1]
+		class_name = util.to_class_name(parser_name)
+		self.write_value("class", class_name)
+
+		sheet_types = module_info["sheet_types"]["main_sheet"]
 
 		self.fields = [v[1] for v in sheet_types]
 		col_names = [v[2] for v in sheet_types]

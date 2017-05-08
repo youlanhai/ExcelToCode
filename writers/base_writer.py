@@ -18,7 +18,7 @@ class BaseWriter(object):
 		if self.handle: self.close()
 
 	def open_file(self):
-		self.handle = open(self.file_path, "w")
+		self.handle = open(self.file_path, "wb")
 
 	def flush(self):
 		if len(self.cache) == 0: return

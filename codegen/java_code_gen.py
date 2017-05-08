@@ -30,8 +30,10 @@ class JavaCodeGen(BaseCodeGen):
 
 		self.write_line(0, "// 此文件由导表工具自动生成，禁止手动修改。")
 		self.write_line()
+
+		package = self.generator_info["package"].encode("utf-8")
 		
-		self.write_line(0, "package com.mygame.excel;")
+		self.write_line(0, "package %s;" % package)
 		self.write_line()
 
 		type_info = getattr(self.module, "JAVA_TYPE_INFO", {})
