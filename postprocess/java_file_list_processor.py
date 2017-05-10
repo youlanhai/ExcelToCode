@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import xlsconfig
 from writers import JsonWriter
 from util import to_utf8, to_class_name
 from base_processor import BaseProcessor
@@ -15,9 +16,8 @@ class JavaFileListProcessor(BaseProcessor):
 		wt = JsonWriter(file_path, None)
 		wt.begin_write()
 
-		package = self.generator_info.get("package")
-		if package:
-			wt.write_value("package", to_utf8(package))
+		package = to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
+		wt.write_value("package", to_utf8(package))
 
 		class_name_format = to_utf8(self.generator_info.get("class_name_format"))
 		enum_name_format = to_utf8(self.generator_info.get("enum_name_format"))

@@ -67,6 +67,8 @@ def load_configure(cfg_file):
 		path = join_path(root_path, post_init_script)
 		imp.load_source("custom_post_init_script", path)
 
+	xlsconfig.DEFAULT_JAVA_PACKAGE = to_utf8(cfg.get("DEFAULT_JAVA_PACKAGE"))
+
 	return
 
 def join_path(*args):

@@ -2,8 +2,9 @@
 from base_processor import BaseProcessor
 from writers import BaseWriter
 
-import util
 import os
+import util
+import xlsconfig
 
 def to_enum_name(name):
 	return name.replace('/', '_').replace('\\', '/').upper()
@@ -20,7 +21,7 @@ class JavaFileEnumProcessor(BaseProcessor):
 		wt._output_line(indent, "// 此文件由导表工具自动生成，禁止手动修改。")
 		wt._output_line()
 
-		package = util.to_utf8(self.generator_info["package"])
+		package = util.to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
 		wt._output_line(indent, "package %s;" % package)
 		wt._output_line()
 

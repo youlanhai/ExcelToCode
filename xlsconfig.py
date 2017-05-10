@@ -34,6 +34,7 @@ INPUT_PATH      = "excels"
 # 中间文件路径
 TEMP_PATH       = "export/temp"
 
+DEFAULT_JAVA_PACKAGE = "com.mygame.default.package"
 
 # 生成的java代码输出路径
 CODE_GENERATORS  = [
@@ -47,7 +48,7 @@ DATA_WRITERS = [
 
 # 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。
 POSTPROCESSORS = [
-	{"class" : "JavaFileEnumProcessor", "file_path" : "export/java/excel/DictEnum.java", "package" : "com.mygame.excel"}
+	{"class" : "JavaFileEnumProcessor", "file_path" : "export/java/excel/DictEnum.java", }
 ]
 
 # 额外的初始化脚本。

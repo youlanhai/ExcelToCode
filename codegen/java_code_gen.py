@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import util
+import xlsconfig
 from base_code_gen import BaseCodeGen
 from tps import tp0
 
@@ -35,7 +36,7 @@ class JavaCodeGen(BaseCodeGen):
 		self.write_line(0, "// 此文件由导表工具自动生成，禁止手动修改。")
 		self.write_line()
 
-		package = self.generator_info["package"].encode("utf-8")
+		package = util.to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
 		
 		self.write_line(0, "package %s;" % package)
 		self.write_line()
