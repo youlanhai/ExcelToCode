@@ -5,11 +5,11 @@ INDENTS = [" " * (i * 4) for i in xrange(10)]
 
 class BaseCodeGen(object):
 
-	def __init__(self, module, module_path, output_path, generator_info):
+	def __init__(self, module, module_name, output_path, generator_info):
 		super(BaseCodeGen, self).__init__()
 		self.content = []
 		self.module = module
-		self.module_path = module_path
+		self.module_name = module_name
 		self.output_path = output_path
 		self.generator_info = generator_info
 

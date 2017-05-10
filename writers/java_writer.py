@@ -24,13 +24,17 @@ class JavaWriter(JsonWriter):
 		class_name = util.to_class_name(parser_name)
 		self.write_value("class", class_name)
 
+		self.is_multi_key = module_info["multi_key"]
+		self.write_value("multiKey", self.is_multi_key)
+
 		sheet_types = module_info["sheet_types"]["main_sheet"]
 
-		self.fields = [v[1] for v in sheet_types]
-		col_names = [v[2] for v in sheet_types]
-		types = [v[3] for v in sheet_types]
+		fields = sheet_types.keys()
+		fields.sort()
+		self.fields = fields
 
-		headers = [col_names, self.fields, ]
+		texts = [sheet_types[field][2] for field in fields]
+		headers = [texts, fields, ]
 		self.write_value("header", headers, 2)
 
 	def write_sheet(self, name, sheet):
@@ -38,22 +42,26 @@ class JavaWriter(JsonWriter):
 
 		key_field = self.fields[0]
 		body = []
-		for k, rows in sheet.iteritems():
-			# 需要考虑到重复key的情况，每个rows会是一个数组。
-			# 简单起见，单行的情况，也认为是多行的一个特例。
 
-			if not isinstance(rows, list):
-				rows = [rows, ]
+		keys = sheet.keys()
+		keys.sort()
+		for k in keys:
+			row = sheet[k]
+			new_row = None
 
-			for row in rows:
+			if isinstance(row, list):
+				new_row = []
+
+				for sub_row in row:
+					r = copy(sub_row)
+					r[key_field] = k
+					new_row.append(r)
+			else:
 				new_row = copy(row)
-
 				new_row[key_field] = k
 
-				body.append(new_row)
+			body.append(new_row)
 
-		body.sort(key = lambda v: v[key_field])
-
-		self.write_value("body", body, 2)
+		self.write_value("body", body, 3 if self.is_multi_key else 2)
 
 	def write_module(self, module): pass

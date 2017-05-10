@@ -9,33 +9,21 @@ import codegen
 def generate_code():
 	print "=== 生成代码类文件 ..."
 
-	for generator in xlsconfig.CODE_GENERATORS:
-		util.safe_makedirs(generator["file_path"], xlsconfig.FULL_EXPORT)
+	configure_file_path = os.path.join(xlsconfig.TEMP_PATH, "configures.py")
+	if not os.path.exists(configure_file_path):
+		return log_error("配置文件'%s'不存在", configure_file_path)
 
-	sys.path.insert(0, xlsconfig.CONVERTER_PATH)
+	sys.path.insert(0, xlsconfig.TEMP_PATH)
+	configure_module = util.import_file("configures")
+	sys.path.remove(xlsconfig.TEMP_PATH)
 
-	converter_path = os.path.join(xlsconfig.CONVERTER_PATH, xlsconfig.CONVERTER_ALIAS)
-	prefix_len = len(converter_path) + 1
+	for key, cfg in configure_module.configures.iteritems():
+		_generate(cfg["types"], key)
 
-	for root, dirs, files in os.walk(converter_path):
-		relative_path = root[prefix_len:]
-
-		for fname in files:
-			name, ext = os.path.splitext(fname)
-			if ext != ".py" or name == "__init__": continue
-
-			module_name = os.path.join(relative_path, name)
-			module = util.import_file(xlsconfig.CONVERTER_ALIAS + "." + module_name)
-			if getattr(module, "CONFIG", None) is None: continue
-
-			_generate(module, module_name)
-
-	sys.path.remove(xlsconfig.CONVERTER_PATH)
-
-def _generate(module, module_name):
+def _generate(config, module_name):
 	for generator_info in xlsconfig.CODE_GENERATORS:
 		cls = getattr(codegen, generator_info["class"])
 		output_path = generator_info["file_path"]
 
-		gen = cls(module, module_name, output_path, generator_info)
+		gen = cls(config, module_name, output_path, generator_info)
 		gen.run()

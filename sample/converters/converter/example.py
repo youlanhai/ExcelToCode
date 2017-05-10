@@ -20,6 +20,7 @@ CONFIG = [
 	("名称", "name", tp0.to_str),
 	("描述", "describe", tp0.to_str, True),
 	("品质", "quality", int, True, 0),
+	("掉落关卡", "drop", tp0.to_int_list, True),
 ]
 
 """

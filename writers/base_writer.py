@@ -6,11 +6,12 @@ INDENTS = [" " * (i * 4) for i in xrange(10)]
 
 class BaseWriter(object):
 
-	def __init__(self, file_path, data_module):
+	def __init__(self, file_path, data_module = None, generator_info = None):
 		super(BaseWriter, self).__init__()
 		self.file_path = file_path
 		self.cache = []
 		self.data_module = data_module
+		self.generator_info = generator_info
 		
 		self.open_file()
 
@@ -77,7 +78,7 @@ class BaseWriter(object):
 		sheet_types = module_info["sheet_types"].get(sheet_name)
 		if sheet_types is None: return
 
-		sheet_types = copy(sheet_types)
+		sheet_types = sheet_types.values()
 		sheet_types.sort(key = lambda v : v[0])
 		for info in sheet_types:
 			col, field, text, type = info

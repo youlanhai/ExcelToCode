@@ -4,6 +4,12 @@ import sys
 import shutil
 import xlsconfig
 
+def to_utf8(s):
+	tp = type(s)
+	if tp == unicode: return s.encode("utf-8")
+	if tp == str: return s
+	return s
+
 def int_to_base26(value):
 	asciiA = ord('A')
 
@@ -113,10 +119,13 @@ def gather_all_files(path, exts):
 		relative_path = root[path_len : ]
 
 		for fname in files:
+			if fname.startswith("~$"): continue
+
 			ext = os.path.splitext(fname)[1]
-			if ext in exts:
-				file_path = os.path.join(relative_path, fname)
-				ret.append(file_path.replace('\\', '/'))
+			if ext not in exts: continue
+
+			file_path = os.path.join(relative_path, fname)
+			ret.append(file_path.replace('\\', '/'))
 
 	return ret
 

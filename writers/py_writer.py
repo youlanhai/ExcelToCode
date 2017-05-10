@@ -3,8 +3,8 @@ from base_writer import BaseWriter
 
 class PyWriter(BaseWriter):
 
-	def __init__(self, file_path, data_module):
-		super(PyWriter, self).__init__(file_path, data_module)
+	def __init__(self, file_path, data_module = None, generator_info = None):
+		super(PyWriter, self).__init__(file_path, data_module, generator_info)
 		self.write_comment("-*- coding: utf-8 -*-\n")
 
 	def write_sheet(self, name, sheet):

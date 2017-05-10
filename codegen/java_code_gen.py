@@ -20,8 +20,12 @@ INDENTS = [" " * (i * 4) for i in xrange(10)]
 class JavaCodeGen(BaseCodeGen):
 
 	def run(self):
-		src_name = os.path.basename(self.module_path)
+		src_name = self.module_name.split('.')[-1]
 		self.class_name = util.to_class_name(src_name)
+
+		name_format = util.to_utf8(self.generator_info.get("name_format"))
+		if name_format:
+			self.class_name = name_format % self.class_name
 
 		self.file_path = os.path.join(self.output_path, self.class_name + ".java")
 
@@ -36,35 +40,40 @@ class JavaCodeGen(BaseCodeGen):
 		self.write_line(0, "package %s;" % package)
 		self.write_line()
 
-		type_info = getattr(self.module, "JAVA_TYPE_INFO", {})
-		removed_fields = getattr(self.module, "HIDDEN_FIELDS", ())
-		items = self.collect_members(self.module.CONFIG, type_info, removed_fields)
+		imports = self.generator_info.get("imports")
+		if imports:
+			for imp in imports:
+				self.write_line(0, "import %s;" % imp.encode("utf-8"))
+			self.write_line()
+
+		items = self.collect_members(self.module)
 
 		self.gen_class(items, 0)
 
 		self.save_to_file(self.file_path)
 
-	def collect_members(self, config, type_info, removed_fields):
+	def collect_members(self, config):
+		# info = (0, "ID", "编号", "int", )
+		
 		items = []
-		for info in config:
-			text = info[0]
-			field = info[1]
-			if field in removed_fields: continue
+		for k, info in config.iteritems():
+			col, field, text, type = info
+			items.append([field, text, type, None])
 
-			type = type2string(info[2])
-			method = None
-			if field in type_info:
-				types = type_info[field]
-				type = types[0]
-				if len(types) > 1: method = types[1]
-			items.append([field, text, type, method])
-
-		# 暂不排序。排序的话，与json数组的对应关系就乱了。
-		# items.sort(key = lambda item: item[0])
+		items.sort(key = lambda v: v[0])
 		return items
 
-	def gen_class(self, items, indent):	
-		self.write_line(indent, "public class %s {" % self.class_name)
+	def gen_class(self, items, indent):
+		self.write(indent, "public class ", self.class_name)
+		
+		base = self.generator_info.get("base")
+		if base: self.output(" extends ", base.encode("utf-8"))
+
+		interface = self.generator_info.get("interface")
+		if interface: self.output(" implements ", interface.encode("utf-8"))
+
+		self.output(" {")
+		self.write_line()
 		self.write_line()
 
 		indent += 1

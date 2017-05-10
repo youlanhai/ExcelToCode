@@ -36,18 +36,34 @@ def main():
 	if not install_package.check_plugin(("openpyxl", )):
 		return
 
-	import xls2script
-	import generate_header
-	import generate_code
+	for generator in xlsconfig.DATA_WRITERS:
+		util.safe_makedirs(generator["file_path"], xlsconfig.FULL_EXPORT)
+		
+	for generator in xlsconfig.CODE_GENERATORS:
+		util.safe_makedirs(generator["file_path"], xlsconfig.FULL_EXPORT)
 
 	if option.gen_header:
+		import generate_header
 		generate_header.generate_header()
 
+	if option.export or option.gen_code:
+		export_excel()
+
 	if option.gen_code:
+		import generate_code
 		generate_code.generate_code()
 
-	if option.export or not (option.gen_header or option.gen_code):
-		xls2script.export_excel()
+	print "=== 完毕 ===\n"
+	return
+
+def export_excel():
+	util.safe_makedirs(xlsconfig.TEMP_PATH, xlsconfig.FULL_EXPORT)
+
+	import exporters
+	cls = getattr(exporters, xlsconfig.EXPORTER_CLASS)
+	exporter = cls(xlsconfig.INPUT_PATH, (".xlsx", ))
+	exporter.run()
+	return
 
 if __name__ == "__main__":
 	main()

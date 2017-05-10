@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
 ######################################################################
-### 导表阶段
+### 导表阶段。可以控制writer在哪个阶段输出写文件
 ######################################################################
-EXPORT_STAGE_LIST = 0
+
 EXPORT_STAGE_BEGIN = 1
+
 EXPORT_STAGE_FINAL = 2
 
 ######################################################################
@@ -24,20 +25,15 @@ FULL_EXPORT = False
 ### 以下是需要配置的路径。可以通过配置文件来设置，见load_configure
 ######################################################################
 
+# 导出类
+EXPORTER_CLASS = "DirectExporter"
+
 # Excel路径
 INPUT_PATH      = "excels"
 
-# 导表工具依赖的插件安装包路径
-DEPENDENCY_PATH = "Dependency/libs"
-
 # 中间文件路径
-TEMP_PATH       = "export/xtemp"
+TEMP_PATH       = "export/temp"
 
-# 转换器所在的路径。此目录下必须有convention_table.py文件
-CONVERTER_PATH  = "converters"
-
-# 转换器子目录，位于CONVERTER_PATH下。防止命名冲突。
-CONVERTER_ALIAS = "converter"
 
 # 生成的java代码输出路径
 CODE_GENERATORS  = [
@@ -49,17 +45,53 @@ DATA_WRITERS = [
 	{"stage" : EXPORT_STAGE_FINAL, "class" : "LuaWriter", "file_path": "export/lua", "file_posfix" : ".lua"},
 ]
 
+# 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。
+POSTPROCESSORS = [
+	{"class" : "JavaFileEnumProcessor", "file_path" : "export/java/excel/DictEnum.java", "package" : "com.mygame.excel"}
+]
+
 # 额外的初始化脚本。
 POST_INIT_SCRIPT = ""
 
-# python插件依赖项
+# python插件安装包路径。
 DEPENDENCIES = {}
+
+# Excel表头参数解析
+ARGUMENT_CONVERTER = {
+	"版本：" : ("version", "int"),
+	"键值是否重复：" : ("multiKey", "bool"),
+	"说明：" : ("describe", "string"),
+}
+
+# Excel表格数据所在行。索引从0开始
+SHEET_ROW_INDEX = {
+	# Excel表头参数。通常是版本信息
+	"argument" : 0,
+	# 表头。
+	"header" : 2,
+	# 字段。
+	"field" : 3,
+	# 类型行。
+	"type" : 4,
+	# 数据首行索引。
+	"data" : 5,
+}
+
+#----------- ConfigExporter/MixExporter需要的参数 ---------------------#
+
+# 转换器所在的路径。此目录下必须有convention_table.py文件
+CONVERTER_PATH  = "converters"
+
+# 转换器子目录，位于CONVERTER_PATH下。防止命名冲突。
+CONVERTER_ALIAS = "converter"
 
 # Excel与转换器对应关系表
 CONVENTION_TABLE = ()
 
 # 分表合并关系表
 MERGE_TABLE = ()
+
+#----------- ConfigExporter/MixExporter需要的参数 ---------------------#
 
 ######################################################################
 ###
