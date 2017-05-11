@@ -55,7 +55,7 @@ class DirectExporter(BaseExporter):
 		input_path = os.path.join(xlsconfig.INPUT_PATH, infile)
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
 
-		if not xlsconfig.FULL_EXPORT and util.if_file_newer(output_path, input_path):
+		if xlsconfig.FAST_MODE and util.if_file_newer(output_path, input_path):
 			data_module = util.import_file(outfile)
 
 		else:

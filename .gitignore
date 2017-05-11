@@ -1,3 +1,5 @@
 /sample/export*/
+/sample2/export*/
 *.pyc
 .DS_Store
+\~\$*.xlsx

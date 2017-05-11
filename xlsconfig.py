@@ -18,8 +18,8 @@ FORCE_RUN = False
 # 是否使用openpyxl来解析excel表。目前总是使用该插件。
 USE_OPENPYXL = True
 
-# 是否执行完全导出。与快速导出相对立，快速导出仅会导出修改了的excel文件。
-FULL_EXPORT = False
+# 是否执行快速导出。仅导出修改了的excel文件。
+FAST_MODE = False
 
 ######################################################################
 ### 以下是需要配置的路径。可以通过配置文件来设置，见load_configure

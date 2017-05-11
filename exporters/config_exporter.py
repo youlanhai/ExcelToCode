@@ -91,7 +91,7 @@ class ConfigExporter(BaseExporter):
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
 		converter_file = os.path.splitext(converter.__file__)[0] + ".py"
 
-		if not xlsconfig.FULL_EXPORT and util.if_file_newer(output_path, input_path) and util.if_file_newer(output_path, converter_file):
+		if xlsconfig.FAST_MODE and util.if_file_newer(output_path, input_path) and util.if_file_newer(output_path, converter_file):
 			data_module = util.import_file(outfile)
 
 		else:

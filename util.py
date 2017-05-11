@@ -184,7 +184,7 @@ class Redirect(object):
 
 def redirect_iostream():
 	if stdout != sys.stdout: return
-	if stdout.encoding.lower() == "utf-8": return
+	if not stdout.encoding or stdout.encoding.lower() == "utf-8": return
 
 	stdout.write("redirect output stream.\n")
 	stdout.flush()
