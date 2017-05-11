@@ -22,14 +22,14 @@ class BaseCodeGen(object):
 
 		origin_content = None
 		if os.path.exists(path):
-			with open(path, "r") as f:
+			with open(path, "rb") as f:
 				origin_content = f.read()
 
 		if content == origin_content: return
 
 		print "生成", path
 
-		with open(path, "w") as f:
+		with open(path, "wb") as f:
 			f.write(content)
 
 		return

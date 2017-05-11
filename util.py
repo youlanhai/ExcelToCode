@@ -192,3 +192,7 @@ def redirect_iostream():
 	stream = Redirect()
 	sys.stdout = stream
 	sys.stderr = stream
+
+
+def format_slash(path):
+	return path.replace('\\', '/')
