@@ -40,25 +40,23 @@ python main.py --export your_configure_file
 
 main导表参数 | 说明
 ------------|--------
-config_file | json格式的配置文件。配置文件的详细写法，参考[配置文件参数解释](doc/how-to-config.md)
+config_file | python格式的配置文件。配置文件的详细写法，参考[配置文件参数解释](doc/how-to-config.md)
 --gen-code  | 生成类代码，目前仅支持Java。需要在config文件中，指定代码生成器参数`CODE_GENERATORS`
---export    | 执行导表。
---fast-mode | 快速模式，仅重新解析最近修改过的Excel表。解析Excel表的过程非常慢，快速模式会使用已经生成的中间文件来避免二次解析Excel表。
---force-run | 出错后是否继续进行导表。常用于发现更多的错误。
---gen-header| 根据`转换器`描述信息，自动生成表头。
+--export    | 执行导表
+--fast-mode | 快速模式，仅重新解析最近修改过的Excel表。解析Excel表的过程非常慢，快速模式会使用已经生成的中间文件来避免二次解析Excel表
+--force-run | 出错后是否继续进行导表。常用于发现更多的错误
+--gen-header| 根据`转换器`描述信息，自动生成表头
 
 # 范例
-见sample目录：
+见`sample`和`sample2`目录。`sample`目录下的例子使用的是*直接模式(Direct)*，`sample2`目录下的例子使用的是*配置模式(Config)*。
 
 文件名称 | 描述
 --------|---------
-config.cfg | 导表工具配置文件
+config.py | 导表工具配置文件
 export.bat/export.sh | 导表批处理文件
-post_init.py | 导表工具初始化完毕后回调。可以在脚本里做一些额外的初始化操作
-excels | 存放excel文件所在目录。
-converters | 转换器目录。
-converters/convention_table.py | excel与转换器对应关系的描述文件
-converters/converter | 转换器脚本
+excels | 存放excel文件所在目录
+converters | 转换器父级目录
+converters/converter | 转换器脚本存放路径
 
 # 文档
 1. [配置文件参数解释](doc/how-to-config.md)

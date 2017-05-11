@@ -80,7 +80,7 @@ SHEET_ROW_INDEX = {
 
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#
 
-# 转换器所在的路径。此目录下必须有convention_table.py文件
+# 转换器所在的路径。
 CONVERTER_PATH  = "converters"
 
 # 转换器子目录，位于CONVERTER_PATH下。防止命名冲突。

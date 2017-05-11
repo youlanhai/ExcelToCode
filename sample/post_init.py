@@ -1,2 +1,0 @@
-
-print "post init finished"

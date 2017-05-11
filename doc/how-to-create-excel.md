@@ -89,7 +89,7 @@ def post_check(data_module):
 ```
 
 ## 注册转换器脚本
-转换器写完之后，需要与Excel表建立对应关系。在`converters/convention_table.py`文件中添加上Excel表路径与转换器的对应关系。
+转换器写完之后，需要与Excel表建立对应关系。在配置文件中修改`CONVENTION_TABLE`，添加上Excel表路径与转换器的对应关系。
 
 ```python
 CONVENTION_TABLE = (
