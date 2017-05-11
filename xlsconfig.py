@@ -64,18 +64,18 @@ ARGUMENT_CONVERTER = {
 	"说明：" : ("describe", "string"),
 }
 
-# Excel表格数据所在行。索引从0开始
+# Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。
 SHEET_ROW_INDEX = {
-	# Excel表头参数。通常是版本信息
+	# Excel表头参数。通常是版本信息和说明等，该行必须存在。
 	"argument" : 0,
-	# 表头。
-	"header" : 2,
-	# 字段。
-	"field" : 3,
-	# 类型行。
-	"type" : 4,
-	# 数据首行索引。
-	"data" : 5,
+	# 表头。该行必须存在。
+	"header" : 1,
+	# 数据首行索引。该行必须存在。
+	"data" : 2,
+	# 字段。Direct模式下，该行必须存在
+	"field" : -1,
+	# 类型行。Direct模式下，该行必须存在
+	"type" : -1,
 }
 
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#

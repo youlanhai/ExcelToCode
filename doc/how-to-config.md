@@ -1,4 +1,4 @@
-# 表格格式配置
+# 配置文件参数解释
 
 ```shell
 # 执行导表
@@ -128,19 +128,20 @@ Excel表头参数解析，通常是针对Excel表的第一行。你可以在Exce
 ```
 
 ## SHEET_ROW_INDEX
-Excel表格数据所在的行索引。索引从0开始
+Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。
+
 ```js
-SHEET_ROW_INDEX = {
-    // Excel表头参数。通常是版本信息
+SHEET_ROW_INDEX : {
+    // Excel表头参数。通常是版本信息和说明等，该行必须存在。
     "argument" : 0,
-    // 表头。
-    "header" : 2,
-    // 字段。
-    "field" : 3,
-    // 类型行。
-    "type" : 4,
-    // 数据首行索引。
-    "data" : 5,
+    // 表头。该行必须存在。
+    "header" : 1,
+    // 数据首行索引。该行必须存在。
+    "data" : 2,
+    // 字段。Direct模式下，该行必须存在
+    "field" : -1,
+    // 类型行。Direct模式下，该行必须存在
+    "type" : -1,
 }
 ```
 
@@ -150,6 +151,9 @@ Direct模式下，数据描述信息全部由Excel表提供。表格的行"argum
 ![](images/direct-header@2x.png)
 
 # Config模式
+Config模式下，数据描述信息有转换器脚本提供。因此，表头结构简单，但是需要提供额外的转换器脚本文件。
+
+![](images/config-header@2x.png)
 
 ## CONVERTER_PATH
 转换器所在的父级路径。此目录下必须有`convention_table.py`文件，用来描述Excel表和转换器的对应关系。
@@ -184,7 +188,7 @@ CONVENTION_TABLE = (
  3      | excel文件的工作表索引。
 
 ## MERGE_TABLE
-分表合并关系描述表。用来将几个分表合成一张总表。每个数组元素也是一个数组，0号位是合并后的文件名，1号位往后是要合并的文件名，支持正则表达式。注意，文件都不含后缀。
+分表合并关系描述表。该参数位于`convention_table.py`。用来将几个分表合成一张总表。每个数组元素也是一个数组，0号位是合并后的文件名，1号位往后是要合并的文件名，支持正则表达式。注意，文件都不含后缀。
 ```python
 MERGE_TABLE = (
     ("entity/entity", r"entity/entity_part\d+", ),

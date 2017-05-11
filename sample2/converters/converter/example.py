@@ -48,10 +48,6 @@ JAVA_TYPE_INFO = {
 }
 """
 
-# 添加此函数，在导表开始之前可以修改parser的一些逻辑
-def pre_process(parser):
-	pass
-
 # 添加此函数，在导表结束之前可以做一些后处理
 def post_process(sheet):
 	pass

@@ -12,8 +12,8 @@ field_fill = PatternFill(patternType="solid", fgColor="F0F000")
 def create_header(input_file, converter, sheet_index):
 	# 索引从1开始
 	header_row = xlsconfig.SHEET_ROW_INDEX["header"] + 1
-	field_row = xlsconfig.SHEET_ROW_INDEX["field"] + 1
-	type_row = xlsconfig.SHEET_ROW_INDEX["type"] + 1
+	field_row = xlsconfig.SHEET_ROW_INDEX.get("field", -1) + 1
+	type_row = xlsconfig.SHEET_ROW_INDEX.get("type", -1) + 1
 
 	book = openpyxl.load_workbook(input_file)
 	table = book.worksheets[sheet_index]
@@ -40,7 +40,7 @@ def create_header(input_file, converter, sheet_index):
 
 		new_headers.append((header, field, type))
 
-	if table.cell(row = field_row, column = 1).value != "ID":
+	if field_row > 0 and table.cell(row = field_row, column = 1).value != "ID":
 		table.insert_rows(field_row, 1, True)
 		for header, column in headers.iteritems():
 			field = header_2_field.get(header)
@@ -58,11 +58,13 @@ def create_header(input_file, converter, sheet_index):
 		cell = table.cell(row = header_row, column = col, value = header)
 		cell.fill = header_fill
 
-		cell = table.cell(row = field_row, column = col, value = field)
-		cell.fill = field_fill
+		if field_row > 0:
+			cell = table.cell(row = field_row, column = col, value = field)
+			cell.fill = field_fill
 
-		cell = table.cell(row = type_row, column = col, value = type)
-		cell.fill = type_fill
+		if type_row > 0:
+			cell = table.cell(row = type_row, column = col, value = type)
+			cell.fill = type_fill
 
 		col += 1
 
