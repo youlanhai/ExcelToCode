@@ -21,7 +21,7 @@ Excel行 | 描述
 数据的**第一列**为表格的键值(key)，key可以不唯一，但必须要在表格属性中指定。
 
 ## 表格属性
-每两列为一组，每组第一列为描述，第二列为数值。
+Excel表的第一行为表格属性。每两列为一组，每组第一列为描述，第二列为数值。
 
 A   | B     | C     | D     | E     | F
 ----|-------|-------|-------|-------|---
@@ -72,7 +72,10 @@ CONFIG是一个数组，描述了如何将excel表头转换成程序用的字段
 导表工具将数据表作为参数传递进来，脚本可以直接修改数据结构。或者基于数据表生成其他辅助表，并返回。
 
 ```python
-def post_process(sheet):
+def post_process(data_module):
+    # 这里可以修改data_module.main_sheet数据
+
+    # 构造新的子表
     another_sheets = {
         "sheet2" : {"key" : 123},
         "sheet3" : [1,2,3],
@@ -84,7 +87,7 @@ def post_process(sheet):
 导表工具将整个数据模块作为参数传递进来，脚本可以检查数据是否合法。如果不合法，向外抛出异常即可。导表工具会捕获异常并报告错误。
 
 ```python
-def post_check(data_module):
+def post_check(data_module, exporter):
     pass
 ```
 

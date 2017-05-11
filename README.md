@@ -6,6 +6,7 @@ Excel文件：
 
 转换后的python数据表：
 ```python
+# -*- coding: utf-8 -*-
 # 此文件由导表工具自动生成，禁止手动修改。
 # from example.xlsx
 
@@ -13,9 +14,10 @@ Excel文件：
 # B name                名称
 # C describe            描述
 # D quality             品质
+# E drop                掉落关卡
 main_sheet = {
-    1: {"describe": "切菜用的", "name": "菜刀", "quality": 1, },
-    2: {"name": "上方宝剑", "quality": 5, },
+    1: {"describe": "切菜用的", "drop": [1, 2, 3, 4, ], "name": "菜刀", "quality": 1, },
+    2: {"drop": [2, ], "name": "上方宝剑", "quality": 5, },
     3: {"name": "偃月弯刀", "quality": 0, },
 }
 ```
@@ -32,7 +34,6 @@ main_sheet = {
 + 安装python插件openpyxl。使用`pip install openpyxl`安装，或者在config文件配置`DEPENDENCIES`项，指定openpyxl的安装包路径，导表工具会自动安装。
 
 # 工具用法
-配置文件的写法，参考[配置文件参数解释](doc/how-to-config.md)
 
 ```shell
 python main.py --export your_configure_file
@@ -40,7 +41,7 @@ python main.py --export your_configure_file
 
 main导表参数 | 说明
 ------------|--------
-config_file | python格式的配置文件。配置文件的详细写法，参考[配置文件参数解释](doc/how-to-config.md)
+config_file | python格式的配置文件。配置文件的详细写法，参考[配置文件参数详解](doc/how-to-config.md)
 --gen-code  | 生成类代码，目前仅支持Java。需要在config文件中，指定代码生成器参数`CODE_GENERATORS`
 --export    | 执行导表
 --fast-mode | 快速模式，仅重新解析最近修改过的Excel表。解析Excel表的过程非常慢，快速模式会使用已经生成的中间文件来避免二次解析Excel表
@@ -59,6 +60,6 @@ converters | 转换器父级目录
 converters/converter | 转换器脚本存放路径
 
 # 文档
-1. [配置文件参数解释](doc/how-to-config.md)
+1. [配置文件参数详解](doc/how-to-config.md)
 2. [表格添加方法](doc/how-to-create-excel.md)
 

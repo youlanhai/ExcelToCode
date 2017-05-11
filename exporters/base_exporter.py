@@ -262,7 +262,7 @@ class BaseExporter(object):
 			return
 
 		try:
-			data_module.extra_sheets = process_method(data_module.main_sheet)
+			data_module.extra_sheets = process_method(data_module)
 		except:
 			traceback.print_exc()
 			util.log_error("后处理执行失败 '%s'", data_module.path)
@@ -286,7 +286,7 @@ class BaseExporter(object):
 			return
 
 		try:
-			check_method(data_module)
+			check_method(data_module, self)
 		except:
 			traceback.print_exc()
 			util.log_error("数据检查失败 '%s'", data_module.path)

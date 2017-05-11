@@ -1,18 +1,18 @@
-# 配置文件参数解释
+# 配置文件参数详解
 
 ```shell
 # 执行导表
 python main.py --export my_config.py
 ```
 
-导表的时候，需要指定一个Python格式的配置文件，描述了导表过程中需要的一些参数。目前，导表工具支持3种表格配置方式：
+导表的时候，需要指定一个Python格式的配置文件，描述了导表过程中需要的一些参数。目前，导表工具支持2种表格配置方式：
 1. Direct。在Excel表头中指定导出的字段名、字段类型，导表工具使用这些信息，生成数据字典。这种方式比较方便，但是不够灵活，不能对数据进行深度处理，比如字段合并、生成新字段。
 2. Config。为每一种类型的Excel文件指定一个转换脚本，提供表头和数据的转换信息。这种方式支持数据深度处理，数据校验等。缺点是，要写为每一种类型的Excel都写一个脚本。
-3. Mix。将1、2两种方式结合起来，可以仅为需要深度处理的Excel表提供脚本。
 
 下面逐一介绍如何配置。
 
 # 通用配置
+注意，配置参数要区分大小写。路径相关的参数，都是相对路径，相对于当前的配置文件。
 
 ## post_init_method
 额外的初始化方法，执行一些自定义的初始化工作。比如修改配置，自定义代码注入等。
@@ -67,12 +67,12 @@ CODE_GENERATORS = [
 
 生成器参数 | 描述
 ---------|---------
-`class`  | 生成器的类名
-`file_path` | 输出文件的路径。最终的文件名为`file_path` + Excel文件名 + ".java"
-`package` | 为生成的Java类指定包名。如果不指定，则使用`DEFAULT_JAVA_PACKAGE`
-`imports` | 为生成的Java类指定要导入的包。改参数是数组格式，支持导入多个包。
-`base`  | 为生成的Java类指定基类。
-`interface` | 为生成的Java类指定接口类。
+class  | 生成器的类名
+file_path | 输出文件的路径。最终的文件名为`file_path` + Excel文件名 + ".java"
+package | 为生成的Java类指定包名。如果不指定，则使用`DEFAULT_JAVA_PACKAGE`
+imports | 为生成的Java类指定要导入的包。改参数是数组格式，支持导入多个包。
+base  | 为生成的Java类指定基类。
+interface | 为生成的Java类指定接口类。
 
 ## DATA_WRITERS
 为输出数据表指定参数。`DATA_WRITERS`是一个数组，支持多个writer。writer类位于writers目录下，目前支持输出的数据表格式有Python、Lua、Json和Java专用的Json格式。可以自定义writer类，将自定义类赋值给`writers`模块。
@@ -90,10 +90,10 @@ DATA_WRITERS = [
 
 writer参数 | 描述
 ----------|--------
-`stage`   | 导表阶段。目前分两个阶段：Begin(1), Final(2)。Begin阶段的数据没有进行后处理。
-`class`   | writer类。位于writers目录下。
-`file_path` | 输出数据表的路径
-`file_posfix` | 输出数据表的后缀
+stage   | 导表阶段。目前分两个阶段：Begin(1), Final(2)。Begin阶段的数据没有进行后处理。
+class   | writer类。位于writers目录下。
+file_path | 输出数据表的路径
+file_posfix | 输出数据表的后缀
 
 ## POSTPROCESSORS
 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。`POSTPROCESSORS`是一个数组，支持配置多个processor。processor类位于`postprocess`目录下，目前支持生成Java文件映射表。
@@ -192,9 +192,6 @@ CONVENTION_TABLE = (
 分表合并关系描述表。用来将几个分表合成一张总表。每个数组元素也是一个数组，0号位是合并后的文件名，1号位往后是要合并的文件名，支持正则表达式。注意，文件都不含后缀。
 ```python
 MERGE_TABLE = (
-    ("entity/entity", r"entity/entity_part\d+", ),
+    ("entity/entity", "entity/entity_subsheet", r"entity/entity_part\d+", ),
 )
 ```
-
-# Mix模式
-Mix模式下的配置要结合Direct和Config模式。
