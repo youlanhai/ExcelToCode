@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python ../main.py --gen-code --export config.cfg
+python ../main.py --gen-code --export config.py

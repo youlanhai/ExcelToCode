@@ -14,10 +14,11 @@ python main.py --export my_config.json
 
 # 通用配置
 
-## POST_INIT_SCRIPT
-额外的初始化脚本。可以指定一个python脚本文件，执行一些自定义的初始化工作。比如修改配置，自定义代码注入等。
-```json
-"POST_INIT_SCRIPT" : "my_script.py"
+## post_init_method
+额外的初始化方法，执行一些自定义的初始化工作。比如修改配置，自定义代码注入等。
+```python
+def post_init_method():
+    pass
 ```
 
 ## EXPORTER_CLASS
