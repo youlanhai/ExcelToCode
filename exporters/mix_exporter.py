@@ -2,10 +2,12 @@
 import re
 import os
 import sys
+import traceback
 import xlsconfig
 import util
 from direct_exporter import DirectExporter
 from tps import tp0
+from parsers.base_parser import ConverterInfo
 
 class MixExporter(DirectExporter):
 
@@ -74,22 +76,33 @@ class MixExporter(DirectExporter):
 			self.converter_modules[name] = converter
 		return converter
 
+	def post_convert_value(self, converter, value, output_row):
+		if converter.convert == tp0.use_empty:
+			return
+
+		ret = None
+		if value is None or value == "":
+			if not converter.is_default:
+				return util.log_error("列()该项必填")
+
+		else:
+			ret = converter.convert(value)
+
+		if ret is None and converter.is_default:
+			if not converter.exist_default_value:
+				return
+			ret = converter.default_value
+
+		output_row[converter.field] = ret
+
 	def post_convert_row(self, field_2_cfg, key_value, row):
-		keys = row.keys()
-		for k in keys:
-			cfg = field_2_cfg.get(k)
-			if cfg is None: continue
-
-			method = cfg[2]
-			if method == tp0.use_empty:
-				row.pop(k)
-				continue
-
+		for field, cfg in field_2_cfg.iteritems():
+			value = row.pop(field, None)
 			try:
-				row[k] = method(row[k])
+				self.post_convert_value(cfg, value, row)
 			except:
 				traceback.print_exc()
-				util.log_error("列(%s, %s)二次转换失败，value = %s", str(key_value), cfg[0], str(row[k]))
+				util.log_error("列(%s, %s)二次转换失败，value = %s", str(key_value), cfg.header, tp0.to_str(value))
 		return
 
 	def post_convert_sheet(self, data_module):
@@ -101,9 +114,9 @@ class MixExporter(DirectExporter):
 			field_2_cfg = {}
 			setattr(converter, "FIELD_2_CFG", field_2_cfg)
 
-			for cfg in converter.CONFIG:
-				field = cfg[1]
-				field_2_cfg[field] = cfg
+			for info in converter.CONFIG:
+				cfg = ConverterInfo(info)
+				field_2_cfg[cfg.field] = cfg
 
 		main_sheet = data_module.main_sheet
 		for key, row in main_sheet.iteritems():

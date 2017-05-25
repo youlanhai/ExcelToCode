@@ -1,5 +1,5 @@
-/sample/export*/
-/sample2/export*/
+export*/
+xtemp/
 *.pyc
 .DS_Store
 \~\$*.xlsx
