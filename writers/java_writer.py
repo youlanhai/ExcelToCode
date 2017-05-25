@@ -53,12 +53,9 @@ class JavaWriter(JsonWriter):
 				new_row = []
 
 				for sub_row in row:
-					r = copy(sub_row)
-					r[key_field] = k
-					new_row.append(r)
+					new_row.append(sub_row)
 			else:
-				new_row = copy(row)
-				new_row[key_field] = k
+				new_row = row
 
 			body.append(new_row)
 

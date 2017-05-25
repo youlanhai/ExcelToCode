@@ -85,6 +85,11 @@ class MixExporter(DirectExporter):
 		full_name = xlsconfig.CONVERTER_ALIAS + "." + name
 		try:
 			converter = util.import_file(full_name)
+
+			# 此名称有可能是文件夹，要加上校验
+			if not hasattr(converter, "CONFIG"):
+				return None
+
 			converter._name = name
 		except:
 			pass
@@ -98,7 +103,7 @@ class MixExporter(DirectExporter):
 		ret = None
 		if value is None or value == "":
 			if not converter.is_default:
-				return util.log_error("列()该项必填")
+				raise ValueError, "该项必填"
 
 		else:
 			ret = converter.convert(value)

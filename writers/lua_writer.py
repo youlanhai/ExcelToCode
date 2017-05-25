@@ -24,8 +24,12 @@ class LuaWriter(BaseWriter):
 			key_format = "\t[\"%s\"] = "
 
 		for k in keys:
+			row = sheet[k]
 			output(key_format % k)
-			self.write(sheet[k], 1, maxIndent)
+			indent = maxIndent
+			if type(row) == list or type(row) == tuple:
+				indent += 1
+			self.write(row, 1, indent)
 			output(",\n")
 
 			self.flush()

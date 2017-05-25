@@ -171,7 +171,7 @@ class BaseParser(object):
 		if self.key_name not in current_row_data:
 			raise ValueError, "没有找到Key'%s'" % (self.key_name, )
 
-		key_value = current_row_data.pop(self.key_name)
+		key_value = current_row_data[self.key_name]
 		
 		if self.is_multi_key:
 			row = self.sheet.setdefault(key_value, [])
