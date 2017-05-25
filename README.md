@@ -51,7 +51,7 @@ config_file | python格式的配置文件。配置文件的详细写法，参考
 --gen-header| 根据`转换器`描述信息，自动生成表头
 
 # 范例
-见`sample`和`sample2`目录。`sample`目录下的例子使用的是*直接模式(Direct)*，`sample2`目录下的例子使用的是*配置模式(Config)*。
+见`samples`目录。`direct-mode`目录下的例子使用的是*直接模式(Direct)*，`config-mode`目录下的例子使用的是*配置模式(Config)*，`mix-mode`目录下的例子使用的是*混合模式(Mix)*。
 
 文件名称 | 描述
 --------|---------
