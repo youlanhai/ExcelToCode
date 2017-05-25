@@ -1,4 +1,7 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
+
+# 配置文件是python格式，所以也支持自定义变量
+java_output_path = "export/java/"
 
 # 导出模式
 EXPORTER_CLASS = "MixExporter"
@@ -27,12 +30,13 @@ CONVERTER_ALIAS = "converter"
 # 默认Java包名。用于生成Java代码用
 DEFAULT_JAVA_PACKAGE = "com.mygame.excel"
 
+
 # 代码生成器
 CODE_GENERATORS = [
 	{
 		"class" : "JavaCodeGen", # Java代码生成器
 		"name_format" : "Dict%s",
-		"file_path" : "export/java/code",
+		"file_path" : java_output_path + "code",
 		"imports" : ["com.mygame.test"],
 		"interface" : "IInterface",
 		"base" : "BaseClass"
@@ -42,7 +46,7 @@ CODE_GENERATORS = [
 # 输出数据
 DATA_WRITERS = [
 	# Java专用json数据格式
-	{"stage" : 1, "class" : "JavaWriter", "file_path": "export/java/data", "file_posfix" : ".wg"},
+	{"stage" : 1, "class" : "JavaWriter", "file_path": java_output_path + "data", "file_posfix" : ".wg"},
 	# Python数据表
 	{"stage" : 2, "class" : "PyWriter", "file_path": "export/python", "file_posfix" : ".py"},
 ]
@@ -52,13 +56,12 @@ POSTPROCESSORS = [
 	# 生成Java文件列表。Json格式
 	{
 		"class" : "JavaFileListProcessor",
-		"file_path": "export/java/data/files.wg",
+		"file_path": java_output_path + "data/files.wg",
 		"class_name_format" : "Dict%s",
-		"enum_name_format" : "Files.%s"
 	},
 	# 生成Java枚举类，列举了所有文件。
 	{
 		"class" : "JavaFileEnumProcessor",
-		"file_path": "export/java/code/Files.java"
+		"file_path": java_output_path + "code/Files.java"
 	}
 ]

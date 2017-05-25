@@ -44,6 +44,7 @@ class MixExporter(DirectExporter):
 		sys.path.remove(xlsconfig.TEMP_PATH)
 
 	def find_converter_info(self, infile):
+		# 1. 搜索转换表
 		for value in xlsconfig.CONVENTION_TABLE:
 			pattern = value[0]
 			compiled_pattern = re.compile(pattern)
@@ -61,19 +62,33 @@ class MixExporter(DirectExporter):
 
 				return (converter_name, outfile, sheet_index)
 
+		# 2. 根据相同的目录结构去搜索
 		outfile = os.path.splitext(infile)[0]
+		converter_file = os.path.join(xlsconfig.CONVERTER_PATH, xlsconfig.CONVERTER_ALIAS, outfile + ".py")
+		if os.path.exists(converter_file):
+			converter_name = outfile.replace('/', '.').replace('\\', '.')
+			return (converter_name, outfile, 0)
+
+		# 3. 使用文件的名称当作转换器
 		converter_name = os.path.basename(outfile)
 		return (converter_name, outfile, 0)
 
 	def find_converter(self, name):
 		converter = self.converter_modules.get(name)
 		if converter is None:
-			full_name = xlsconfig.CONVERTER_ALIAS + "." + name
-			full_path = os.path.join(xlsconfig.CONVERTER_PATH, full_name.replace(".", '/') + ".py")
-			if os.path.exists(full_path):
-				converter = util.import_file(full_name)
-				converter._name = name
+			converter = self.load_converter(name)
 			self.converter_modules[name] = converter
+		return converter
+
+	def load_converter(self, name):
+		converter = None
+		full_name = xlsconfig.CONVERTER_ALIAS + "." + name
+		try:
+			converter = util.import_file(full_name)
+			converter._name = name
+		except:
+			pass
+
 		return converter
 
 	def post_convert_value(self, converter, value, output_row):
