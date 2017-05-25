@@ -1,5 +1,5 @@
 @echo off
 
-python ..\main.py --gen-code --export config.py
+python ..\..\main.py --export config.py
 
 pause

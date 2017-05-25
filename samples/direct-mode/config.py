@@ -42,12 +42,6 @@ CODE_GENERATORS = [
 DATA_WRITERS = [
 	# Java专用json数据格式
 	{"stage" : 1, "class" : "JavaWriter", "file_path": "export/java/data", "file_posfix" : ".wg"},
-	# Python数据表
-	{"stage" : 2, "class" : "PyWriter", "file_path": "export/python", "file_posfix" : ".py"},
-	# Lua数据表
-	{"stage" : 2, "class" : "LuaWriter", "file_path": "export/lua", "file_posfix" : ".lua"},
-	# Json数据表
-	{"stage" : 2, "class" : "JsonWriter", "file_path": "export/json", "file_posfix" : ".json"}
 ]
 
 # 后处理器
