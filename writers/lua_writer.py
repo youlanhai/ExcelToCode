@@ -7,12 +7,14 @@ Indents = [IndentChar * i for i in xrange(1, 10)]
 class LuaWriter(BaseWriter):
 
 	def begin_write(self):
-		self.output("\n", "module(...)", "\n\n")
+		self.output("module(...)", "\n\n")
 
-	def write_sheet(self, name, sheet, maxIndent = 1):
+	def write_sheet(self, name, sheet):
 		self.write_types_comment(name)
+		self.output("\n")
 
 		output = self.output
+		max_indent = self.max_indent
 
 		output(name, " = {\n")
 
@@ -26,10 +28,10 @@ class LuaWriter(BaseWriter):
 		for k in keys:
 			row = sheet[k]
 			output(key_format % k)
-			indent = maxIndent
+			indent = max_indent
 			if type(row) == list or type(row) == tuple:
 				indent += 1
-			self.write(row, 1, indent)
+			self.write(row, 2, indent)
 			output(",\n")
 
 			self.flush()
@@ -59,7 +61,7 @@ class LuaWriter(BaseWriter):
 	def write_comment(self, comment):
 		self.output("-- ", comment, "\n")
 
-	def write(self, value, indent = 0, maxIndent = 0):
+	def write(self, value, indent = 1, max_indent = 0):
 		output = self.output
 
 		if value is None:
@@ -81,43 +83,46 @@ class LuaWriter(BaseWriter):
 		elif tp == unicode:
 			output('"%s"' % (value.encode("utf-8"), ))
 
-		elif tp == tuple or tp == list or tp == set or tp == frozenset:
+		elif tp == tuple or tp == list:
 			output("{")
-			indent += 1
+
 			for v in value:
-				self.write_indent(indent, maxIndent)
-				self.write(v, indent, maxIndent)
+				self.newline_indent(indent, max_indent)
+				self.write(v, indent + 1, max_indent)
 				output(", ")
-			indent -= 1
-			if len(value) > 0 and indent + 1 <= maxIndent:
-				self.write_indent(indent, maxIndent)
-			output("}")
+
+			if len(value) > 0 and indent <= max_indent:
+				output("\n")
+				self._output(indent - 1, "}")
+			else:
+				output("}")
 
 		elif tp == dict:
 			output("{")
-			indent += 1
-
 			keys = value.keys()
 			keys.sort()
+
 			for k in keys:
-				self.write_indent(indent, maxIndent)
+				self.newline_indent(indent, max_indent)
+
 				output("[")
 				self.write(k, 0, 0)
 				output("] = ")
-				self.write(value[k], indent, maxIndent)
+				self.write(value[k], indent + 1, max_indent)
 				output(", ")
 
-			indent -= 1
-			if len(value) > 0 and indent + 1 <= maxIndent:
-				self.write_indent(indent, maxIndent)
-			output("}")
+			if len(value) > 0 and indent <= max_indent:
+				output("\n")
+				self._output(indent - 1, "}")
+			else:
+				output("}")
 
 		else:
 			raise TypeError, "unsupported type %s" % (str(tp), )
 
 		return
 
-	def write_indent(self, indent, maxIndent):
-		if indent <= maxIndent:
+	def newline_indent(self, indent, max_indent):
+		if indent <= max_indent:
 			self.output("\n")
-			self.output(Indents[indent])
+			self._output(indent)

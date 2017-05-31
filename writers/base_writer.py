@@ -12,6 +12,10 @@ class BaseWriter(object):
 		self.cache = []
 		self.data_module = data_module
 		self.generator_info = generator_info
+
+		self.max_indent = 1
+		if generator_info:
+			self.max_indent = generator_info.get("max_indent", 1)
 		
 		self.open_file()
 
@@ -55,6 +59,9 @@ class BaseWriter(object):
 		if indent > 0: self.cache.append(INDENTS[indent])
 		self.cache.extend(args)
 		self.cache.append("\n")
+
+	def _output_indent(self, indent, max_indent):
+		if indent <= max_indent: self.output("\n")
 
 	def write_module(self, module):
 		output = self.output

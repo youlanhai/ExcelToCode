@@ -82,18 +82,18 @@ class MixExporter(DirectExporter):
 
 	def load_converter(self, name):
 		converter = None
+		full_path = os.path.join(xlsconfig.CONVERTER_PATH, xlsconfig.CONVERTER_ALIAS, name.replace('.', '//') + ".py")
+		if not os.path.isfile(full_path):
+			return None
+
 		full_name = xlsconfig.CONVERTER_ALIAS + "." + name
-		try:
-			converter = util.import_file(full_name)
+		converter = util.import_file(full_name)
 
-			# 此名称有可能是文件夹，要加上校验
-			if not hasattr(converter, "CONFIG"):
-				return None
+		# 此名称有可能是文件夹，要加上校验
+		if not hasattr(converter, "CONFIG"):
+			return None
 
-			converter._name = name
-		except:
-			pass
-
+		converter._name = name
 		return converter
 
 	def post_convert_value(self, converter, value, output_row):

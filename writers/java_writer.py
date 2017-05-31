@@ -40,6 +40,9 @@ class JavaWriter(JsonWriter):
 	def write_sheet(self, name, sheet):
 		if name != "main_sheet": return
 
+		max_indent = self.max_indent
+		if self.is_multi_key: max_indent += 1
+
 		key_field = self.fields[0]
 		body = []
 
@@ -59,6 +62,6 @@ class JavaWriter(JsonWriter):
 
 			body.append(new_row)
 
-		self.write_value("body", body, 3 if self.is_multi_key else 2)
+		self.write_value("body", body, max_indent)
 
 	def write_module(self, module): pass
