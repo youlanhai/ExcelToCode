@@ -21,6 +21,9 @@ USE_OPENPYXL = True
 # 是否执行快速导出。仅导出修改了的excel文件。
 FAST_MODE = False
 
+# 工程路径。CONFIG_PATH是配置文件所在的路径
+PROJECT_PATH = "$CONFIG_PATH"
+
 ######################################################################
 ### 以下是需要配置的路径。可以通过配置文件来设置，见load_configure
 ######################################################################
@@ -29,59 +32,53 @@ FAST_MODE = False
 EXPORTER_CLASS = "DirectExporter"
 
 # Excel路径
-INPUT_PATH      = "excels"
+INPUT_PATH      = "$PROJECT_PATH/excels"
 
 # 中间文件路径
-TEMP_PATH       = "export/temp"
+TEMP_PATH       = "$PROJECT_PATH/export/temp"
+
+# 输出路径
+OUTPUT_PATH 	= "$PROJECT_PATH/export/output"
 
 DEFAULT_JAVA_PACKAGE = "com.mygame.default.package"
 
-# 生成的java代码输出路径
-CODE_GENERATORS  = [
-	{"class" : "JavaCodeGen", "file_path" : "export/java/code", "package" : "com.mygame.excel"}
-]
+# 代码生成器
+CODE_GENERATORS  = []
 
 # 输出数据配置。
-DATA_WRITERS = [
-	{"stage" : EXPORT_STAGE_FINAL, "class" : "LuaWriter", "file_path": "export/lua", "file_posfix" : ".lua"},
-]
+DATA_WRITERS = []
 
 # 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。
-POSTPROCESSORS = [
-	{"class" : "JavaFileEnumProcessor", "file_path" : "export/java/excel/DictEnum.java", }
-]
-
-# 额外的初始化脚本。
-POST_INIT_SCRIPT = ""
+POSTPROCESSORS = []
 
 # python插件安装包路径。
 DEPENDENCIES = {}
 
 # Excel表头参数解析
 ARGUMENT_CONVERTER = {
-	"版本：" : ("version", "int"),
-	"键值是否重复：" : ("multiKey", "bool"),
-	"说明：" : ("describe", "string"),
+	"版本：" 			: ("version", "int"),
+	"键值是否重复：" 	: ("multiKey", "bool"),
+	"说明：" 			: ("describe", "string"),
 }
 
 # Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。
 SHEET_ROW_INDEX = {
 	# Excel表头参数。通常是版本信息和说明等，该行必须存在。
-	"argument" : 0,
+	"argument" 	: 0,
 	# 表头。该行必须存在。
-	"header" : 1,
+	"header" 	: 1,
 	# 数据首行索引。该行必须存在。
-	"data" : 2,
+	"data" 		: 2,
 	# 字段。Direct模式下，该行必须存在
-	"field" : -1,
+	"field" 	: -1,
 	# 类型行。Direct模式下，该行必须存在
-	"type" : -1,
+	"type" 		: -1,
 }
 
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#
 
 # 转换器所在的路径。
-CONVERTER_PATH  = "converters"
+CONVERTER_PATH  = "$PROJECT_PATH/converters"
 
 # 转换器子目录，位于CONVERTER_PATH下。防止命名冲突。
 CONVERTER_ALIAS = "converter"
@@ -95,6 +92,14 @@ MERGE_TABLE = ()
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#
 
 ######################################################################
-###
+### 实现下面两个函数，定制自己的初始化参数
 ######################################################################
 
+# 初始化开始回调。
+# @param cfg 	是xlsconfig模块，要修改参数需要修改cfg中的参数。
+def pre_init_method(cfg):
+	print "start init"
+
+# 初始化完成后回调
+def post_init_method(cfg):
+	print "post init finished"

@@ -2,6 +2,8 @@
 import os
 import sys
 import shutil
+import re
+
 import xlsconfig
 
 def to_utf8(s):
@@ -196,3 +198,32 @@ def redirect_iostream():
 
 def format_slash(path):
 	return path.replace('\\', '/')
+
+
+PATH_PATTERN = re.compile(r"\$\(?(\w+)\)?")
+
+# 将路径中的$(Macro)宏，替换为真实路径。`Macro`是xlsconfig中的任意变量名称
+# path = "$(PROJECT_PATH)/sub/path"
+def resolve_macro(name):
+	ret = []
+
+	start = 0
+	while start < len(name):
+		p = PATH_PATTERN.search(name, start)
+		if p is None:
+			ret.append(name[start:])
+			break
+
+		else:
+			if p.start() != start:
+				ret.append(name[start : p.start()])
+
+			key = p.group(1)
+			val = getattr(xlsconfig, key, key)
+			ret.append(val)
+			start = p.end()
+
+	return "".join(ret)
+
+def resolve_path(path):
+	return os.path.normpath(resolve_macro(path))

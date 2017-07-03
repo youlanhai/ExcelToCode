@@ -18,12 +18,15 @@ def main():
 	parser.add_argument("--fast-mode", action="store_true", help=native_str("快速导表。Excel没有改动就不进行导表。"))
 	#parser.add_argument("--encode-log", action="store_true", help=native_str("log编码转换"))
 	parser.add_argument("--force-run", action="store_true", help=native_str("出错后仍然继续下去"))
+	parser.add_argument("-input", help=native_str("Excel的输入路径"))
+	parser.add_argument("-output", help=native_str("输出路径"))
+	parser.add_argument("-temp", help=native_str("临时目录"))
 	option = parser.parse_args()
 
 	#parser.print_help()
 
 	try:
-		load_configure(option.config_file)
+		load_configure(option.config_file, option)
 	except:
 		traceback.print_exc()
 		print "Error: Failed to load configure file", option.config_file

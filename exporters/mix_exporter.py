@@ -150,6 +150,7 @@ class MixExporter(DirectExporter):
 		print "=== 转换为最终数据 ..."
 
 		for data_module in self.data_modules.itervalues():
+			print data_module.path
 			self.post_convert_sheet(data_module)
 
 		return

@@ -11,20 +11,20 @@ SHEET_ROW_INDEX = {
 }
 
 # Excel输入路径
-INPUT_PATH = "excels"
+INPUT_PATH = "$CONFIG_PATH/excels"
 
 # 中间文件存放路径
-TEMP_PATH = "export/xtemp"
+TEMP_PATH = "$CONFIG_PATH/export/xtemp"
 
 # 转换器父级路径
-CONVERTER_PATH = "converters"
+CONVERTER_PATH = "$CONFIG_PATH/converters"
 
 # 转换器子目录，转换器脚本存放在这里。目的是防止命名冲突
 CONVERTER_ALIAS = "converter"
 
 # 数据输出器
 DATA_WRITERS = [
-	{"stage" : 2, "class" : "PyWriter", "file_path": "export/python", "file_posfix" : ".py"},
+	{"stage" : 2, "class" : "PyWriter", "file_path": "$CONFIG_PATH/export/python", "file_posfix" : ".py"},
 ]
 
 

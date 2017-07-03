@@ -3,3 +3,4 @@ xtemp/
 *.pyc
 .DS_Store
 \~\$*.xlsx
+output/
