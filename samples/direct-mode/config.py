@@ -3,13 +3,20 @@
 # 导出模式
 EXPORTER_CLASS = "DirectExporter"
 
-# 数据行索引
+# Excel数据行索引（从0开始）
 SHEET_ROW_INDEX = {
-	"argument" : 0,
-	"header" : 2,
-	"field" : 3,
-	"type" : 4,
-	"data" : 5
+	# 表格参数
+	"argument" 	: 0,
+	# 表头
+	"header" 	: 2,
+	# 代码成员变量名
+	"field" 	: 3,
+	# 默认值
+	"default" 	: 4,
+	# 变量类型
+	"type" 		: 5,
+	# 数据起始行
+	"data" 		: 6
 }
 
 # Excel输入路径
