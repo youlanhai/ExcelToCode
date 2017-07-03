@@ -65,3 +65,14 @@ converters/converter | 转换器脚本存放路径
 1. [配置文件参数详解](doc/how-to-config.md)
 2. [表格添加方法](doc/how-to-create-excel.md)
 
+# 路径说明
+路径 | 说明
+------|-------
+codegen | 代码生成器。如，生成Java代码
+doc | 文档
+exporters | 导出器。用于将excel表转换成相应的数据结构
+parsers | excel解析器。解析单个excel表格
+postprocess | 后处理器。导表结束后，可以执行一些额外的操作。比如，移动文件目录，生成文件列表等
+samples | 一些例子
+tps | 通用类型转换器。用于将数据转换成具体的Python数据类型
+writers | 写出器。用于将Python数据表，写出成不同格式的数据表。如，Lua、Json等。
