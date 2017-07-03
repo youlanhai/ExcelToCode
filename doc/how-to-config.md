@@ -84,7 +84,8 @@ DATA_WRITERS = [
         "stage" : 1,
         "class" : "LuaWriter",
         "file_path": "export/lua",
-        "file_posfix" : ".lua"
+        "file_posfix" : ".lua",
+        "max_indent" : 2,
     }
 ]
 ```
@@ -95,6 +96,7 @@ stage   | 导表阶段。目前分两个阶段：Begin(1), Final(2)。Begin阶�
 class   | writer类。位于writers目录下。
 file_path | 输出数据表的路径
 file_posfix | 输出数据表的后缀
+max_indent | 最大Tab缩进数
 
 ### POSTPROCESSORS
 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。`POSTPROCESSORS`是一个数组，支持配置多个processor。processor类位于`postprocess`目录下，目前支持生成Java文件映射表。
@@ -144,6 +146,8 @@ SHEET_ROW_INDEX = {
     "field" : -1,
     # 类型行。Direct模式下，该行必须存在
     "type" : -1,
+    # 默认值所在行。如果某列没填，可以用此值替代
+    "default"   : -1,
 }
 ```
 

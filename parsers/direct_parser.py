@@ -13,7 +13,6 @@ class DirectParser(BaseParser):
 
 		self.field_row_index = xlsconfig.SHEET_ROW_INDEX["field"]
 		self.type_row_index = xlsconfig.SHEET_ROW_INDEX["type"]
-		self.default_value_row_index = xlsconfig.SHEET_ROW_INDEX["default"]
 
 
 	# 使用Excel表头提供的信息，构造转换器

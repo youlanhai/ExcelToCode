@@ -129,6 +129,8 @@ class MixExporter(DirectExporter):
 		converter = data_module.converter
 		if converter is None: return
 
+		print "post convert:", data_module.path
+
 		field_2_cfg = getattr(converter, "FIELD_2_CFG", None)
 		if field_2_cfg is None:
 			field_2_cfg = {}
@@ -150,7 +152,6 @@ class MixExporter(DirectExporter):
 		print "=== 转换为最终数据 ..."
 
 		for data_module in self.data_modules.itervalues():
-			print data_module.path
 			self.post_convert_sheet(data_module)
 
 		return

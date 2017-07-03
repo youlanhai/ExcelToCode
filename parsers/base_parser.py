@@ -66,14 +66,18 @@ class BaseParser(object):
 		# 如果表格是multi_key，则value是一个数组，包含了所有key相同的行。
 		self.sheet = {}
 
-		# 表头的类型数据
+		# 表头的类型数据。
 		self.sheet_types = {}
 
 		self.field_2_col = {}
 
+		# 每一列的默认值。列索引 -> 默认值
+		self.default_values = {}
+
 		self.argument_row_index = xlsconfig.SHEET_ROW_INDEX["argument"]
 		self.header_row_index = xlsconfig.SHEET_ROW_INDEX["header"]
 		self.data_row_index = xlsconfig.SHEET_ROW_INDEX["data"]
+		self.default_value_row_index = xlsconfig.SHEET_ROW_INDEX.get("default", -1)
 
 		self.workbook = None
 		self.worksheet = None
@@ -112,6 +116,9 @@ class BaseParser(object):
 		converter = self.converters[col]
 		if converter is None: return
 
+		if value == "":
+			value = self.default_values.get(col, "")
+
 		ret = None
 		if value == "":
 			if not converter.is_default:
@@ -142,6 +149,7 @@ class BaseParser(object):
 		rows = list(table.rows)
 		self.parse_arguments(rows)
 		self.parse_header(rows)
+		self.parse_defaults(rows)
 
 		if self.data_row_index >= len(rows):
 			return
@@ -216,3 +224,14 @@ class BaseParser(object):
 			self.arguments[field] = ret
 
 		return
+
+	def parse_defaults(self, rows):
+		row_index = self.default_value_row_index
+		default_row = [self.extract_cell_value(cell) for cell in rows[row_index]]
+
+		default_values = {}
+		for col, value in enumerate(default_row):
+			if value != "": default_values[col] = value
+
+		self.default_values = default_values
+

@@ -50,7 +50,13 @@ CODE_GENERATORS = [
 # 输出数据
 DATA_WRITERS = [
 	# Java专用json数据格式
-	{"stage" : 1, "class" : "JavaWriter", "file_path": "$OUTPUT_PATH/java/data", "file_posfix" : ".wg"},
+	{
+		"stage" : 1,
+		"class" : "JavaWriter",
+		"file_path": "$OUTPUT_PATH/java/data",
+		"file_posfix" : ".wg",
+		"max_indent" : 3,
+	},
 ]
 
 # 后处理器

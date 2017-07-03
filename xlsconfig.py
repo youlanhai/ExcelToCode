@@ -73,6 +73,8 @@ SHEET_ROW_INDEX = {
 	"field" 	: -1,
 	# 类型行。Direct模式下，该行必须存在
 	"type" 		: -1,
+	# 默认值所在行。如果某列没填，可以用此值替代
+	"default" 	: -1,
 }
 
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#
