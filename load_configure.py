@@ -8,8 +8,7 @@ import xlsconfig
 from util import resolve_path
 
 ######################################################################
-### 加载配置文件。cfg_file是json格式的文件。
-### 注意，json中读取出来的字符串格式都是unicode，路径需要转换成utf-8格式。
+### 加载配置文件。cfg_file是python格式的文件。
 ######################################################################
 def load_configure(cfg_file, option):
 	cfg_file = os.path.abspath(cfg_file)

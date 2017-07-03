@@ -105,6 +105,9 @@ class BaseParser(object):
 
 		return value
 
+	def extrace_row_values(self, row_index):
+		return [self.extract_cell_value(cell) for cell in self.all_rows[row_index]]
+
 	def convert_cell(self, row, col, value, output_row):
 		converter = self.converters[col]
 		if converter is None: return
