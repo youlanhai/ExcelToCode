@@ -76,7 +76,7 @@ base  | 为生成的Java类指定基类。如果没有基类，可忽略改参�
 interface | 为生成的Java类指定接口类。如果没有接口类，可忽略该参数。
 
 ### DATA_WRITERS
-为输出数据表指定参数。`DATA_WRITERS`是一个数组，支持多个writer。writer类位于writers目录下，目前支持输出的数据表格式有Python、Lua、Json和Java专用的Json格式。可以自定义writer类，将自定义类赋值给`writers`模块。
+为输出数据表指定参数。`DATA_WRITERS`是一个数组，支持多个writer。writer类位于writers目录下，目前支持输出的数据表格式有Python、Lua、Json、JavaScript和Java专用的Json格式。可以自定义writer类，将自定义类赋值给`writers`模块。
 
 ```python
 DATA_WRITERS = [

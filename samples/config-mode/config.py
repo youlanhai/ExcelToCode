@@ -25,6 +25,10 @@ CONVERTER_ALIAS = "converter"
 # 数据输出器
 DATA_WRITERS = [
 	{"stage" : 2, "class" : "PyWriter", "file_path": "$CONFIG_PATH/export/python", "file_posfix" : ".py"},
+	{"stage" : 2, "class" : "LuaWriter", "file_path": "$CONFIG_PATH/export/lua", "file_posfix" : ".lua"},
+	{"stage" : 2, "class" : "JavaScriptWriter", "file_path": "$CONFIG_PATH/export/js", "file_posfix" : ".js"},
+	{"stage" : 2, "class" : "JsonWriter", "file_path": "$CONFIG_PATH/export/json", "file_posfix" : ".json"},
+	{"stage" : 2, "class" : "JavaWriter", "file_path": "$CONFIG_PATH/export/java", "file_posfix" : ".wg"},
 ]
 
 

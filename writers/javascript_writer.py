@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from base_writer import BaseWriter
 
-class LuaWriter(BaseWriter):
-
-	def begin_write(self):
-		self.output("module(...)", "\n\n")
+class JavaScriptWriter(BaseWriter):
 
 	def write_sheet(self, name, sheet):
 		self.write_types_comment(name)
@@ -13,34 +10,29 @@ class LuaWriter(BaseWriter):
 		output = self.output
 		max_indent = self.max_indent
 
-		output(name, " = {\n")
+		output("export let ", name, " = {\n")
 
 		keys = sheet.keys()
 		keys.sort()
 
-		key_format = "\t[%d] = "
+		key_format = "\t%d : "
 		if len(keys) > 0 and isinstance(keys[0], basestring):
-			key_format = "\t[\"%s\"] = "
+			key_format = "\t\"%s\" : "
 
 		for k in keys:
 			row = sheet[k]
 			output(key_format % k)
+
 			indent = max_indent
 			if type(row) == list or type(row) == tuple:
-				indent += 1
+				indent += 1 # 重复key模式
+
 			self.write(row, 2, indent)
 			output(",\n")
 
 			self.flush()
 
-		output("}\n\n")
-
-		if name == "main_sheet":
-			self.write_value("main_length", len(sheet))
-
-			keys = sheet.keys()
-			keys.sort()
-			self.write_value("main_keys", keys)
+		output("};\n\n")
 
 		self.flush()
 
@@ -49,20 +41,20 @@ class LuaWriter(BaseWriter):
 
 		output = self.output
 
-		output(name, " = ")
+		output("export let ", name, " = ")
 		self.write(value)
-		output("\n\n")
+		output(";\n\n")
 
 		self.flush()
 
 	def write_comment(self, comment):
-		self.output("-- ", comment, "\n")
+		self.output("// ", comment, "\n")
 
 	def write(self, value, indent = 1, max_indent = 0):
 		output = self.output
 
 		if value is None:
-			return output("nil")
+			return output("null")
 
 		tp = type(value)
 		if tp == bool:
@@ -81,7 +73,7 @@ class LuaWriter(BaseWriter):
 			output('"%s"' % (value.encode("utf-8"), ))
 
 		elif tp == tuple or tp == list:
-			output("{")
+			output("[")
 
 			for v in value:
 				self.newline_indent(indent, max_indent)
@@ -92,7 +84,7 @@ class LuaWriter(BaseWriter):
 				output("\n")
 				self._output(indent - 1, "}")
 			else:
-				output("}")
+				output("]")
 
 		elif tp == dict:
 			output("{")
@@ -102,9 +94,8 @@ class LuaWriter(BaseWriter):
 			for k in keys:
 				self.newline_indent(indent, max_indent)
 
-				output("[")
 				self.write(k, 0, 0)
-				output("] = ")
+				output(" : ")
 				self.write(value[k], indent + 1, max_indent)
 				output(", ")
 

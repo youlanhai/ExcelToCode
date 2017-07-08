@@ -5,3 +5,4 @@ from lua_writer import LuaWriter
 from py_writer import PyWriter
 from json_writer import JsonWriter
 from java_writer import JavaWriter
+from javascript_writer import JavaScriptWriter
