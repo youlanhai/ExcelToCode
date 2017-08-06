@@ -10,7 +10,7 @@ class JavaScriptWriter(BaseWriter):
 		output = self.output
 		max_indent = self.max_indent
 
-		output("export let ", name, " = {\n")
+		output("exports.", name, " = {\n")
 
 		keys = sheet.keys()
 		keys.sort()
