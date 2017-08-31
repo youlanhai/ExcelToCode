@@ -159,7 +159,7 @@ class BaseParser(object):
 		# the remain rows is raw data.
 		for r in xrange(self.data_row_index, len(rows)):
 			cells = rows[r]
-			
+
 			# 遇到空白行，表示解析完成
 			first_value = cells[0].value
 			if first_value == '' or first_value is None: break
@@ -227,6 +227,9 @@ class BaseParser(object):
 
 	def parse_defaults(self, rows):
 		row_index = self.default_value_row_index
+		if row_index < 0:
+			return
+
 		default_row = [self.extract_cell_value(cell) for cell in rows[row_index]]
 
 		default_values = {}

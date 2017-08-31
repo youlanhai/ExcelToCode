@@ -4,7 +4,7 @@ import os
 import sys
 
 import xlsconfig
-from util import gather_all_files, import_file
+from util import gather_all_files, import_converter
 
 
 def generate_header():
@@ -32,7 +32,7 @@ def create_header_for_excels(excel_files):
 
 	for value in xlsconfig.CONVENTION_TABLE:
 		pattern 	= value[0]
-		converter 	= import_file(xlsconfig.CONVERTER_ALIAS + "." + value[1])
+		converter 	= import_converter(xlsconfig.CONVERTER_ALIAS + "." + value[1])
 		if not getattr(converter, "AUTO_GEN_HEADER", True): continue
 
 		new_name 	= value[2] if len(value) > 2 else None

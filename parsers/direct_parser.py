@@ -35,7 +35,7 @@ class DirectParser(BaseParser):
 			type = type_row[col] or "String"
 			method = None
 			try:
-				method = FAST_CONVERTER[type.lower()]
+				method = FAST_CONVERTER.get(type.lower(), tp0.to_str)
 			except:
 				util.log_error("无效的类型'%s'，列：%s", type, util.int_to_base26(col))
 				continue

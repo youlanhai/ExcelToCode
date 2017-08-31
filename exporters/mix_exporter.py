@@ -87,7 +87,7 @@ class MixExporter(DirectExporter):
 			return None
 
 		full_name = xlsconfig.CONVERTER_ALIAS + "." + name
-		converter = util.import_file(full_name)
+		converter = util.import_converter(full_name)
 
 		# 此名称有可能是文件夹，要加上校验
 		if not hasattr(converter, "CONFIG"):

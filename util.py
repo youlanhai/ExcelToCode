@@ -55,6 +55,21 @@ def import_file(filename):
 	only_name = module_name.split('.')[-1]
 	return __import__(module_name, globals(), locals(), [only_name, ])
 
+# 导入转换器配置模块
+def import_converter(filename):
+	module = import_file(filename)
+	cfg = getattr(module, "CONFIG")
+
+	# 旧版CONFIG是dict格式的，这里要做一个兼容
+	if isinstance(cfg, dict):
+		new_cfg = []
+		for k, v in cfg.iteritems():
+			new_v = list(v)
+			new_v.insert(0, k)
+			new_cfg.append(new_v)
+		module.CONFIG = new_cfg
+	return module
+
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
 def log_error(msg, *args):
 	if len(args) > 0: msg = msg % args
