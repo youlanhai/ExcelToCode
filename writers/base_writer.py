@@ -16,6 +16,8 @@ class BaseWriter(object):
 		self.max_indent = 1
 		if generator_info:
 			self.max_indent = generator_info.get("max_indent", 1)
+		if data_module:
+			self.max_indent = data_module.info["arguments"].get("indent", self.max_indent)
 		
 		self.open_file()
 
