@@ -55,6 +55,7 @@ class BaseExporter(object):
 		self.data_modules = {}
 
 		self.configures = {}
+		self.merge_patterns = list(xlsconfig.MERGE_TABLE)
 
 		self.parser_class = None
 
@@ -179,7 +180,7 @@ class BaseExporter(object):
 	def merge_sheets(self):
 		print "=== 合并分表 ..."
 
-		for value in xlsconfig.MERGE_TABLE:
+		for value in self.merge_patterns:
 			outfile = value[0]
 
 			sub_files = []
@@ -249,6 +250,8 @@ class BaseExporter(object):
 		for k, v in self.configures.iteritems():
 			sheet[k] = {"types" : v.types, "arguments" : v.arguments }
 		wt.write_sheet("configures", sheet)
+
+		wt.write_value("merges", self.merge_patterns)
 
 		wt.end_write()
 		wt.close()

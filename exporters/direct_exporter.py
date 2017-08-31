@@ -22,11 +22,11 @@ class DirectExporter(BaseExporter):
 
 		self.export_excels()
 
+		# 合并分表
+		self.merge_sheets()
+
 		# 写出裸数据
 		self.write_sheets(xlsconfig.EXPORT_STAGE_BEGIN)
-
-		# direct模式下，暂不支持合并
-		# self.merge_sheets()
 
 		# 写出最终数据
 		self.write_sheets(xlsconfig.EXPORT_STAGE_FINAL)
@@ -67,8 +67,15 @@ class DirectExporter(BaseExporter):
 				traceback.print_exc()
 				return False
 
+			# 这里有一次修改转换器的机会
+			converter_name = parser.arguments.get("template", converter_name)
+
 			data_module = self.create_data_module(infile, outfile, converter_name, parser)
 			if data_module is None: return False
+
+		merge_to_sheet = data_module.info["arguments"].get("mergeToSheet")
+		if merge_to_sheet:
+			self.add_merge_pattern(merge_to_sheet, outfile)
 
 		self.store_data_module(data_module)
 		return True
@@ -77,6 +84,25 @@ class DirectExporter(BaseExporter):
 		outfile = os.path.splitext(infile)[0]
 		converter_name = os.path.basename(outfile)
 		return (converter_name, outfile, 0)
+
+	def add_merge_pattern(self, to_name, sub_name):
+
+		# 如果目标表格存在，则追加到尾部
+		for i, pattern in enumerate(self.merge_patterns):
+			if to_name != pattern[0]: continue
+			if sub_name in pattern: continue
+
+			if not isinstance(pattern, list):
+				pattern = list(pattern)
+				self.merge_patterns[i] = pattern
+
+			pattern.append(sub_name)
+			return
+
+		self.merge_patterns.append([to_name, sub_name])
+		return
+
+
 
 
 

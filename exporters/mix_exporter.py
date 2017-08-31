@@ -24,9 +24,9 @@ class MixExporter(DirectExporter):
 		# export excels to temp python
 		self.export_excels()
 
-		self.write_sheets(xlsconfig.EXPORT_STAGE_BEGIN)
-
 		self.merge_sheets()
+
+		self.write_sheets(xlsconfig.EXPORT_STAGE_BEGIN)
 
 		self.post_convert_sheets()
 
