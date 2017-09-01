@@ -14,6 +14,8 @@ import util
 
 from tps import tp0
 
+TEMP_FILE_INDENT = 3
+
 class DataModule(object):
 	def __init__(self, path, info, sheet, converter = None):
 		super(DataModule, self).__init__()
@@ -108,6 +110,7 @@ class BaseExporter(object):
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
 
 		wt = writers.PyWriter(output_path, None)
+		wt.max_indent = TEMP_FILE_INDENT
 		wt.begin_write()
 
 		wt.write_value("path", outfile)
@@ -171,6 +174,7 @@ class BaseExporter(object):
 		util.ensure_folder_exist(full_path)
 
 		wt = writers.PyWriter(full_path, None)
+		wt.max_indent = TEMP_FILE_INDENT
 		wt.begin_write()
 		wt.write_sheet("main_sheet", sheet)
 		wt.end_write()
@@ -229,6 +233,7 @@ class BaseExporter(object):
 		info["outfile"] = outfile
 
 		wt = writers.PyWriter(new_path, None)
+		wt.max_indent = TEMP_FILE_INDENT
 		wt.begin_write()
 		wt.output("\n")
 		wt.write_value("path", outfile)
@@ -244,6 +249,7 @@ class BaseExporter(object):
 		output_path = os.path.join(xlsconfig.TEMP_PATH, "configures.py")
 
 		wt = writers.PyWriter(output_path, None)
+		wt.max_indent = TEMP_FILE_INDENT
 		wt.begin_write()
 
 		sheet = {}

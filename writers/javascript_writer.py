@@ -82,7 +82,7 @@ class JavaScriptWriter(BaseWriter):
 
 			if len(value) > 0 and indent <= max_indent:
 				output("\n")
-				self._output(indent - 1, "}")
+				self._output(indent - 1, "]")
 			else:
 				output("]")
 

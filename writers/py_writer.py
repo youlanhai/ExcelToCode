@@ -8,39 +8,21 @@ class PyWriter(BaseWriter):
 		self.write_comment("-*- coding: utf-8 -*-\n")
 
 	def write_sheet(self, name, sheet):
-		self.write_types_comment(name)
-		output = self.output
-
-		output(name, " = {\n")
-
-		keys = sheet.keys()
-		keys.sort()
-
-		key_format = "\t%d: "
-		if len(keys) > 0 and isinstance(keys[0], basestring):
-			key_format = "\t\"%s\": "
-
-		for k in keys:
-			output(key_format % k)
-			self.write(sheet[k])
-			output(",\n")
-
-		output("}\n\n")
+		self.write_value(name, sheet)
 
 	def write_value(self, name, value):
 		self.write_types_comment(name)
-		output = self.output
 
-		output(name, " = ")
-		self.write(value)
-		output("\n\n")
+		self.output(name, " = ")
+		self.write(value, 1, self.max_indent)
+		self.output("\n\n")
 
 		self.flush()
 
 	def write_comment(self, comment):
 		self.output("# ", comment, "\n")
 
-	def write(self, value):
+	def write(self, value, indent = 1, max_indent = 0):
 		output = self.output
 
 		if value is None:
@@ -63,43 +45,57 @@ class PyWriter(BaseWriter):
 			output('"%s"' % (value.encode("utf-8"), ))
 
 		elif tp == tuple:
-			output("(")
-			for v in value:
-				self.write(v)
-				output(", ")
-			output(")")
+			self._write_list(value, "(", ")", indent, max_indent)
 
 		elif tp == list:
-			output("[")
-			for v in value:
-				self.write(v)
-				output(", ")
-			output("]")
+			self._write_list(value, "[", "]", indent, max_indent)
 
 		elif tp == set:
-			output("set(")
-			self.write(sorted(value))
-			output(")")
+			self._write_list(sorted(value), "set(", ")", indent, max_indent)
 
 		elif tp == frozenset:
-			output("frozenset(")
-			self.write(sorted(value))
-			output(")")
+			self._write_list(sorted(value), "frozenset(", ")", indent, max_indent)
 
 		elif tp == dict:
 			output("{")
 
 			keys = value.keys()
 			keys.sort()
+
 			for k in keys:
+				self.newline_indent(indent, max_indent)
 				self.write(k)
 				output(": ")
-				self.write(value[k])
+				self.write(value[k], indent + 1, max_indent)
 				output(", ")
 
-			output("}")
+			self.endlist_indent(value, "}", indent, max_indent)
 
 		else:
 			raise TypeError, "unsupported type %s" % (str(tp), )
 
+		return
+
+	def _write_list(self, value, prefix, posfix, indent, max_indent):
+		self.output(prefix)
+
+		for v in value:
+			self.newline_indent(indent, max_indent)
+			self.write(v, indent + 1, max_indent)
+			self.output(", ")
+
+		self.endlist_indent(value, posfix, indent, max_indent)
+		
+	def newline_indent(self, indent, max_indent):
+		if indent <= max_indent:
+			self.output("\n")
+			self._output(indent)
+		return
+
+	def endlist_indent(self, value, posfix, indent, max_indent):
+		if len(value) > 0 and indent <= max_indent:
+			self.output("\n")
+			self._output(indent - 1, posfix)
+		else:
+			self.output(posfix)
 		return

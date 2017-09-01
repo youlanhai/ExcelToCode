@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from copy import copy
 import util
+import xlsconfig
 
 INDENTS = [" " * (i * 4) for i in xrange(10)]
 
@@ -13,9 +14,9 @@ class BaseWriter(object):
 		self.data_module = data_module
 		self.generator_info = generator_info
 
-		self.max_indent = 1
+		self.max_indent = xlsconfig.DEFAULT_INDENT
 		if generator_info:
-			self.max_indent = generator_info.get("max_indent", 1)
+			self.max_indent = generator_info.get("max_indent", self.max_indent)
 		if data_module:
 			self.max_indent = data_module.info["arguments"].get("indent", self.max_indent)
 		
