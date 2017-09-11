@@ -1,10 +1,16 @@
 #-*- coding: utf-8 -*-
+import os
+import sys
 import traceback
+from argparse import ArgumentParser
+
+module_path = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(module_path, "xl2code"))
+
 import util
 import xlsconfig
 import install_package
 from logtool import native_str
-from argparse import ArgumentParser
 from load_configure import load_configure
 
 def main():
@@ -16,7 +22,6 @@ def main():
 	parser.add_argument("--gen-code", action="store_true", help=native_str("生成代码文件"))
 	parser.add_argument("--export", action="store_true", help=native_str("导表"))
 	parser.add_argument("--fast-mode", action="store_true", help=native_str("快速导表。Excel没有改动就不进行导表。"))
-	#parser.add_argument("--encode-log", action="store_true", help=native_str("log编码转换"))
 	parser.add_argument("--force-run", action="store_true", help=native_str("出错后仍然继续下去"))
 	parser.add_argument("-input", help=native_str("Excel的输入路径"))
 	parser.add_argument("-output", help=native_str("输出路径"))
