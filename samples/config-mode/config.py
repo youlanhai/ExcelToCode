@@ -29,6 +29,7 @@ DATA_WRITERS = [
 	{"stage" : 2, "class" : "JavaScriptWriter", "file_path": "$CONFIG_PATH/export/js", "file_posfix" : ".js"},
 	{"stage" : 2, "class" : "JsonWriter", "file_path": "$CONFIG_PATH/export/json", "file_posfix" : ".json"},
 	{"stage" : 2, "class" : "JavaWriter", "file_path": "$CONFIG_PATH/export/java", "file_posfix" : ".wg"},
+	{"stage" : 2, "class" : "BinaryWriter", "file_path": "$CONFIG_PATH/export/binary", "file_posfix" : ".dat"},
 ]
 
 
