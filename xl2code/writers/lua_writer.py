@@ -4,6 +4,7 @@ from base_writer import BaseWriter
 class LuaWriter(BaseWriter):
 
 	def begin_write(self):
+		super(LuaWriter, self).begin_write()
 		self.output("module(...)", "\n\n")
 
 	def write_sheet(self, name, sheet):

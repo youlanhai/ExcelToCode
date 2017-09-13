@@ -12,6 +12,7 @@ class PyWriter(BaseWriter):
 
 	def write_value(self, name, value):
 		self.write_types_comment(name)
+		self.output("\n")
 
 		self.output(name, " = ")
 		self.write(value, 1, self.max_indent)

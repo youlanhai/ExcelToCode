@@ -42,7 +42,8 @@ class BaseWriter(object):
 		self.handle = None
 
 
-	def begin_write(self): pass
+	def begin_write(self):
+		self.output("\n")
 	def end_write(self): pass
 
 	def write_sheet(self, name, sheet): pass

@@ -149,7 +149,6 @@ class BaseExporter(object):
 		wt = writer_class(full_path, data_module, writer_info)
 		wt.write_comment("此文件由导表工具自动生成，禁止手动修改。")
 		wt.write_comment("from " + data_module.info["infile"])
-		wt.output("\n")
 
 		wt.begin_write()
 		wt.write_sheet("main_sheet", data_module.main_sheet)
@@ -235,7 +234,6 @@ class BaseExporter(object):
 		wt = writers.PyWriter(new_path, None)
 		wt.max_indent = TEMP_FILE_INDENT
 		wt.begin_write()
-		wt.output("\n")
 		wt.write_value("path", outfile)
 		wt.write_sheet("info", info)
 		wt.write_sheet("main_sheet", sheet)

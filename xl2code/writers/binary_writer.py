@@ -5,7 +5,7 @@ from struct import pack
 
 def pack_debug(fmt, *args):
 	return " ".join([str(x) for x in args]) + " "
-#pack = pack_debug
+# pack = pack_debug
 
 MAGIC = "bt"
 VERSION = 0x0001
@@ -118,18 +118,21 @@ class BinaryWriter(BaseWriter):
 
 	def begin_write(self):
 		self.string_pool = {}
-		self.var_cache = {}
+		self.var_dict = {}
 
 	def end_write(self):
-		self._write(self.var_cache)
+		# clear cache, and serialize var to cache
+		self.cache = []
+		self._write(self.var_dict)
 
 		tail_cache = self.cache
 		self.cache = []
 
-		# 写入头部
+		# write header first
 		self.output(MAGIC)
-		self.output(pack("<I", VERSION))
+		self.output(pack("<H", VERSION))
 
+		# write string pool
 		strings = [None] * len(self.string_pool)
 		for s, i in self.string_pool.iteritems():
 			strings[i - 1] = s
@@ -139,8 +142,10 @@ class BinaryWriter(BaseWriter):
 			self.output(pack("<H", len(s)))
 			self.output(s)
 
+		# append var data to cache tail
 		self.cache.extend(tail_cache)
 
+		# flush cache to file
 		text = "".join(self.cache)
 		self.cache = []
 		self.handle.write(text)
@@ -149,10 +154,10 @@ class BinaryWriter(BaseWriter):
 		pass
 
 	def write_sheet(self, name, sheet):
-		self.var_cache[name] = sheet
+		self.var_dict[name] = sheet
 
 	def write_value(self, name, value):
-		self.var_cache[name] = sheet
+		self.var_dict[name] = sheet
 
 	def _write_str(self, value):
 		if value == "":
