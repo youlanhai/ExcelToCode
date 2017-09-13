@@ -4,7 +4,7 @@ import traceback
 import numfmt
 import xlsconfig
 import util
-from tps import tp0
+from tps import tp0, convention
 
 def format_number_with_xlrd(f, cell, wb):
 	xf = wb.xf_list[cell.xf_index]
@@ -27,16 +27,6 @@ def format_number_with_openpyxl(f, cell, wb):
 		return "%g" % f
 
 format_number = format_number_with_openpyxl
-
-FAST_CONVERTER = {
-	"byte" : int,
-	"short" : int,
-	"int" : tp0.to_int,
-	"float" : tp0.to_float,
-	"string" : tp0.to_str,
-	"bool" : tp0.to_bool,
-	"boolean" : tp0.to_bool,
-}
 
 class ConverterInfo:
 	def __init__(self, info):
@@ -210,7 +200,7 @@ class BaseParser(object):
 			if converter is None: continue
 
 			field, type = converter
-			method = FAST_CONVERTER[type.lower()]
+			method = convention.type2function(type)
 
 			value = arg_row[col + 1]
 			ret = None

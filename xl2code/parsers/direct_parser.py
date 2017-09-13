@@ -2,8 +2,8 @@
 import traceback
 import xlsconfig
 import util
-from tps import tp0
-from base_parser import ConverterInfo, BaseParser, FAST_CONVERTER
+from tps import tp0, convention
+from base_parser import ConverterInfo, BaseParser
 
 # 利用Excel表头描述，进行导表，不需要转换器
 class DirectParser(BaseParser):
@@ -35,7 +35,7 @@ class DirectParser(BaseParser):
 			type = type_row[col] or "String"
 			method = None
 			try:
-				method = FAST_CONVERTER.get(type.lower(), tp0.to_str)
+				method = convention.type2function(type)
 			except:
 				util.log_error("无效的类型'%s'，列：%s", type, util.int_to_base26(col))
 				continue

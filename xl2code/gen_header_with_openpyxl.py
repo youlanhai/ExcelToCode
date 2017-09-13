@@ -3,7 +3,7 @@ import openpyxl
 import openpyxl_extend
 import xlsconfig
 from openpyxl.styles import PatternFill
-from tps.tp0 import type2string
+from tps.convention import function2type
 
 header_fill = PatternFill(patternType="solid", fgColor="FABF8F")
 type_fill = PatternFill(patternType="solid", fgColor="82C3D4")
@@ -31,7 +31,7 @@ def create_header(input_file, converter, sheet_index):
 	for info in converter.CONFIG:
 		header = info[0].decode("utf-8")
 		field = info[1]
-		type = type2string(info[2])
+		type = function2type(info[2])
 
 		header_2_field[header] = field
 

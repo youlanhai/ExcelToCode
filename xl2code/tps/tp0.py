@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+# 通用类型转换函数模块
 
 import math
 
@@ -37,8 +40,15 @@ def to_list(arg, converter=None):
 
 	return ret
 
-def to_int_list(arg): return to_list(arg, to_int)
-def to_float_list(arg): return to_list(arg, to_float)
+def to_int_list(arg):
+	if type(arg) in (list, tuple, set):
+		return arg
+	return to_list(arg, to_int)
+
+def to_float_list(arg):
+	if type(arg) in (list, tuple, set):
+		return arg
+	return to_list(arg, to_float)
 
 # arg = "a:b, c:d"
 def to_dict(arg):
@@ -157,9 +167,3 @@ def to_text(args):
 
 def to_amstr(args):
 	return args + ".am"
-
-def type2string(tp):
-	if tp == int or tp == long or tp == to_int: return "int"
-	if tp == float or tp == to_float: return "float"
-	if tp == to_bool or tp == bool: return "byte"
-	return "String"

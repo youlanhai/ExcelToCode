@@ -5,13 +5,6 @@ import xlsconfig
 from base_code_gen import BaseCodeGen
 from tps import tp0
 
-def type2string(tp):
-	if tp == int or tp == tp0.to_int: return "int"
-	if tp == long: return "long"
-	if tp == float or tp == tp0.to_float: return "float"
-	if tp == bool or tp == tp0.to_bool: return "boolean"
-	return "String"
-
 BUILTIN_TYPES = set((
 	"int", "long", "float", "boolean", "String",
 ))

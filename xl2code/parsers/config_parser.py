@@ -3,7 +3,7 @@
 import traceback
 import xlsconfig
 import util
-from tps import tp0
+from tps import tp0, convention
 from base_parser import ConverterInfo, BaseParser
 
 class ConfigParser(BaseParser):
@@ -48,7 +48,7 @@ class ConfigParser(BaseParser):
 				field = converter.field
 				self.field_2_col[field] = col
 
-				type = tp0.type2string(converter.convert)
+				type = convention.function2type(converter.convert)
 				self.sheet_types[field] = (col, field, header, type)
 
 			self.converters[col] = converter
