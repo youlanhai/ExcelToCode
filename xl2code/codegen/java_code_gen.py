@@ -17,25 +17,26 @@ class JavaCodeGen(BaseCodeGen):
 		src_name = self.module_name.split('.')[-1]
 		self.class_name = util.to_class_name(src_name)
 
-		name_format = util.to_utf8(self.generator_info.get("name_format"))
+		generator_info = self.generator_info
+		name_format = util.to_utf8(generator_info.get("name_format"))
 		if name_format:
 			self.class_name = name_format % self.class_name
 
 		ns = {
 			"FILE_PATH" : self.class_name,
 		}
-		self.file_path = util.resolve_path(self.output_path, (ns, xlsconfig, ))
+		self.file_path = util.resolve_path(generator_info["file_path"], (ns, xlsconfig, ))
 		util.ensure_folder_exist(self.file_path)
 
 		self.write_line(0, "// 此文件由导表工具自动生成，禁止手动修改。")
 		self.write_line()
 
-		package = util.to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
+		package = util.to_utf8(generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
 		
 		self.write_line(0, "package %s;" % package)
 		self.write_line()
 
-		imports = self.generator_info.get("imports")
+		imports = generator_info.get("imports")
 		if imports:
 			for imp in imports:
 				self.write_line(0, "import %s;" % imp.encode("utf-8"))

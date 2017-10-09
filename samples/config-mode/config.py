@@ -24,13 +24,13 @@ CONVERTER_ALIAS = "converter"
 
 # 数据输出器
 DATA_WRITERS = [
-	{"stage" : 2, "class" : "PyWriter", "file_path": "$CONFIG_PATH/export/python", "file_posfix" : ".py"},
-	{"stage" : 2, "class" : "LuaWriter", "file_path": "$CONFIG_PATH/export/lua", "file_posfix" : ".lua"},
-	{"stage" : 2, "class" : "JavaScriptWriter", "file_path": "$CONFIG_PATH/export/js", "file_posfix" : ".js"},
-	{"stage" : 2, "class" : "JsonWriter", "file_path": "$CONFIG_PATH/export/json", "file_posfix" : ".json"},
-	{"stage" : 2, "class" : "JavaWriter", "file_path": "$CONFIG_PATH/export/java", "file_posfix" : ".wg"},
-	{"stage" : 2, "class" : "BinaryWriter", "file_path": "$CONFIG_PATH/export/binary", "file_posfix" : ".dat"},
-	{"stage" : 2, "class" : "XMLWriter", "file_path": "$CONFIG_PATH/export/xml", "file_posfix" : ".xml"},
+	{"stage" : 2, "class" : "PyWriter", "file_path": "${CONFIG_PATH}/export/python/${FILE_PATH}.py"},
+	{"stage" : 2, "class" : "LuaWriter", "file_path": "${CONFIG_PATH}/export/lua/${FILE_PATH}.lua"},
+	{"stage" : 2, "class" : "JavaScriptWriter", "file_path": "${CONFIG_PATH}/export/js/${FILE_PATH}.js"},
+	{"stage" : 2, "class" : "JsonWriter", "file_path": "${CONFIG_PATH}/export/json/${FILE_PATH}.json"},
+	{"stage" : 2, "class" : "JavaWriter", "file_path": "${CONFIG_PATH}/export/java/${FILE_PATH}.wg"},
+	{"stage" : 2, "class" : "BinaryWriter", "file_path": "${CONFIG_PATH}/export/binary/${FILE_PATH}.dat"},
+	{"stage" : 2, "class" : "XMLWriter", "file_path": "${CONFIG_PATH}/export/xml/${FILE_PATH}.xml"},
 ]
 
 

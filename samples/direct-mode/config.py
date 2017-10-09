@@ -40,7 +40,7 @@ CODE_GENERATORS = [
 	{
 		"class" : "JavaCodeGen", # Java代码生成器
 		"name_format" : "Dict%s",
-		"file_path" : "$OUTPUT_PATH/java/code",
+		"file_path" : "$OUTPUT_PATH/java/code/${FILE_PATH}.java",
 		"imports" : ["com.mygame.test"],
 		"interface" : "IInterface",
 		"base" : "BaseClass"
@@ -53,8 +53,7 @@ DATA_WRITERS = [
 	{
 		"stage" : 1,
 		"class" : "JavaWriter",
-		"file_path": "$OUTPUT_PATH/java/data",
-		"file_posfix" : ".wg",
+		"file_path": "$OUTPUT_PATH/java/data/${FILE_PATH}.wg",
 		"max_indent" : 3,
 	},
 ]

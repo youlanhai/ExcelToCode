@@ -10,6 +10,8 @@ python main.py --export my_config.py
 2. 配置模式(ConfigExporter)。为每一种类型的Excel文件指定一个转换脚本，提供表头和数据的转换信息。这种方式支持数据深度处理，数据校验等。缺点是，要写为每一种类型的Excel都写一个脚本。
 3. 混合模式(MixExporter)。混合模式结合了Direct和Config两种模式的优点，表头与Direct模式相同，不使用转换器也能完全工作。对于一些特殊类型，可以自己定义转换器脚本，进行处理。
 
+**推荐使用混合模式**，即简单也灵活。
+
 下面逐一介绍如何配置。
 
 # 通用配置
@@ -30,17 +32,24 @@ EXPORTER_CLASS = "DirectExporter"
 ```
 
 ### INPUT_PATH
-要转换的Excel文件所在目录。导表的时候，该目录及其子目录下的所有Excel文件都会被处理。因此，非数据相关的表，不要放到这里。
+要转换的Excel文件所在目录。导表的时候，该目录及其子目录下的所有Excel文件都会被处理。因此，非数据相关的表，不要放到这里。**CONFIG_PATH**是当前配置文件所在的路径。
 
 ```python
-INPUT_PATH = "excels"
+INPUT_PATH = "${CONFIG_PATH}/excels"
+```
+
+### OUTPUT_PATH
+该参数是一个辅助变量，方便配置文件内部使用。
+
+```python
+OUTPUT_PATH = "${CONFIG_PATH}/output"
 ```
 
 ### TEMP_PATH
 中间文件路径。存放导表过程中生成的中间文件。如果导表的时候，指定了`--fast-mode`，这些中间文件会被复用。
 
 ```python
-TEMP_PATH = "export/temp"
+TEMP_PATH = "${CONFIG_PATH}/export/temp"
 ```
 
 ### DEFAULT_JAVA_PACKAGE
@@ -58,7 +67,7 @@ CODE_GENERATORS = [
     {
         "class" : "JavaCodeGen",
         "name_format" : "Dict%s",
-        "file_path" : "export/java/excel",
+        "file_path" : "${OUTPUT_PATH}/export/java/code/${FILE_PATH}.java",
         "imports" : ["com.mygame.test"],
         "interface" : "IInterface",
         "base" : "BaseClass",
@@ -68,8 +77,8 @@ CODE_GENERATORS = [
 
 生成器参数 | 描述
 ---------|---------
-class  | 生成器的类名
-file_path | 输出文件的路径。最终的文件名为`file_path` + Excel文件名 + ".java"
+class  | 生成器的类名。目前只支持生成Java类，你可以向codegen模块注册自定义的代码生成器类，然后在这里配置上。
+file_path | 输出文件的路径。`FILE_PATH`参数由每个生成器自己给出，java生成器用的是excel的文件名称的驼峰法形式。
 package | 为生成的Java类指定包名。如果不指定，则使用`DEFAULT_JAVA_PACKAGE`
 imports | 为生成的Java类指定要导入的包。该参数是数组格式，支持导入多个包。如果不需要导入包，可忽略改参数。
 base  | 为生成的Java类指定基类。如果没有基类，可忽略改参数。
@@ -83,8 +92,7 @@ DATA_WRITERS = [
     {
         "stage" : 1,
         "class" : "LuaWriter",
-        "file_path": "export/lua",
-        "file_posfix" : ".lua",
+        "file_path": "${OUTPUT_PATH}/export/lua/${FILE_PATH}.lua",
         "max_indent" : 2,
     }
 ]
@@ -94,8 +102,7 @@ writer参数 | 描述
 ----------|--------
 stage   | 导表阶段。目前分两个阶段：Begin(1), Final(2)。Begin阶段的数据没有进行后处理。
 class   | writer类。位于writers目录下。
-file_path | 输出数据表的路径
-file_posfix | 输出数据表的后缀
+file_path | 输出数据表的路径。
 max_indent | 最大Tab缩进数
 
 ### POSTPROCESSORS
@@ -105,7 +112,7 @@ max_indent | 最大Tab缩进数
 POSTPROCESSORS = [
     {
         "class" : "JavaFileEnumProcessor",
-        "file_path" : "export/java/excel/DictEnum.java"
+        "file_path" : "${OUTPUT_PATH}/export/java/excel/DictEnum.java"
     }
 ]
 ```
@@ -121,15 +128,24 @@ DEPENDENCIES = {
 ```
 
 ### ARGUMENT_CONVERTER
-Excel表头参数解析，通常是针对Excel表的第一行。你可以在Excel中指定额外的信息，导表工具会分析出来，并存贮在中间模块中，其他的处理器可以访问到。
+Excel表头参数解析，通常是针对Excel表的第一行。你可以在Excel中指定额外的信息，导表工具会分析出来，并存贮在中间模块中，其他的处理器可以访问到。这里提供了一些通用的参数，可以改变导表工具的行为。
 
 ```python
 ARGUMENT_CONVERTER = {
     "版本：" : ["version", "int"],
     "键值是否重复：" : ["multiKey", "bool"],
     "说明：" : ["describe", "string"],
+    "模板："  : ["template", "string"],
+    "关联总表："  : ["mergeToSheet", "string"],
+    "缩进：" : ["indent",    "int"],
 }
 ```
+
+类型 | 说明
+------|------
+模板  | 当前excel要使用的模板(或称为转换器)名称
+关联总表 | 如果指定了该参数，当前表最终会合并到总表中
+缩进  | 为输出文件指定缩进层级
 
 ### SHEET_ROW_INDEX
 Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。

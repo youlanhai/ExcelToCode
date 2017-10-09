@@ -5,13 +5,11 @@ INDENTS = [" " * (i * 4) for i in xrange(10)]
 
 class BaseCodeGen(object):
 
-	def __init__(self, module, module_name, output_path, generator_info):
+	def __init__(self, module, module_name, generator_info):
 		super(BaseCodeGen, self).__init__()
 		self.content = []
 		self.module = module
 		self.module_name = module_name
-		# 输出文件路径。注意：该路径需要派生类自行格式化成真实路径
-		self.output_path = output_path
 		self.generator_info = generator_info
 
 	def run(self):

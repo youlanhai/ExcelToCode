@@ -22,7 +22,6 @@ def generate_code():
 def _generate(config, module_name):
 	for generator_info in xlsconfig.CODE_GENERATORS:
 		cls = getattr(codegen, generator_info["class"])
-		output_path = generator_info["file_path"]
 
-		gen = cls(config, module_name, output_path, generator_info)
+		gen = cls(config, module_name, generator_info)
 		gen.run()
