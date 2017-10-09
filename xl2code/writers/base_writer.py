@@ -68,16 +68,10 @@ class BaseWriter(object):
 		if indent <= max_indent: self.output("\n")
 
 	def write_module(self, module):
-		output = self.output
-
 		for k in sorted(module.iterkeys()):
 			v = module[k]
-			if isinstance(v, dict):
-				self.write_sheet(k, v)
-			else:
-				self.write_value(k, v)
-
-			output("\n")
+			self.write_value(k, v)
+			self.output("\n")
 
 		self.flush()
 

@@ -8,51 +8,25 @@ class LuaWriter(BaseWriter):
 		self.output("module(...)", "\n\n")
 
 	def write_sheet(self, name, sheet):
-		self.write_types_comment(name)
-		self.output("\n")
-
-		output = self.output
-		max_indent = self.max_indent
-
-		output(name, " = {\n")
-
-		keys = sheet.keys()
-		keys.sort()
-
-		key_format = "\t[%d] = "
-		if len(keys) > 0 and isinstance(keys[0], basestring):
-			key_format = "\t[\"%s\"] = "
-
-		for k in keys:
-			row = sheet[k]
-			output(key_format % k)
-			indent = max_indent
-			if type(row) == list or type(row) == tuple:
-				indent += 1
-			self.write(row, 2, indent)
-			output(",\n")
-
-			self.flush()
-
-		output("}\n\n")
+		self.write_value(name, sheet)
 
 		if name == "main_sheet":
-			self.write_value("main_length", len(sheet))
+			self.write_value("main_length", len(sheet), 0)
 
 			keys = sheet.keys()
 			keys.sort()
-			self.write_value("main_keys", keys)
+			self.write_value("main_keys", keys, 0)
 
 		self.flush()
 
-	def write_value(self, name, value):
+	def write_value(self, name, value, max_indent = None):
 		self.write_types_comment(name)
+		if max_indent is None:
+			max_indent = self.max_indent
 
-		output = self.output
-
-		output(name, " = ")
-		self.write(value)
-		output("\n\n")
+		self.output(name, " = ")
+		self.write(value, 1, max_indent)
+		self.output("\n\n")
 
 		self.flush()
 
@@ -104,7 +78,7 @@ class LuaWriter(BaseWriter):
 				self.newline_indent(indent, max_indent)
 
 				output("[")
-				self.write(k, 0, 0)
+				self.write(k)
 				output("] = ")
 				self.write(value[k], indent + 1, max_indent)
 				output(", ")

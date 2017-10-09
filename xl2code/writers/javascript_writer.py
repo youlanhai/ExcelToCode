@@ -4,46 +4,14 @@ from base_writer import BaseWriter
 class JavaScriptWriter(BaseWriter):
 
 	def write_sheet(self, name, sheet):
-		self.write_types_comment(name)
-		self.output("\n")
-
-		output = self.output
-		max_indent = self.max_indent
-
-		output("exports.", name, " = {\n")
-
-		keys = sheet.keys()
-		keys.sort()
-
-		key_format = "\t%d : "
-		if len(keys) > 0 and isinstance(keys[0], basestring):
-			key_format = "\t\"%s\" : "
-
-		for k in keys:
-			row = sheet[k]
-			output(key_format % k)
-
-			indent = max_indent
-			if type(row) == list or type(row) == tuple:
-				indent += 1 # 重复key模式
-
-			self.write(row, 2, indent)
-			output(",\n")
-
-			self.flush()
-
-		output("};\n\n")
-
-		self.flush()
+		self.write_value(name, sheet)
 
 	def write_value(self, name, value):
 		self.write_types_comment(name)
 
-		output = self.output
-
-		output("export let ", name, " = ")
+		self.output("exports.", name, " = ")
 		self.write(value)
-		output(";\n\n")
+		self.output(";\n\n")
 
 		self.flush()
 

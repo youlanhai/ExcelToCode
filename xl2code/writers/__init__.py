@@ -7,3 +7,4 @@ from json_writer import JsonWriter
 from java_writer import JavaWriter
 from javascript_writer import JavaScriptWriter
 from binary_writer import BinaryWriter
+from xml_writer import XMLWriter
