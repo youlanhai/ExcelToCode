@@ -38,7 +38,7 @@ CODE_GENERATORS = [
 	{
 		"class" : "JavaCodeGen", # Java代码生成器
 		"name_format" : "Dict%s",
-		"file_path" : java_output_path + "code",
+		"file_path" : java_output_path + "code/${FILE_PATH}.java",
 		"imports" : ["com.mygame.test"],
 		"interface" : "IInterface",
 		"base" : "BaseClass"
@@ -48,9 +48,9 @@ CODE_GENERATORS = [
 # 输出数据
 DATA_WRITERS = [
 	# Java专用json数据格式
-	{"stage" : 1, "class" : "JavaWriter", "file_path": java_output_path + "data", "file_posfix" : ".wg"},
+	{"stage" : 1, "class" : "JavaWriter", "file_path": java_output_path + "data/${FILE_PATH}.wg"},
 	# Python数据表
-	{"stage" : 2, "class" : "PyWriter", "file_path": "$OUTPUT_PATH/python", "file_posfix" : ".py"},
+	{"stage" : 2, "class" : "PyWriter", "file_path": "$OUTPUT_PATH/python/${FILE_DIR}/d_${FILE_NAME}.py"},
 ]
 
 # 后处理器

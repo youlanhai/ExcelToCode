@@ -40,15 +40,8 @@ def main():
 	xlsconfig.FAST_MODE = option.fast_mode
 	xlsconfig.FORCE_RUN = option.force_run
 
-
 	if not install_package.check_plugin(("openpyxl", )):
 		return
-
-	for generator in xlsconfig.DATA_WRITERS:
-		util.safe_makedirs(generator["file_path"], not xlsconfig.FAST_MODE)
-		
-	for generator in xlsconfig.CODE_GENERATORS:
-		util.safe_makedirs(generator["file_path"], not xlsconfig.FAST_MODE)
 
 	if option.gen_header:
 		import generate_header

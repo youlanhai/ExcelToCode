@@ -10,6 +10,7 @@ class BaseCodeGen(object):
 		self.content = []
 		self.module = module
 		self.module_name = module_name
+		# 输出文件路径。注意：该路径需要派生类自行格式化成真实路径
 		self.output_path = output_path
 		self.generator_info = generator_info
 

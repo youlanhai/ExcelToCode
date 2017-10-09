@@ -122,7 +122,7 @@ class BaseExporter(object):
 
 		return DataModule(outfile, info, parser.sheet)
 
-	def write_sheets(self, stage, name_format = "d_%s"):
+	def write_sheets(self, stage):
 		print "=== 保存阶段[%d]数据 ..." % stage
 
 		for writer_info in xlsconfig.DATA_WRITERS:
@@ -130,19 +130,18 @@ class BaseExporter(object):
 
 			for data_module in self.data_modules.itervalues():
 				outfile = data_module.info["outfile"]
-				if name_format:
-					fpath, fname = os.path.split(outfile)
-					fname = name_format % fname
-					outfile = os.path.join(fpath, fname)
-
 				self.write_one_sheet(writer_info, outfile, data_module)
 		return
 
 	def write_one_sheet(self, writer_info, outfile, data_module):
 		writer_name = writer_info["class"]
 
-		full_path = os.path.join(writer_info["file_path"], outfile + writer_info["file_posfix"])
-
+		ns = {
+			"FILE_PATH" : outfile,
+			"FILE_DIR" : os.path.dirname(outfile),
+			"FILE_NAME" : os.path.basename(outfile),
+		}
+		full_path = util.resolve_path(writer_info["file_path"], (ns, xlsconfig, ))
 		util.ensure_folder_exist(full_path)
 
 		writer_class = getattr(writers, writer_name)

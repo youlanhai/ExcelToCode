@@ -39,9 +39,9 @@ def load_configure(cfg_file, option):
 
 	# 所有已知的配置中，名字叫'file_path'的路径，会自动转义
 
-	resolve_path_in_config(xlsconfig.CODE_GENERATORS)
-	resolve_path_in_config(xlsconfig.DATA_WRITERS)
-	resolve_path_in_config(xlsconfig.POSTPROCESSORS)
+	# resolve_path_in_config(xlsconfig.CODE_GENERATORS)
+	# resolve_path_in_config(xlsconfig.DATA_WRITERS)
+	# resolve_path_in_config(xlsconfig.POSTPROCESSORS)
 
 	# 加载完毕回调
 	xlsconfig.post_init_method(xlsconfig)

@@ -21,10 +21,11 @@ class JavaCodeGen(BaseCodeGen):
 		if name_format:
 			self.class_name = name_format % self.class_name
 
-		self.file_path = os.path.join(self.output_path, self.class_name + ".java")
-
-		path = os.path.dirname(self.file_path)
-		util.safe_makedirs(path)
+		ns = {
+			"FILE_PATH" : self.class_name,
+		}
+		self.file_path = util.resolve_path(self.output_path, (ns, xlsconfig, ))
+		util.ensure_folder_exist(self.file_path)
 
 		self.write_line(0, "// 此文件由导表工具自动生成，禁止手动修改。")
 		self.write_line()

@@ -12,7 +12,8 @@ def to_enum_name(name):
 class JavaFileEnumProcessor(BaseProcessor):
 
 	def run(self):
-		file_path = self.generator_info["file_path"]
+		file_path = util.resolve_path(self.generator_info["file_path"])
+		util.ensure_folder_exist(file_path)
 		print "生成枚举类", file_path
 
 		wt = BaseWriter(file_path, None)

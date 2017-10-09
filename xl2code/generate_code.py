@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import imp
 import xlsconfig
 import util
 
@@ -11,11 +12,9 @@ def generate_code():
 
 	configure_file_path = os.path.join(xlsconfig.TEMP_PATH, "configures.py")
 	if not os.path.exists(configure_file_path):
-		return log_error("配置文件'%s'不存在", configure_file_path)
+		return util.log_error("配置文件'%s'不存在", configure_file_path)
 
-	sys.path.insert(0, xlsconfig.TEMP_PATH)
-	configure_module = util.import_file("configures")
-	sys.path.remove(xlsconfig.TEMP_PATH)
+	configure_module = imp.load_source("temp_configures", configure_file_path)
 
 	for key, cfg in configure_module.configures.iteritems():
 		_generate(cfg["types"], key)

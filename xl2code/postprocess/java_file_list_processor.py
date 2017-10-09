@@ -2,13 +2,15 @@
 import os
 import xlsconfig
 from writers import JsonWriter
+import util
 from util import to_utf8, to_class_name, format_slash
 from base_processor import BaseProcessor
 
 class JavaFileListProcessor(BaseProcessor):
 
 	def run(self):
-		file_path = self.generator_info["file_path"]
+		file_path = util.resolve_path(self.generator_info["file_path"])
+		util.ensure_folder_exist(file_path)
 		print "生成文件列表", file_path
 
 		only_name = os.path.splitext(os.path.basename(file_path))[0]
@@ -36,7 +38,7 @@ class JavaFileListProcessor(BaseProcessor):
 			if enum_name_format: enum_name = enum_name_format % enum_name
 			
 			fpath, fname = os.path.split(file_name)
-			file_name = os.path.join(only_name, fpath, "d_%s.wg" % fname)
+			file_name = os.path.join(only_name, fpath, "%s.wg" % fname)
 			file_name = format_slash(file_name)
 			
 			class_name = to_class_name(converter_name.split('.')[-1])

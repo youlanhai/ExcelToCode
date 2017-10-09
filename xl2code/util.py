@@ -215,11 +215,11 @@ def format_slash(path):
 	return path.replace('\\', '/')
 
 
-PATH_PATTERN = re.compile(r"\$\(?(\w+)\)?")
+PATH_PATTERN = re.compile(r"\$\{?(\w+)\}?")
 
-# 将路径中的$(Macro)宏，替换为真实路径。`Macro`是xlsconfig中的任意变量名称
-# path = "$(PROJECT_PATH)/sub/path"
-def resolve_macro(name):
+# 将路字符串中的${Macro}宏，替换为真实字符串。`Macro`是namespace数组中的任对象的属性名称
+# eg. resolve_macro("${PROJECT_PATH}/sub/path", [xlsconfig, ])
+def resolve_macro(name, namespace):
 	ret = []
 
 	start = 0
@@ -234,11 +234,23 @@ def resolve_macro(name):
 				ret.append(name[start : p.start()])
 
 			key = p.group(1)
-			val = getattr(xlsconfig, key, key)
+			val = None
+			
+			for obj in namespace:
+				if isinstance(obj, dict):
+					val = obj.get(key)
+				else:
+					val = getattr(obj, key, None)
+				if val is not None:
+					break
+			else:
+				val = key
+
 			ret.append(val)
 			start = p.end()
 
 	return "".join(ret)
 
-def resolve_path(path):
-	return os.path.normpath(resolve_macro(path))
+def resolve_path(path, namespace = None):
+	ns = namespace if namespace else (xlsconfig, )
+	return os.path.normpath(resolve_macro(path, ns))
