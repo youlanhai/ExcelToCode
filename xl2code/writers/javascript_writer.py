@@ -10,7 +10,7 @@ class JavaScriptWriter(BaseWriter):
 		self.write_types_comment(name)
 
 		self.output("exports.", name, " = ")
-		self.write(value)
+		self.write(value, 1, self.max_indent)
 		self.output(";\n\n")
 
 		self.flush()

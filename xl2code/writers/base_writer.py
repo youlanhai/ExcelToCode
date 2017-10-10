@@ -18,8 +18,10 @@ class BaseWriter(object):
 		if generator_info:
 			self.max_indent = generator_info.get("max_indent", self.max_indent)
 		if data_module:
-			self.max_indent = data_module.info["arguments"].get("indent", self.max_indent)
-		
+			arguments = data_module.info["arguments"];
+			if arguments.get("multiKey"):
+				self.max_indent += 1
+			self.max_indent = arguments.get("indent", self.max_indent)
 		self.open_file()
 
 	def __fini__(self):
