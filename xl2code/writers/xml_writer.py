@@ -55,7 +55,7 @@ class XMLWriter(BaseWriter):
 		self._output_line(indent, "<%s>" % key)
 
 		for i, v in enumerate(value):
-			self.write(key, v, indent + 1)
+			self.write(key + "Item", v, indent + 1)
 
 		self._output_line(indent, "</%s>" % key)
 

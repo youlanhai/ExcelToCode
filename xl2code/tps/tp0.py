@@ -167,3 +167,32 @@ def to_text(args):
 
 def to_amstr(args):
 	return args + ".am"
+
+def to_vector2(args):
+	lst = to_float_list(args)
+	if len(lst) == 2:
+		raise ValueError, "vector2 expected 2 arugments, but %d was givent" % len(lst)
+	return { "x" : lst[0], "y" : lst[1] }
+
+def to_vector3(args):
+	lst = to_float_list(args)
+	if len(lst) == 2:
+		raise ValueError, "vector2 expected 3 arugments, but %d was givent" % len(lst)
+	return { "x" : lst[0], "y" : lst[1], "z" : lst[2] }
+
+def to_vector4(args):
+	lst = to_float_list(args)
+	if len(lst) == 2:
+		raise ValueError, "vector2 expected 4 arugments, but %d was givent" % len(lst)
+	return { "x" : lst[0], "y" : lst[1], "z" : lst[2], "w" : lst[3] }
+
+def to_vector3_list(args):
+	ret = []
+	groups = args.split(';')
+	for group in groups:
+		group = group.strip()
+		if len(group) == 0: continue
+
+		ret.append(to_vector3(group))
+
+	return ret

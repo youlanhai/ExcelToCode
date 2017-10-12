@@ -5,17 +5,32 @@
 import tp0
 
 #: 类型转换函数映射为名称
-FUNCTION_2_TYPE = {
+FUNCTION_2_TYPE = {}
+
+_FUNCTION_2_TYPE = {
 	int 	: "int",
 	long 	: "long",
-	tp0.to_int 	: "int",
 	float 	: "float",
+	bool 	: "boolean",
+	tp0.to_int 	: "int",
 	tp0.to_float : "float",
 	tp0.to_bool : "boolean",
-	bool 	: "boolean",
+	tp0.to_str : "String",
 	tp0.to_int_list : "Array<int>",
 	tp0.to_float_list : "Array<float>",
 }
+
+def update_functions():
+	global FUNCTION_2_TYPE
+
+	fun2type = {}
+	for key, val in tp0.__dict__:
+		if key.startswitch("to_"):
+			fun2type[val] = key
+
+	fun2type.update(_FUNCTION_2_TYPE)
+	FUNCTION_2_TYPE = fun2type
+	return
 
 #: 快速转换器。将excel中的数据进行首次转换
 TYPE_2_FUNCTION = {
@@ -36,4 +51,8 @@ def function2type(tp):
 	return FUNCTION_2_TYPE.get(tp, "String")
 
 def type2function(name):
-	return TYPE_2_FUNCTION.get(name.lower(), tp0.to_str)
+	name = name.lower()
+	fun = getattr(tp0, "to_" + name, None)
+	if fun is not None:
+		return fun
+	return TYPE_2_FUNCTION.get(name, tp0.to_str)
