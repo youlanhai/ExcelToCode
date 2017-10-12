@@ -29,13 +29,14 @@ def format_number_with_openpyxl(f, cell, wb):
 format_number = format_number_with_openpyxl
 
 class ConverterInfo:
-	def __init__(self, info):
+	def __init__(self, info, column = None):
 		self.header = info[0]
 		self.field = info[1]
 		self.convert = info[2]
-		self.is_default = info[3] if len(info) > 3 else False
+		self.can_default = info[3] if len(info) > 3 else False
 		self.exist_default_value = len(info) > 4
 		self.default_value = info[4] if len(info) > 4 else None
+		self.column = column
 
 class BaseParser(object):
 
@@ -59,7 +60,10 @@ class BaseParser(object):
 		# 表头的类型数据。
 		self.sheet_types = {}
 
-		self.field_2_col = {}
+		# 表头映射到列索引
+		self.header_2_col = {}
+		# 表头数组。也就是连续的表头列数，空列右侧的内容会被忽略。
+		self.headers = []
 
 		# 每一列的默认值。列索引 -> 默认值
 		self.default_values = {}
@@ -102,27 +106,26 @@ class BaseParser(object):
 	def extrace_row_values(self, row_index):
 		return [self.extract_cell_value(cell) for cell in self.all_rows[row_index]]
 
-	def convert_cell(self, row, col, value, output_row):
+	def convert_cell(self, row, col, value):
 		converter = self.converters[col]
-		if converter is None: return
+		if converter is None:
+			return None
 
 		if value == "":
 			value = self.default_values.get(col, "")
 
 		ret = None
 		if value == "":
-			if not converter.is_default:
+			if not converter.can_default:
 				raise ValueError, "该项必填"
 
 		else:
 			ret = converter.convert(value)
 
-		if ret is None and converter.is_default:
-			if not converter.exist_default_value:
-				return
+		if ret is None and converter.exist_default_value:
 			ret = converter.default_value
 
-		output_row[converter.field] = ret
+		return ret
 
 	def do_parse(self):
 		import openpyxl
@@ -141,10 +144,12 @@ class BaseParser(object):
 		self.parse_header(rows)
 		self.parse_defaults(rows)
 
+		ncols = len(self.headers)
+		if ncols == 0:
+			return util.log_error("Except表'%s'列数量不能为0", self.filename)
+
 		if self.data_row_index >= len(rows):
 			return
-
-		ncols = len(self.converters)
 
 		# the remain rows is raw data.
 		for r in xrange(self.data_row_index, len(rows)):
@@ -154,25 +159,24 @@ class BaseParser(object):
 			first_value = cells[0].value
 			if first_value == '' or first_value is None: break
 
-			current_row_data = {}
+			current_row_data = []
 			for c in xrange(ncols):
-				value = self.extract_cell_value(cells[c])
+				cell_value = self.extract_cell_value(cells[c])
+				result_value = None
 				try:
-					self.convert_cell(r, c, value, current_row_data)
+					result_value = self.convert_cell(r, c, cell_value)
 				except:
 					traceback.print_exc()
+					util.log_error("单元格(%d, %s) = [%s] 数据解析失败", r + 1, util.int_to_base26(c), cell_value)
 
-					util.log_error("单元格(%d, %s) = [%s] 数据解析失败", r + 1, util.int_to_base26(c), value)
+				current_row_data.append(result_value)
 
 			self.add_row(current_row_data)
 
 		return
 
 	def add_row(self, current_row_data):
-		if self.key_name not in current_row_data:
-			raise ValueError, "没有找到Key'%s'" % (self.key_name, )
-
-		key_value = current_row_data[self.key_name]
+		key_value = current_row_data[0]
 		
 		if self.is_multi_key:
 			row = self.sheet.setdefault(key_value, [])
@@ -185,7 +189,23 @@ class BaseParser(object):
 			self.sheet[key_value] = current_row_data
 
 	def parse_header(self, rows):
-		pass
+		header_row = [self.extract_cell_value(cell) for cell in rows[self.header_row_index]]
+		self.headers = header_row
+
+		for col, header in enumerate(header_row):
+			if header == "":
+				self.headers = header_row[:col]
+				break
+
+			if header in self.header_2_col:
+				util.log_error("表头'%s'重复，at 列：%s", header, util.int_to_base26(col))
+				continue
+
+			self.header_2_col[header] = col
+		else:
+			self.headers = header_row
+
+		return
 
 	def parse_arguments(self, rows):
 		row_index = self.argument_row_index

@@ -26,12 +26,19 @@ PROJECT_PATH = "$CONFIG_PATH"
 
 # 默认的writer缩进
 DEFAULT_INDENT = 2
+
+# 临时文件中的writer缩进
+TEMP_FILE_INDENT = 3
+
 ######################################################################
 ### 以下是需要配置的路径。可以通过配置文件来设置，见load_configure
 ######################################################################
 
 # 导出类
 EXPORTER_CLASS = "DirectExporter"
+
+# 定制化导表阶段
+# EXPORTER_STAGES = []
 
 # Excel路径
 INPUT_PATH      = "$PROJECT_PATH/excels"
@@ -50,8 +57,8 @@ CODE_GENERATORS  = []
 # 输出数据配置。
 DATA_WRITERS = []
 
-# 后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。
-POSTPROCESSORS = []
+# 自定义后处理阶段。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。
+CUSTOM_STAGES = []
 
 # python插件安装包路径。
 DEPENDENCIES = {}

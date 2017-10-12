@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import traceback
 
 import xlsconfig
@@ -9,36 +8,22 @@ import util
 from parsers import DirectParser
 from base_exporter import BaseExporter
 
+STAGES_INFO = [
+	{"class" : "MergeSheets", },
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
+	{"class" : "MergeField"},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
+	{"class" : "WriteConfigure"},
+	{"class" : "WriteFileList"},
+	{"class" : "RunCustomStage"},
+]
+
 class DirectExporter(BaseExporter):
+	STAGES_INFO = STAGES_INFO
+
 	def __init__(self, input_path, exts):
 		super(DirectExporter, self).__init__(input_path, exts)
 		self.parser_class = DirectParser
-
-	def run(self):
-		self.gather_excels()
-
-		sys.path.insert(0, xlsconfig.CONVERTER_PATH)
-		sys.path.insert(0, xlsconfig.TEMP_PATH)
-
-		self.export_excels()
-
-		# 合并分表
-		self.merge_sheets()
-
-		# 写出裸数据
-		self.write_sheets(xlsconfig.EXPORT_STAGE_BEGIN)
-
-		# 写出最终数据
-		self.write_sheets(xlsconfig.EXPORT_STAGE_FINAL)
-
-		self.write_file_list()
-		
-		self.write_configs()
-
-		self.run_postprocessor()
-
-		sys.path.remove(xlsconfig.CONVERTER_PATH)
-		sys.path.remove(xlsconfig.TEMP_PATH)
 
 	def export_excels(self):
 		for infile in self.excel_files:
@@ -90,7 +75,10 @@ class DirectExporter(BaseExporter):
 		# 如果目标表格存在，则追加到尾部
 		for i, pattern in enumerate(self.merge_patterns):
 			if to_name != pattern[0]: continue
-			if sub_name in pattern: continue
+
+			for j in xrange(1, len(pattern)):
+				if sub_name == pattern[j]:
+					return
 
 			if not isinstance(pattern, list):
 				pattern = list(pattern)
@@ -98,7 +86,7 @@ class DirectExporter(BaseExporter):
 
 			pattern.append(sub_name)
 			return
-
+		
 		self.merge_patterns.append([to_name, sub_name])
 		return
 

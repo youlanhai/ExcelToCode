@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import re
 import traceback
 
@@ -10,39 +9,25 @@ import util
 from parsers import ConfigParser
 from base_exporter import BaseExporter
 
+STAGES_INFO = [
+	{"class" : "MergeSheets", },
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
+	{"class" : "MergeField"},
+	{"class" : "PostProcess"},
+	{"class" : "PostCheck"},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
+	{"class" : "WriteConfigure"},
+	{"class" : "WriteFileList"},
+	{"class" : "RunCustomStage"},
+]
+
 class ConfigExporter(BaseExporter):
+	STAGES_INFO = STAGES_INFO
+
 	def __init__(self, input_path, exts):
 		super(ConfigExporter, self).__init__(input_path, exts)
 		self.converter_modules = {}
 		self.parser_class = ConfigParser
-
-	def run(self):
-		self.gather_excels()
-
-		sys.path.insert(0, xlsconfig.CONVERTER_PATH)
-		sys.path.insert(0, xlsconfig.TEMP_PATH)
-
-		# export excels to temp python
-		self.export_excels()
-
-		self.write_sheets(xlsconfig.EXPORT_STAGE_BEGIN)
-
-		self.merge_sheets()
-
-		self.post_process_sheets()
-
-		self.post_check_sheets()
-
-		self.write_sheets(xlsconfig.EXPORT_STAGE_FINAL)
-
-		self.write_file_list()
-		
-		self.write_configs()
-
-		self.run_postprocessor()
-
-		sys.path.remove(xlsconfig.CONVERTER_PATH)
-		sys.path.remove(xlsconfig.TEMP_PATH)
 
 	def find_converter(self, name):
 		converter = self.converter_modules.get(name)

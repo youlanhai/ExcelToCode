@@ -17,21 +17,20 @@ class DirectParser(BaseParser):
 
 	# 使用Excel表头提供的信息，构造转换器
 	def parse_header(self, rows):
-		header_row 	= [self.extract_cell_value(cell) for cell in rows[self.header_row_index]]
+		super(DirectParser, self).parse_header(rows)
+		
 		field_row 	= [self.extract_cell_value(cell) for cell in rows[self.field_row_index]]
 		type_row 	= [self.extract_cell_value(cell) for cell in rows[self.type_row_index]]
 
-		for col, field in enumerate(field_row):
-			if field == "": break
+		self.key_name = field_row[0]
 
-			self.converters[col] = None
+		for header, col in self.header_2_col.iteritems():
+			field = field_row[col]
 
-			if field in self.field_2_col:
-				util.log_error("列名'%s'重复，列：%s", field, util.int_to_base26(col))
+			if field == "":
+				util.log_error("列名不能为空，列：%s", util.int_to_base26(col))
 				continue
-			self.field_2_col[field] = col
 
-			header = header_row[col] or field
 			type = type_row[col] or "String"
 			method = None
 			try:
@@ -41,9 +40,7 @@ class DirectParser(BaseParser):
 				continue
 
 			self.converters[col] = ConverterInfo((header, field, method, True))
-			self.sheet_types[field] = (col, field, header, type)
-
-		self.key_name = self.converters[0].field
+			self.sheet_types[header] = (col, field, header, type)
 		return
 
 	def parse_arguments(self, rows):

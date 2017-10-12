@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_processor import BaseProcessor
+from BaseStage import BaseStage
 from writers import BaseWriter
 
 import os
@@ -9,10 +9,12 @@ import xlsconfig
 def to_enum_name(name):
 	return name.replace('/', '_').replace('\\', '/').upper()
 
-class JavaFileEnumProcessor(BaseProcessor):
+class WriteJavaFileEnum(BaseStage):
 
-	def run(self):
-		file_path = util.resolve_path(self.generator_info["file_path"])
+	def process(self, exporter):
+		info = self.info
+
+		file_path = util.resolve_path(info["file_path"])
 		util.ensure_folder_exist(file_path)
 		print "生成枚举类", file_path
 
@@ -22,7 +24,7 @@ class JavaFileEnumProcessor(BaseProcessor):
 		wt._output_line(indent, "// 此文件由导表工具自动生成，禁止手动修改。")
 		wt._output_line()
 
-		package = util.to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
+		package = util.to_utf8(info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
 		wt._output_line(indent, "package %s;" % package)
 		wt._output_line()
 
@@ -31,7 +33,7 @@ class JavaFileEnumProcessor(BaseProcessor):
 		indent += 1
 
 		value_pairs = []
-		for outfile, data_module in self.exporter.data_modules.iteritems():
+		for outfile, data_module in exporter.data_modules.iteritems():
 			enume_name = to_enum_name(outfile)
 			comment = data_module.info["arguments"].get("describe")
 			value_pairs.append((enume_name, comment))

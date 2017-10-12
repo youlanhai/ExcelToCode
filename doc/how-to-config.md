@@ -105,11 +105,35 @@ class   | writer类。位于writers目录下。
 file_path | 输出数据表的路径。
 max_indent | 最大Tab缩进数
 
-### POSTPROCESSORS
-后处理器。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。`POSTPROCESSORS`是一个数组，支持配置多个processor。processor类位于`postprocess`目录下，目前支持生成Java文件映射表。
+### EXPORTER_STAGES
+定制化导表步骤。整个导表过程有很多阶段构成，依次向后执行。每个导出类(ExporterClass)有自己默认的步骤，这里可以通过配置`EXPORTER_STAGES`参数来使用自定义的导表步骤。每个阶段对应一个类，位于`exporters/stages`目录下，且需要注册到`exporters.classes`字典中。如下，是一个非常简单的导表阶段配置：
 
 ```python
-POSTPROCESSORS = [
+EXPORTER_STAGES = [
+    {"class" : "MergeSheets", },
+    {"class" : "MergeField"},
+    {"class" : "WriteSheets", "stage" : 1},
+]
+```
+
+阶段名称 | 适用情况 | 描述
+--------|---------|--------
+BaseStage   |       | 阶段的基类
+ConvertField | Mix  | 根据转换器提供的类型描述，再次转换字段的类型
+MergeField  | Direct, Mix | 合并字段。根据表头field描述，将若干个字段合并成一个
+MergeSheets | All   | 合并分表
+PostProcess | Config, Mix | 根据脚本配置，执行后处理
+PostCheck   | Config, Mix | 根据脚本配置，执行表格合法性检查
+WriteSheets | All | 写出数据表
+RunCustomStage | All| 执行额外的自定义的阶段。见`CUSTOM_STAGES`
+WriteFileList | All | 写出文件列表
+WriteConfigure | All| 写出一些表头的类型信息，以及合并参数
+
+### CUSTOM_STAGES
+自定义后处理阶段。在导表最后阶段调用，能够访问到exporter的所有数据。常用于生成文件列表。`CUSTOM_STAGES`是一个数组，支持配置多个阶段。阶段类位于`exporters/stages`目录下，目前支持生成Java文件映射表。关于导表阶段，见`EXPORTER_STAGES`
+
+```python
+CUSTOM_STAGES = [
     {
         "class" : "JavaFileEnumProcessor",
         "file_path" : "${OUTPUT_PATH}/export/java/excel/DictEnum.java"

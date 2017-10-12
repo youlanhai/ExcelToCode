@@ -4,12 +4,14 @@ import xlsconfig
 from writers import JsonWriter
 import util
 from util import to_utf8, to_class_name, format_slash
-from base_processor import BaseProcessor
+from BaseStage import BaseStage
 
-class JavaFileListProcessor(BaseProcessor):
+class WriteJavaFileList(BaseStage):
 
-	def run(self):
-		file_path = util.resolve_path(self.generator_info["file_path"])
+	def process(self, exporter):
+		info = self.info
+
+		file_path = util.resolve_path(info["file_path"])
 		util.ensure_folder_exist(file_path)
 		print "生成文件列表", file_path
 
@@ -18,18 +20,18 @@ class JavaFileListProcessor(BaseProcessor):
 		wt = JsonWriter(file_path, None)
 		wt.begin_write()
 
-		package = to_utf8(self.generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
+		package = to_utf8(info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
 		wt.write_value("package", to_utf8(package))
 
-		class_name_format = to_utf8(self.generator_info.get("class_name_format"))
-		enum_name_format = to_utf8(self.generator_info.get("enum_name_format"))
+		class_name_format = to_utf8(info.get("class_name_format"))
+		enum_name_format = to_utf8(info.get("enum_name_format"))
 
-		keys = self.exporter.data_modules.keys()
+		keys = exporter.data_modules.keys()
 		keys.sort()
 
 		ret = []
 		for key in keys:
-			data_module = self.exporter.data_modules[key]
+			data_module = exporter.data_modules[key]
 			converter_name = data_module.info["parser"]
 
 			file_name = os.path.splitext(key)[0]

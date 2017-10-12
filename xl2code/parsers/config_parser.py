@@ -30,12 +30,9 @@ class ConfigParser(BaseParser):
 		self.header_2_config = ret
 
 	def parse_header(self, rows):
-		header_row = [self.extract_cell_value(cell) for cell in rows[self.header_row_index]]
+		super(ConfigParser, self).parse_header(rows)
 
-		name_set = set()
-		for col, header in enumerate(header_row):
-			if header == "": break
-
+		for col, header in enumerate(self.headers):
 			converter = None
 
 			cfg = self.header_2_config.get(header)
@@ -44,9 +41,7 @@ class ConfigParser(BaseParser):
 
 			else:
 				converter = ConverterInfo(cfg)
-
 				field = converter.field
-				self.field_2_col[field] = col
 
 				type = convention.function2type(converter.convert)
 				self.sheet_types[field] = (col, field, header, type)

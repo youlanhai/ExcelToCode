@@ -59,17 +59,17 @@ DATA_WRITERS = [
 ]
 
 # 后处理器
-POSTPROCESSORS = [
+CUSTOM_STAGES = [
 	# 生成Java文件列表。Json格式
 	{
-		"class" : "JavaFileListProcessor",
+		"class" : "WriteJavaFileList",
 		"file_path": "$OUTPUT_PATH/java/data/files.wg",
 		"class_name_format" : "Dict%s",
 		"enum_name_format" : "Files.%s"
 	},
 	# 生成Java枚举类，列举了所有文件。
 	{
-		"class" : "JavaFileEnumProcessor",
+		"class" : "WriteJavaFileEnum",
 		"file_path": "$OUTPUT_PATH/java/code/Files.java"
 	}
 ]

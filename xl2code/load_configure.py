@@ -41,7 +41,7 @@ def load_configure(cfg_file, option):
 
 	# resolve_path_in_config(xlsconfig.CODE_GENERATORS)
 	# resolve_path_in_config(xlsconfig.DATA_WRITERS)
-	# resolve_path_in_config(xlsconfig.POSTPROCESSORS)
+	# resolve_path_in_config(xlsconfig.CUSTOM_STAGES)
 
 	# 加载完毕回调
 	xlsconfig.post_init_method(xlsconfig)

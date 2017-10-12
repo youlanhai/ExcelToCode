@@ -68,11 +68,12 @@ converters/converter | 转换器脚本存放路径
 # 路径说明
 路径 | 说明
 ------|-------
-codegen | 代码生成器。如，生成Java代码
 doc | 文档
-exporters | 导出器。用于将excel表转换成相应的数据结构
-parsers | excel解析器。解析单个excel表格
-postprocess | 后处理器。导表结束后，可以执行一些额外的操作。比如，移动文件目录，生成文件列表等
 samples | 一些例子
-tps | 通用类型转换器。用于将数据转换成具体的Python数据类型
-writers | 写出器。用于将Python数据表，写出成不同格式的数据表。如，Lua、Json等。
+xl2code | 导表工具源码
+xl2code/codegen | 代码生成器。如，生成Java代码
+xl2code/exporters | 导出器。用于将excel表转换成相应的数据结构
+xl2code/exporters/stages | 导表阶段。可以定制化导表过程。比如，移动文件目录，生成额外的文件列表等
+xl2code/parsers | excel解析器。解析单个excel表格
+xl2code/tps | 通用类型转换器。用于将数据转换成具体的Python数据类型
+xl2code/writers | 写出器。用于将Python数据表，写出成不同格式的数据表。如，Lua、Json等。
