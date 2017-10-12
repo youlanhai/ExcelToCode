@@ -12,9 +12,10 @@ from parsers.base_parser import ConverterInfo
 
 STAGES_INFO = [
 	{"class" : "MergeSheets", },
-	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
 	{"class" : "ConvertField"},
 	{"class" : "MergeField"},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "PostProcess"},
 	{"class" : "PostCheck"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},

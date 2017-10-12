@@ -10,8 +10,9 @@ from base_exporter import BaseExporter
 
 STAGES_INFO = [
 	{"class" : "MergeSheets", },
-	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
 	{"class" : "MergeField"},
+	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
 	{"class" : "WriteConfigure"},
 	{"class" : "WriteFileList"},

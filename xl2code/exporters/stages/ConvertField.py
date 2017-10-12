@@ -23,7 +23,12 @@ class ConvertField(BaseStage):
 			types = data_module.info["sheet_types"]["main_sheet"]
 			for info in converter.CONFIG:
 				header = info[0]
-				col = types[header][0]
+				type_info = types.get(header)
+				if type_info is None:
+					print "header '%s' doesn't exist" % header
+					continue
+
+				col = type_info[0]
 
 				cfg = ConverterInfo(info, col)
 				col_2_cfg[col] = cfg
