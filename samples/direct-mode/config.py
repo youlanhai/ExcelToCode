@@ -56,6 +56,12 @@ DATA_WRITERS = [
 		"file_path": "$OUTPUT_PATH/java/data/${FILE_PATH}.wg",
 		"max_indent" : 3,
 	},
+	{
+		"stage" : 2,
+		"class" : "PythonWriter",
+		"file_path": "$OUTPUT_PATH/python/${FILE_PATH}.py",
+		"max_indent" : 3,
+	},
 ]
 
 # 后处理器

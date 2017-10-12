@@ -77,7 +77,7 @@ class TypeDescriptor:
 			if split_pos + 1 < len(field):
 				self.child = TypeDescriptor(field[split_pos + 1:])
 		else:
-			self.key = field
+			self.key = field.strip()
 			self.mode = "-"
 
 		self.node = FIELD_NODE_MAP[self.mode](self.key)
