@@ -72,10 +72,10 @@ class XMLWriter(BaseWriter):
 			if isinstance(k, str):
 				self.write(k, v, indent)
 			else:
-				self._output_line(indent, "<%s>" % key)
+				self._output_line(indent, "<%sItem>" % key)
 				self.write("ID", k, indent + 1)
 				self.write("value", v, indent + 1)
-				self._output_line(indent, "</%s>" % key)
+				self._output_line(indent, "</%sItem>" % key)
 
 		indent -= 1
 		self._output_line(indent, "</%s>" % key)
