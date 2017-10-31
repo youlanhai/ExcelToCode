@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import traceback
+import time
 
 import xlsconfig
 import util
@@ -25,56 +26,83 @@ class DirectExporter(BaseExporter):
 	def __init__(self, input_path, exts):
 		super(DirectExporter, self).__init__(input_path, exts)
 		self.parser_class = DirectParser
+		self.merge_file_patterns = []
 
 	def export_excels(self):
 		for infile in self.excel_files:
-			converter_name, outfile, sheet_index = self.find_converter_info(infile)
-
-			if self.export_excel_to_python(infile, outfile, converter_name, sheet_index):
+			if self.parse_excel(infile, 0):
 				pass
 
 			elif not xlsconfig.FORCE_RUN:
 				return
 		return
 
-	def export_excel_to_python(self, infile, outfile, converter_name, sheet_index = 0):
-		input_path = os.path.join(xlsconfig.INPUT_PATH, infile)
-		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
+	def parse_excel(self, infile, sheet_index = 0):
+		input_full_path = os.path.join(xlsconfig.INPUT_PATH, infile)
+		data_module = None
+		outfile = None
 
-		if xlsconfig.FAST_MODE and util.if_file_newer(output_path, input_path):
-			data_module = util.import_file(outfile)
+		if xlsconfig.FAST_MODE:
+			info = self.parser_cache.get(infile)
+			if info and info["createTime"] >= os.path.getmtime(input_full_path):
+				outfile = info["outputPath"]
+				data_module = util.import_file(outfile)
 
-		else:
-			print infile, "-", converter_name
-			parser = self.parser_class(input_path, None, sheet_index)
+		if data_module is None:
+			print "parse", infile
+
+			parser = self.parser_class(input_full_path, None, sheet_index)
 			try:
 				parser.run()
 			except:
 				traceback.print_exc()
 				return False
 
-			# 这里有一次修改转换器的机会
-			converter_name = parser.arguments.get("template", converter_name)
+			arguments = parser.arguments
+
+			outfile = arguments.get("outputPath")
+			if outfile is None:
+				outfile = os.path.splitext(infile)[0]
+			else:
+				if outfile.startswith('/'):
+					outfile = outfile[1:]
+				else:
+					outfile = os.path.normpath(os.path.join(os.path.dirname(infile), outfile))
+
+			outfile = outfile.replace('\\', '/')
+
+			converter_name = arguments.get("template")
+			if converter_name is None:
+				converter_name = self.match_converter(outfile)
 
 			data_module = self.create_data_module(infile, outfile, converter_name, parser)
-			if data_module is None: return False
+			if data_module is None:
+				return False
 
-		merge_to_sheet = data_module.info["arguments"].get("mergeToSheet")
+			self.parser_cache[infile] = {
+				"outputPath" : outfile,
+				"createTime" : time.time(),
+			}
+
+		arguments = data_module.info["arguments"]
+
+		merge_to_sheet = arguments.get("mergeToSheet")
 		if merge_to_sheet:
-			self.add_merge_pattern(merge_to_sheet, outfile)
+			self.add_merge_sheet_pattern(merge_to_sheet, outfile)
+
+		merge_to_file = arguments.get("mergeToFile")
+		if merge_to_file:
+			self.add_merge_file_pattern(merge_to_file, outfile)
 
 		self.store_data_module(data_module)
 		return True
 
-	def find_converter_info(self, infile):
-		outfile = os.path.splitext(infile)[0]
-		converter_name = os.path.basename(outfile)
-		return (converter_name, outfile, 0)
+	def match_converter(self, outfile):
+		return outfile
 
-	def add_merge_pattern(self, to_name, sub_name):
-
+	def add_merge_pattern(self, pattern_dict, to_name, sub_name):
 		# 如果目标表格存在，则追加到尾部
-		for i, pattern in enumerate(self.merge_patterns):
+		for i, pattern in enumerate(pattern_dict):
 			if to_name != pattern[0]: continue
 
 			for j in xrange(1, len(pattern)):
@@ -83,13 +111,18 @@ class DirectExporter(BaseExporter):
 
 			if not isinstance(pattern, list):
 				pattern = list(pattern)
-				self.merge_patterns[i] = pattern
+				pattern_dict[i] = pattern
 
 			pattern.append(sub_name)
 			return
-		
-		self.merge_patterns.append([to_name, sub_name])
-		return
+
+		pattern_dict.append([to_name, sub_name])
+
+	def add_merge_sheet_pattern(self, to_name, sub_name):
+		self.add_merge_pattern(self.merge_patterns, to_name, sub_name)
+
+	def add_merge_file_pattern(self, to_name, sub_name):
+		self.add_merge_pattern(self.merge_file_patterns, to_name, sub_name)
 
 
 

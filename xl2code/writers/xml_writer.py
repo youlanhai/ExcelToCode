@@ -26,7 +26,7 @@ class XMLWriter(BaseWriter):
 	def __init__(self, file_path, data_module = None, generator_info = None):
 		super(XMLWriter, self).__init__(file_path, data_module, generator_info)
 		self.output('<?xml version="1.0" encoding="utf-8"?>\n')
-		self.module_name = os.path.basename(data_module.path)
+		self.module_name = os.path.splitext(os.path.basename(file_path))[0]
 
 	def write_sheet(self, name, sheet):
 		if name != "main_sheet": return
@@ -35,14 +35,16 @@ class XMLWriter(BaseWriter):
 	
 		name = self.module_name
 		indent = 0
-		self._output_line(indent, '<%ss>' % name)
+		self._output_line(indent, '<%s>' % name)
+
+		item_key = name + "Item"
 
 		keys = sheet.keys()
 		keys.sort()
 		for key in keys:
-			self._write_row(name, sheet[key], indent + 1)
+			self._write_row(item_key, sheet[key], indent + 1)
 
-		self._output_line(indent, "</%ss>" % name)
+		self._output_line(indent, "</%s>" % name)
 
 	def _write_row(self, key, value, indent):
 		if isinstance(value, list):

@@ -196,3 +196,6 @@ def to_vector3_list(args):
 		ret.append(to_vector3(group))
 
 	return ret
+
+def to_path(args):
+	return args.strip().replace('\\', '/')

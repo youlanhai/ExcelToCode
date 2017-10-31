@@ -72,6 +72,7 @@ ARGUMENT_CONVERTER = {
 	"模板：" 			: ["template", "string"],
 	"关联总表：" 		: ["mergeToSheet", "string"],
 	"缩进：" 			: ["indent", 	"int"],
+	"输出路径："		: ["outputPath", "path"],
 }
 
 # Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。

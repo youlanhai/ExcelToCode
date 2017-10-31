@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import json
 
 import xlsconfig
 import writers
@@ -23,6 +24,7 @@ class BaseExporter(object):
 		self.merge_patterns = list(xlsconfig.MERGE_TABLE)
 
 		self.parser_class = None
+		self.parser_cache = {}
 
 		self.stages_info = getattr(xlsconfig, "EXPORTER_STAGES", self.STAGES_INFO)
 
@@ -32,8 +34,11 @@ class BaseExporter(object):
 		sys.path.insert(0, xlsconfig.CONVERTER_PATH)
 		sys.path.insert(0, xlsconfig.TEMP_PATH)
 
+		self.load_cache_file()
 		# export excels to temp python
 		self.export_excels()
+
+		self.save_cache_file()
 
 		for stage_info in self.stages_info:
 			stage_class = stages.classes.get(stage_info["class"], None)
@@ -50,6 +55,23 @@ class BaseExporter(object):
 
 	def export_excels(self):
 		pass
+
+	def load_cache_file(self):
+		self.parser_cache = {}
+		cache_file = os.path.join(xlsconfig.TEMP_PATH, "cache.json")
+		try:
+			with open(cache_file, "r") as f:
+				self.parser_cache = json.load(f)
+		except IOError, e:
+			pass
+
+	def save_cache_file(self):
+		cache_file = os.path.join(xlsconfig.TEMP_PATH, "cache.json")
+		try:
+			with open(cache_file, "w") as f:
+				json.dump(self.parser_cache, f, ensure_ascii = False, indent = 4)
+		except IOError, e:
+			pass
 
 	def find_converter(self, converter_name):
 		pass
@@ -68,7 +90,8 @@ class BaseExporter(object):
 
 		converter = self.configures.get(converter_name)
 		if converter is None:
-			converter = NewConverter(converter_name, module_info["sheet_types"]["main_sheet"], module_info["arguments"], infile)
+			sheet_types = module_info["sheet_types"]["main_sheet"]
+			converter = NewConverter(converter_name, sheet_types, module_info["arguments"], infile)
 			self.configures[converter_name] = converter
 		else:
 			if not converter.compare_types(module_info["sheet_types"]["main_sheet"], infile):
@@ -80,9 +103,19 @@ class BaseExporter(object):
 		return True
 
 	def create_data_module(self, infile, outfile, converter_name, parser):
+		new_path = parser.arguments.get("outputPath")
+		if new_path:
+			if new_path.startswith('/'):
+				new_path = new_path[1:]
+			else:
+				new_path = os.path.join(os.path.dirname(infile), new_path)
+			new_path = os.path.normpath(new_path).replace('\\', '/')
+		else:
+			new_path = outfile
+
 		info = {
 			"infile" : infile,
-			"outfile" : outfile,
+			"outfile" : new_path,
 			"parser" : converter_name,
 			"multi_key" : parser.is_multi_key,
 			"key_name" : parser.key_name,
