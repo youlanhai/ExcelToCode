@@ -62,6 +62,30 @@ DATA_WRITERS = [
 		"file_path": "$OUTPUT_PATH/python/${FILE_PATH}.py",
 		"max_indent" : 3,
 	},
+	{
+		"stage" : 2,
+		"class" : "XMLWriter",
+		"file_path": "$OUTPUT_PATH/xml/${FILE_PATH}.xml",
+		"max_indent" : 3,
+	},
+	{
+		"stage" : 2,
+		"class" : "LuaWriter",
+		"file_path": "$OUTPUT_PATH/lua/${FILE_PATH}.lua",
+		"max_indent" : 3,
+	},
+	{
+		"stage" : 2,
+		"class" : "JsonWriter",
+		"file_path": "$OUTPUT_PATH/json/${FILE_PATH}.json",
+		"max_indent" : 3,
+	},
+	{
+		"stage" : 2,
+		"class" : "JavaScriptWriter",
+		"file_path": "$OUTPUT_PATH/js/${FILE_PATH}.js",
+		"max_indent" : 3,
+	},
 ]
 
 # 后处理器
