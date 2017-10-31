@@ -75,6 +75,7 @@ ARGUMENT_CONVERTER = {
 	"合并到文件："		: ["mergeToFile", "path"],
 	"缩进：" 			: ["indent", 	"int"],
 	"输出路径："		: ["outputPath", "path"],
+	"常量表：" 		: ["constant", "bool"],
 }
 
 # Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。

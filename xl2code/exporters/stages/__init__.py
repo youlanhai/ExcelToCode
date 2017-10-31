@@ -1,17 +1,18 @@
 
 classes_name = (
 	"ConvertField",
+	"ExtractConstant",
 	"MergeField",
-	"MergeSheets",
 	"MergeFiles",
+	"MergeSheets",
 	"PostCheck",
 	"PostProcess",
 	"RunCustomStage",
 	"WriteConfigure",
 	"WriteFileList",
-	"WriteSheets",
 	"WriteJavaFileEnum",
 	"WriteJavaFileList",
+	"WriteSheets",
 )
 
 classes = {}

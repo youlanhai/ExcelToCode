@@ -130,11 +130,13 @@ class BaseExporter(object):
 		wt.max_indent = xlsconfig.TEMP_FILE_INDENT
 		wt.begin_write()
 
+		sheet = parser.sheet
+
 		wt.write_value("path", outfile)
 		wt.write_sheet("info", info)
-		wt.write_sheet("main_sheet", parser.sheet)
+		wt.write_sheet("main_sheet", sheet)
 
 		wt.end_write()
 		wt.close()
 
-		return DataModule(outfile, info, parser.sheet)
+		return DataModule(outfile, info, sheet)

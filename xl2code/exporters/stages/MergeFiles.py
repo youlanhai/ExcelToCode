@@ -32,6 +32,7 @@ class MergeFiles(MergeSheets):
 			"parser" : outfile.replace('/', '.'),
 			"outfile" : outfile,
 			"multi_key": False,
+			"merged" : True,
 		}
 		infiles = []
 		sheets = {}

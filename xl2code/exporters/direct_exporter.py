@@ -15,6 +15,7 @@ STAGES_INFO = [
 	{"class" : "MergeField"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "MergeFiles"},
+	{"class" : "ExtractConstant"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
 	{"class" : "WriteConfigure"},
 	{"class" : "WriteFileList"},
@@ -110,6 +111,7 @@ class DirectExporter(BaseExporter):
 		return outfile
 
 	def add_merge_pattern(self, pattern_list, to_name, sub_name):
+		sub_name = '^' + sub_name + '$'
 		# 如果目标表格存在，则追加到尾部
 		for i, pattern in enumerate(pattern_list):
 			if to_name != pattern[0]: continue

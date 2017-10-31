@@ -85,8 +85,8 @@ class XMLWriter(BaseWriter):
 		indent -= 1
 		self._output_line(indent, "</%s>" % key)
 
-	def write_value(self, name, value, max_indent = 2):
-		pass
+	def write_value(self, name, value):
+		self.write(key, value, 1)
 
 	def write_comment(self, comment):
 		self.output("<!-- %s -->\n" % comment)
