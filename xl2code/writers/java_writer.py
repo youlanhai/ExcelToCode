@@ -29,11 +29,10 @@ class JavaWriter(JsonWriter):
 
 		sheet_types = module_info["sheet_types"]["main_sheet"]
 
-		fields = sheet_types.keys()
-		fields.sort()
-		self.fields = fields
+		texts = sheet_types.keys()
+		texts.sort()
 
-		texts = [sheet_types[field][2] for field in fields]
+		fields = [sheet_types[field][1] for field in texts]
 		headers = [texts, fields, ]
 		self.write_value("header", headers, 2)
 
@@ -43,7 +42,6 @@ class JavaWriter(JsonWriter):
 		max_indent = self.max_indent
 		if self.is_multi_key: max_indent += 1
 
-		key_field = self.fields[0]
 		body = []
 
 		keys = sheet.keys()

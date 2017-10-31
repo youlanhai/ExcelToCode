@@ -70,7 +70,9 @@ ARGUMENT_CONVERTER = {
 	"键值是否重复：" 	: ["multiKey", "bool"],
 	"说明：" 			: ["describe", "string"],
 	"模板：" 			: ["template", "string"],
-	"关联总表：" 		: ["mergeToSheet", "string"],
+	"关联总表：" 		: ["mergeToSheet", "path"],
+	"合并到总表："		: ["mergeToSheet", "path"],
+	"合并到文件："		: ["mergeToFile", "path"],
 	"缩进：" 			: ["indent", 	"int"],
 	"输出路径："		: ["outputPath", "path"],
 }

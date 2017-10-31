@@ -3,6 +3,7 @@ classes_name = (
 	"ConvertField",
 	"MergeField",
 	"MergeSheets",
+	"MergeFiles",
 	"PostCheck",
 	"PostProcess",
 	"RunCustomStage",

@@ -8,6 +8,8 @@ class DataModule(object):
 		self.info = info
 		self.main_sheet = sheet
 		self.converter = converter
+		self.extra_sheets = None
+		self.sheets = None
 
 class NewConverter(object):
 	def __init__(self, name, types, arguments, filename):

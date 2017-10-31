@@ -33,9 +33,12 @@ class JsonWriter(BaseWriter):
 		self.is_started = True
 
 	def write_sheet(self, name, sheet):
-		self.write_value(name, sheet, 2)
+		self.write_value(name, sheet, self.max_indent)
 
-	def write_value(self, name, value, max_indent = 2):
+	def write_value(self, name, value, max_indent = None):
+		if max_indent is None:
+			max_indent = self.max_indent
+			
 		self.ensure_split()
 
 		indent = 1

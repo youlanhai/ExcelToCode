@@ -28,13 +28,16 @@ class XMLWriter(BaseWriter):
 		self.output('<?xml version="1.0" encoding="utf-8"?>\n')
 		self.module_name = os.path.splitext(os.path.basename(file_path))[0]
 
-	def write_sheet(self, name, sheet):
-		if name != "main_sheet": return
+	def begin_write(self):
+		self._output_line(0, '<%s>' % self.module_name)
 
+	def end_write(self):
+		self._output_line(0, "</%s>" % self.module_name)
+
+	def write_sheet(self, name, sheet):
 		self.write_types_comment(name)
-	
-		name = self.module_name
-		indent = 0
+
+		indent = 1
 		self._output_line(indent, '<%s>' % name)
 
 		item_key = name + "Item"

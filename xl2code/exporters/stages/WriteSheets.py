@@ -41,7 +41,17 @@ class WriteSheets(BaseStage):
 		wt.write_comment("from " + data_module.info["infile"])
 
 		wt.begin_write()
-		wt.write_sheet("main_sheet", data_module.main_sheet)
+
+		main_sheet = getattr(data_module, "main_sheet", None)
+		if main_sheet is not None:
+			wt.write_sheet("main_sheet", data_module.main_sheet)
+
+		sheets = getattr(data_module, "sheets", None)
+		if sheets is not None:
+			keys = sheets.keys()
+			keys.sort()
+			for k in keys:
+				wt.write_sheet(k, sheets[k])
 
 		extra_sheets = getattr(data_module, "extra_sheets", None)
 		if extra_sheets is not None:
