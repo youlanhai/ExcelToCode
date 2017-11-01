@@ -7,8 +7,11 @@ import math
 def use_origin(arg): return arg
 def use_empty(arg): return None
 
+def to_empty(arg): return None
+
 def to_bool(arg):
 	if isinstance(arg, unicode) or isinstance(arg, str):
+		arg = arg.lower()
 		if arg == "true": return True
 		elif arg == "false": return False
 		return bool(to_int(arg))
