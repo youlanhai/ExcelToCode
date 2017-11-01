@@ -29,15 +29,15 @@ class ConfigParser(BaseParser):
 			ret[header] = info
 		self.header_2_config = ret
 
-	def parse_header(self, row):
-		super(ConfigParser, self).parse_header(row)
+	def parse_header(self, cells):
+		super(ConfigParser, self).parse_header(cells)
 
 		for col, header in enumerate(self.headers):
 			converter = None
 
 			cfg = self.header_2_config.get(header)
 			if cfg is None:
-				print "警告：第(%s)列的表头'%s'没有被解析。%s" % (util.int_to_base26(col), header, self.filename, )
+				print "警告：表头%s = '%s'没有被解析。" % (self.row_col_str(self.header_row_index, col), header, )
 
 			else:
 				converter = ConverterInfo(cfg)

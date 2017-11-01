@@ -66,16 +66,17 @@ DEPENDENCIES = {}
 
 # Excel表头参数解析
 ARGUMENT_CONVERTER = {
-	"版本：" 			: ["version", "int"],
-	"键值是否重复：" 	: ["multiKey", "bool"],
-	"说明：" 			: ["describe", "string"],
-	"模板：" 			: ["template", "string"],
-	"关联总表：" 		: ["mergeToSheet", "path"],
-	"合并到总表："		: ["mergeToSheet", "path"],
-	"合并到文件："		: ["mergeToFile", "path"],
-	"缩进：" 			: ["indent", 	"int"],
-	"输出路径："		: ["outputPath", "path"],
-	"常量表：" 		: ["constant", "bool"],
+	"版本" 			: ["version", "int"],
+	"键值是否重复" 	: ["multiKey", "bool"],
+	"说明" 			: ["describe", "string"],
+	"模板" 			: ["template", "string"],
+	"关联总表" 		: ["mergeToSheet", "path"],
+	"合并到总表"		: ["mergeToSheet", "path"],
+	"合并到文件"		: ["mergeToFile", "path"],
+	"缩进" 			: ["indent", 	"int"],
+	"输出路径"		: ["outputPath", "path"],
+	"常量表" 			: ["constant", "bool"],
+	"垂直排列" 		: ["vertical", "bool"],
 }
 
 # Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。

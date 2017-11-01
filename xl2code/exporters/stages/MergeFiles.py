@@ -48,6 +48,10 @@ class MergeFiles(MergeSheets):
 			sheets[name] = module.main_sheet
 			types[name] = module.info["sheet_types"]["main_sheet"]
 
+			extra_sheets = getattr(module, "extra_sheets", None)
+			if extra_sheets:
+				sheets.update(extra_sheets)
+
 			infiles.append(module.info["infile"])
 
 		info["infile"] = ", ".join(infiles)

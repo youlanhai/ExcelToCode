@@ -22,6 +22,7 @@ class BaseExporter(object):
 
 		self.configures = {}
 		self.merge_patterns = list(xlsconfig.MERGE_TABLE)
+		self.merge_file_patterns = []
 
 		self.parser_class = None
 		self.parser_cache = {}

@@ -77,7 +77,7 @@ class BaseParser(object):
 		# 表格是否是垂直排列
 		self.is_vertical = False
 		# 如果是垂直排列的话，从第几行开始才是真正的数据
-		self.vertical_start_row = 2
+		self.vertical_start_row = xlsconfig.SHEET_ROW_INDEX.get("verticalStartRow", 2)
 
 		self.workbook = None
 		self.worksheet = None
@@ -151,11 +151,15 @@ class BaseParser(object):
 		if worksheet.max_row > 32767:
 			print "warn: Excel '%s' 行数过多：%d" % (self.filename, worksheet.max_row)
 
-		self.parse_arguments(worksheet[self.argument_row_index + 1])
+		self.parse_arguments(self.extract_cells(self.argument_row_index))
 
 		if self.version is None:
 			log_error("无效的数据表文件，必须存在版本号信息")
 			return
+
+		self.parse_header(self.extract_cells(self.header_row_index))
+		if self.default_value_row_index >= 0:
+			self.parse_defaults(self.extract_cells(self.default_value_row_index))
 
 		if self.is_vertical:
 			self.parse_by_vertical(worksheet)
@@ -178,15 +182,7 @@ class BaseParser(object):
 				result_value = self.convert_cell(r, c, cell_value)
 			except ExcelToCodeException, e:
 				# traceback.print_exc()
-				real_r, real_c = 0, 0
-				if self.is_vertical:
-					real_r = c + self.vertical_start_row + 1
-					real_c = util.int_to_base26(r)
-				else:
-					real_r = r + 1
-					real_c = util.int_to_base26(c)
-					
-				log_error("单元格(%d, %s) = [%s] 数据解析失败: %s", real_r, real_c, str(cell_value), str(e))
+				log_error("单元格%s = [%s] 数据解析失败: %s", self.row_col_str(r, c), str(cell_value), str(e))
 
 			current_row_data.append(result_value)
 
@@ -194,27 +190,17 @@ class BaseParser(object):
 		return True
 
 	def parse_by_horizontal(self, worksheet):
-		self.parse_header(worksheet[self.header_row_index + 1])
-		if self.default_value_row_index >= 0:
-			self.parse_defaults(worksheet[self.default_value_row_index + 1])
-
 		for r in xrange(self.data_row_index, worksheet.max_row):
-			if not self.parse_cells(r, worksheet[r + 1]):
+			cells = worksheet[r + 1]
+			if not self.parse_cells(r, cells):
 				break
 		return
 
 	def parse_by_vertical(self, worksheet):
-		header_col = util.int_to_base26(self.header_row_index)
-		self.parse_header(worksheet[header_col])
-
-		if self.default_value_row_index >= 0:
-			default_col = util.int_to_base26(self.default_value_row_index)
-			self.parse_defaults(worksheet[default_col])
-
 		for c in xrange(self.data_row_index, worksheet.max_column):
 			col_index = util.int_to_base26(c)
-			cells = worksheet[col_index]
-			if not self.parse_cells(c, cells[self.vertical_start_row:]):
+			cells = worksheet[col_index][self.vertical_start_row : ]
+			if not self.parse_cells(c, cells):
 				break
 		return
 
@@ -231,35 +217,36 @@ class BaseParser(object):
 
 			self.sheet[key_value] = current_row_data
 
-	def parse_header(self, row):
-		header_row = [self.extract_cell_value(cell) for cell in row]
-		self.headers = header_row
+	def parse_header(self, cells):
+		self.headers = cells
 
-		for col, header in enumerate(header_row):
+		for col, header in enumerate(cells):
 			if header == "":
-				self.headers = header_row[:col]
+				self.headers = cells[:col]
 				break
 
 			if header in self.header_2_col:
-				log_error("表头'%s'重复，at 列：%s", header, util.int_to_base26(col))
+				log_error("表头'%s'重复，at %s", header, self.row_col_str(self.header_row_index, col))
 				continue
 
 			self.header_2_col[header] = col
-		else:
-			self.headers = header_row
 
 		if len(self.headers) == 0:
 			return log_error("Except表'%s'表头数量不能为0", self.filename)
 		return
 
-	def parse_arguments(self, row):
+	def parse_arguments(self, cells):
 		row_index = self.argument_row_index
-		arg_row = [self.extract_cell_value(cell) for cell in row]
+		compatible_posfix = '：'
 
 		self.arguments = {}
-		for col in xrange(0, len(arg_row), 2):
-			header = arg_row[col]
+		for col in xrange(0, len(cells), 2):
+			header = cells[col]
 			if header is None: break
+
+			if header.endswith(compatible_posfix):
+				split = len(header) - len(compatible_posfix)
+				header = header[:split]
 
 			converter = xlsconfig.ARGUMENT_CONVERTER.get(header)
 			if converter is None: continue
@@ -267,14 +254,14 @@ class BaseParser(object):
 			field, type = converter
 			method = convention.type2function(type)
 
-			value = arg_row[col + 1]
+			value = cells[col + 1]
 			ret = None
 			try:
 				ret = method(value)
 			except:
 				traceback.print_exc()
 
-				log_error("参数转换失败，(%d, %s) = [%s]", row_index + 1, util.int_to_base26(col), value)
+				log_error("参数转换失败，%s = [%s]", self.row_col_str(row_index, col), value)
 
 			self.arguments[field] = ret
 
@@ -291,12 +278,31 @@ class BaseParser(object):
 			self.is_multi_key = multi_key
 		return
 
-	def parse_defaults(self, row):
-		default_row = [self.extract_cell_value(cell) for cell in row]
-
+	def parse_defaults(self, cells):
 		default_values = {}
-		for col, value in enumerate(default_row):
-			if value != "": default_values[col] = value
+		for col, value in enumerate(cells):
+			if value != "":
+				default_values[col] = value
 
 		self.default_values = default_values
 
+	def extract_cells(self, index):
+		if self.is_vertical:
+			col = util.int_to_base26(index)
+
+			ret = []
+			columns = self.worksheet[col]
+			for i in xrange(self.vertical_start_row, len(columns)):
+				ret.append(self.extract_cell_value(columns[i]))
+
+			return ret
+		else:
+			row = index + 1
+			return [self.extract_cell_value(cell) for cell in self.worksheet[row]]
+
+	def row_col_str(self, row, col):
+		real_r, real_c = row, col
+		if self.is_vertical:
+			real_r = col + self.vertical_start_row
+			real_c = row
+		return "%d:%s" % (real_r + 1, util.int_to_base26(real_c))

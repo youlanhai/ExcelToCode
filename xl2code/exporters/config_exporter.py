@@ -16,6 +16,8 @@ STAGES_INFO = [
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "PostProcess"},
 	{"class" : "PostCheck"},
+	{"class" : "ExtractConstant"},
+	{"class" : "MergeFiles"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
 	{"class" : "WriteConfigure"},
 	{"class" : "WriteFileList"},

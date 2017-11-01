@@ -23,6 +23,8 @@ class WriteConfigure(BaseStage):
 
 		wt.write_value("merges", exporter.merge_patterns)
 
+		wt.write_value("mergeFiles", exporter.merge_file_patterns)
+
 		wt.end_write()
 		wt.close()
 

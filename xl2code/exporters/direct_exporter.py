@@ -14,8 +14,8 @@ STAGES_INFO = [
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
 	{"class" : "MergeField"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
-	{"class" : "MergeFiles"},
 	{"class" : "ExtractConstant"},
+	{"class" : "MergeFiles"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_FINAL},
 	{"class" : "WriteConfigure"},
 	{"class" : "WriteFileList"},
@@ -36,7 +36,6 @@ class DirectExporter(BaseExporter):
 	def __init__(self, input_path, exts):
 		super(DirectExporter, self).__init__(input_path, exts)
 		self.parser_class = DirectParser
-		self.merge_file_patterns = []
 
 	def export_excels(self):
 		for infile in self.excel_files:
