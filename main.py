@@ -48,7 +48,8 @@ def main():
 		generate_header.generate_header()
 
 	if option.export or option.gen_code:
-		export_excel()
+		if not export_excel():
+			return
 
 	if option.gen_code:
 		import generate_code
@@ -67,7 +68,8 @@ def export_excel():
 		exporter.run()
 	except util.ExcelToCodeException, e:
 		print e
-	return
+		return False
+	return True
 
 if __name__ == "__main__":
 	main()
