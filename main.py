@@ -63,7 +63,10 @@ def export_excel():
 	import exporters
 	cls = getattr(exporters, xlsconfig.EXPORTER_CLASS)
 	exporter = cls(xlsconfig.INPUT_PATH, (".xlsx", ))
-	exporter.run()
+	try:
+		exporter.run()
+	except util.ExcelToCodeException, e:
+		print e
 	return
 
 if __name__ == "__main__":

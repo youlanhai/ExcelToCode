@@ -111,13 +111,20 @@ class BaseParser(object):
 
 		return value
 
+	def get_default_value(self, col):
+		value = self.default_values.get(col, "")
+		if value == '!':
+			raise ExcelToCodeException, "该项必填"
+		value = value.replace("\\!", "!")
+		return value
+
 	def convert_cell(self, row, col, value):
 		converter = self.converters[col]
 		if converter is None:
 			return None
 
 		if value == "":
-			value = self.default_values.get(col, "")
+			value = self.get_default_value(col)
 
 		ret = None
 		if value == "":
@@ -125,7 +132,10 @@ class BaseParser(object):
 				raise ExcelToCodeException, "该项必填"
 
 		else:
-			ret = converter.convert(value)
+			try:
+				ret = converter.convert(value)
+			except:
+				raise ExcelToCodeException, "类型转换失败(%s)" % (str(converter.convert), )
 
 		if ret is None and converter.exist_default_value:
 			ret = converter.default_value
@@ -182,7 +192,7 @@ class BaseParser(object):
 				result_value = self.convert_cell(r, c, cell_value)
 			except ExcelToCodeException, e:
 				# traceback.print_exc()
-				log_error("单元格%s = [%s] 数据解析失败: %s", self.row_col_str(r, c), str(cell_value), str(e))
+				log_error("单元格 %s = [%s] 数据解析失败。原因：%s", self.row_col_str(r, c), str(cell_value), str(e))
 
 			current_row_data.append(result_value)
 
@@ -236,7 +246,6 @@ class BaseParser(object):
 		return
 
 	def parse_arguments(self, cells):
-		row_index = self.argument_row_index
 		compatible_posfix = '：'
 
 		self.arguments = {}
@@ -261,7 +270,7 @@ class BaseParser(object):
 			except:
 				traceback.print_exc()
 
-				log_error("参数转换失败，%s = [%s]", self.row_col_str(row_index, col), value)
+				log_error("参数转换失败，%s = [%s]", self.row_col_str(self.argument_row_index, col), value)
 
 			self.arguments[field] = ret
 

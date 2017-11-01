@@ -61,11 +61,7 @@ class DirectExporter(BaseExporter):
 			print "parse", infile
 
 			parser = self.parser_class(input_full_path, None, sheet_index)
-			try:
-				parser.run()
-			except:
-				traceback.print_exc()
-				return False
+			parser.run()
 
 			arguments = parser.arguments
 
