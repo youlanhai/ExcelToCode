@@ -29,8 +29,8 @@ class ConfigParser(BaseParser):
 			ret[header] = info
 		self.header_2_config = ret
 
-	def parse_header(self, rows):
-		super(ConfigParser, self).parse_header(rows)
+	def parse_header(self, row):
+		super(ConfigParser, self).parse_header(row)
 
 		for col, header in enumerate(self.headers):
 			converter = None

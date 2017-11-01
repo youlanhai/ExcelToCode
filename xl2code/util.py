@@ -6,6 +6,9 @@ import re
 
 import xlsconfig
 
+class ExcelToCodeException(Exception):
+	pass
+
 def to_utf8(s):
 	tp = type(s)
 	if tp == unicode: return s.encode("utf-8")
@@ -77,7 +80,7 @@ def log_error(msg, *args):
 	if xlsconfig.FORCE_RUN:
 		print "错误：", msg
 	else:
-		raise RuntimeError, msg
+		raise ExcelToCodeException, msg
 
 # 确保文件所在的路径存在。file_path是文件的路径。
 def ensure_folder_exist(file_path):

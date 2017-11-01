@@ -16,11 +16,19 @@ class DirectParser(BaseParser):
 
 
 	# 使用Excel表头提供的信息，构造转换器
-	def parse_header(self, rows):
-		super(DirectParser, self).parse_header(rows)
+	def parse_header(self, row):
+		super(DirectParser, self).parse_header(row)
 		
-		field_row 	= [self.extract_cell_value(cell) for cell in rows[self.field_row_index]]
-		type_row 	= [self.extract_cell_value(cell) for cell in rows[self.type_row_index]]
+		field_index, type_index = 0, 0
+		if self.is_vertical:
+			field_index = util.int_to_base26(self.field_row_index)
+			type_index = util.int_to_base26(self.type_row_index)
+		else:
+			field_index = self.field_row_index + 1
+			type_index = self.type_row_index + 1
+
+		field_row 	= [self.extract_cell_value(cell) for cell in self.worksheet[field_index]]
+		type_row 	= [self.extract_cell_value(cell) for cell in self.worksheet[type_index]]
 
 		self.key_name = field_row[0]
 
@@ -42,7 +50,3 @@ class DirectParser(BaseParser):
 			self.converters[col] = ConverterInfo((header, field, method, True))
 			self.sheet_types[header] = (col, field, header, type)
 		return
-
-	def parse_arguments(self, rows):
-		super(DirectParser, self).parse_arguments(rows)
-		self.is_multi_key = self.arguments.get("multiKey", False)
