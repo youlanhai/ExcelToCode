@@ -13,7 +13,7 @@ import install_package
 from logtool import native_str
 from load_configure import load_configure
 
-def main():
+def main(argv):
 	util.redirect_iostream()
 
 	parser = ArgumentParser(description=native_str("导表工具"))
@@ -26,7 +26,7 @@ def main():
 	parser.add_argument("-input", help=native_str("Excel的输入路径"))
 	parser.add_argument("-output", help=native_str("输出路径"))
 	parser.add_argument("-temp", help=native_str("临时目录"))
-	option = parser.parse_args()
+	option = parser.parse_args(argv)
 
 	#parser.print_help()
 
@@ -72,4 +72,4 @@ def export_excel():
 	return True
 
 if __name__ == "__main__":
-	main()
+	main(sys.argv[1:])
