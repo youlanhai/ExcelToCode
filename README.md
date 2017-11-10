@@ -77,6 +77,3 @@ xl2code/exporters/stages | 导表阶段。可以定制化导表过程。比如�
 xl2code/parsers | excel解析器。解析单个excel表格
 xl2code/tps | 通用类型转换器。用于将数据转换成具体的Python数据类型
 xl2code/writers | 写出器。用于将Python数据表，写出成不同格式的数据表。如，Lua、Json等。
-
-# TODO
-+ 第一遍导表结果存贮成数组，方便后面转换。增加提取key阶段，将数组转换成哈希表
