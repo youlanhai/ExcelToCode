@@ -12,6 +12,7 @@ from base_exporter import BaseExporter
 STAGES_INFO = [
 	{"class" : "MergeSheets", },
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
+	{"class" : "ExtractLocale"},
 	{"class" : "MergeField"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "ExtractConstant"},
@@ -22,12 +23,15 @@ STAGES_INFO = [
 	{"class" : "RunCustomStage"},
 ]
 
-def resolve_path(infile, path):
-	if path.startswith('/'):
+def resolve_output_path(infile, path):
+	if path is None:
+		path = os.path.splitext(infile)[0]
+	elif path.startswith('/'):
 		path = path[1:]
 	else:
-		path = os.path.normpath(os.path.join(os.path.dirname(infile), path))
-	return path
+		dir = os.path.dirname(infile)
+		path = os.path.normpath(os.path.join(dir, path))
+	return path.replace('\\', '/')
 
 
 class DirectExporter(BaseExporter):
@@ -49,58 +53,67 @@ class DirectExporter(BaseExporter):
 	def parse_excel(self, infile, sheet_index = 0):
 		input_full_path = os.path.join(xlsconfig.INPUT_PATH, infile)
 		data_module = None
-		outfile = None
 
 		if xlsconfig.FAST_MODE:
-			info = self.parser_cache.get(infile)
-			if info and info["createTime"] >= os.path.getmtime(input_full_path):
-				outfile = info["outputPath"]
+			cache = self.parser_cache.get(infile)
+			if cache and cache["createTime"] >= os.path.getmtime(input_full_path):
+				outfile = cache["outputPath"]
 				data_module = util.import_file(outfile)
 
 		if data_module is None:
-			print "parse", infile
-
-			parser = self.parser_class(input_full_path, None, sheet_index)
-			parser.run()
-
-			arguments = parser.arguments
-
-			outfile = arguments.get("outputPath")
-			if outfile is None:
-				outfile = os.path.splitext(infile)[0]
-			else:
-				outfile = resolve_path(infile, outfile)
-
-			outfile = outfile.replace('\\', '/')
-
-			converter_name = arguments.get("template")
-			if converter_name is None:
-				converter_name = self.match_converter(outfile)
-			converter_name = converter_name.replace('\\', '/').replace('/', '.')
-
-			data_module = self.create_data_module(infile, outfile, converter_name, parser)
+			data_module = self._parse(infile, input_full_path, sheet_index)
 			if data_module is None:
 				return False
 
-			self.parser_cache[infile] = {
-				"outputPath" : outfile,
-				"createTime" : time.time(),
-			}
+		info = data_module.info
+		outfile = info["outfile"]
 
-		arguments = data_module.info["arguments"]
-
-		merge_to_sheet = arguments.get("mergeToSheet")
+		merge_to_sheet = info.get("mergeToSheet")
 		if merge_to_sheet:
-			to_name = resolve_path(infile, merge_to_sheet)
-			self.add_merge_sheet_pattern(to_name, outfile)
+			self.add_merge_sheet_pattern(merge_to_sheet, outfile)
 
-		merge_to_file = arguments.get("mergeToFile")
+		merge_to_file = info.get("mergeToFile")
 		if merge_to_file:
-			to_name = resolve_path(infile, merge_to_file)
-			self.add_merge_file_pattern(to_name, outfile)
+			self.add_merge_file_pattern(merge_to_file, outfile)
 
 		self.store_data_module(data_module)
 		return True
+
+	def _parse(self, infile, input_full_path, sheet_index):
+		print "parse", infile
+
+		parser = self.parser_class(input_full_path, None, sheet_index)
+		parser.run()
+
+		info = {}
+		arguments = parser.arguments
+
+		outfile = resolve_output_path(infile, arguments.get("outputPath"))
+
+		converter_name = arguments.get("template")
+		if converter_name is None:
+			converter_name = self.match_converter(outfile)
+		converter_name = converter_name.replace('\\', '/').replace('/', '.')
+
+		merge_to_sheet = arguments.get("mergeToSheet")
+		if merge_to_sheet:
+			info["mergeToSheet"] = resolve_output_path(infile, merge_to_sheet)
+
+		merge_to_file = arguments.get("mergeToFile")
+		if merge_to_file:
+			info["mergeToFile"] = resolve_output_path(infile, merge_to_file)
+
+		data_module = self.create_data_module(infile, outfile, converter_name, parser, info)
+		if data_module is None:
+			return None
+
+		self.parser_cache[infile] = {
+			"outputPath" : outfile,
+			"createTime" : time.time(),
+		}
+
+		return data_module
+
 
 	def match_converter(self, outfile):
 		return outfile

@@ -3,6 +3,9 @@
 # 导表阶段
 class BaseStage(object):
 
+	@property
+	def need_sort(self): return False
+
 	def __init__(self, info):
 		self.info = info
 
@@ -11,8 +14,16 @@ class BaseStage(object):
 	def process(self, exporter):
 		self.exporter = exporter
 
-		for data_module in exporter.data_modules.itervalues():
-			self.process_sheet(data_module)
+		data_modules = exporter.data_modules
+		if self.need_sort:
+			keys = data_modules.keys()
+			keys.sort()
+			for key in keys:
+				data_module = data_modules[key]
+				self.process_sheet(data_module)
+		else:
+			for data_module in data_modules.itervalues():
+				self.process_sheet(data_module)
 
 		return
 

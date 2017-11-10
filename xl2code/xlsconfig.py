@@ -50,6 +50,9 @@ TEMP_PATH       = "$PROJECT_PATH/export/temp"
 # 输出路径
 OUTPUT_PATH 	= "$PROJECT_PATH/export/output"
 
+# 本地化文件输出路径
+LOCALE_OUTPUT_PATH = "$PROJECT_PATH/export/locale"
+
 DEFAULT_JAVA_PACKAGE = "com.mygame.default.package"
 
 # 代码生成器

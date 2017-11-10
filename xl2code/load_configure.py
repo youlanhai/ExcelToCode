@@ -32,6 +32,8 @@ def load_configure(cfg_file, option):
 	safe_parse_path(option, "output", "OUTPUT_PATH")
 	safe_parse_path(option, "temp", "TEMP_PATH")
 	safe_parse_path(option, "converter", "CONVERTER_PATH")
+	safe_parse_path(option, "locale_path", "LOCALE_OUTPUT_PATH")
+
 
 	for k in xlsconfig.DEPENDENCIES.keys():
 		path = xlsconfig.DEPENDENCIES[k]

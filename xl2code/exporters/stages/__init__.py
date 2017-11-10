@@ -2,6 +2,7 @@
 classes_name = (
 	"ConvertField",
 	"ExtractConstant",
+	"ExtractLocale",
 	"MergeField",
 	"MergeFiles",
 	"MergeSheets",

@@ -103,26 +103,15 @@ class BaseExporter(object):
 		self.data_modules[outfile] = data_module
 		return True
 
-	def create_data_module(self, infile, outfile, converter_name, parser):
-		new_path = parser.arguments.get("outputPath")
-		if new_path:
-			if new_path.startswith('/'):
-				new_path = new_path[1:]
-			else:
-				new_path = os.path.join(os.path.dirname(infile), new_path)
-			new_path = os.path.normpath(new_path).replace('\\', '/')
-		else:
-			new_path = outfile
-
-		info = {
-			"infile" : infile,
-			"outfile" : new_path,
-			"parser" : converter_name,
-			"multi_key" : parser.is_multi_key,
-			"key_name" : parser.key_name,
-			"arguments" : parser.arguments,
-			"sheet_types" : {"main_sheet" : parser.sheet_types},
-		}
+	def create_data_module(self, infile, outfile, converter_name, parser, info = None):
+		info = info if info else {}
+		info["infile"] = infile
+		info["outfile"] = outfile
+		info["parser"] = converter_name
+		info["multi_key"] = parser.is_multi_key
+		info["key_name"] = parser.key_name
+		info["arguments"] = parser.arguments
+		info["sheet_types"] = {"main_sheet" : parser.sheet_types}
 
 		util.ensure_package_exist(xlsconfig.TEMP_PATH, outfile)
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
@@ -141,3 +130,5 @@ class BaseExporter(object):
 		wt.close()
 
 		return DataModule(outfile, info, sheet)
+
+

@@ -14,6 +14,7 @@ STAGES_INFO = [
 	{"class" : "MergeSheets", },
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
 	{"class" : "ConvertField"},
+	{"class" : "ExtractLocale"},
 	{"class" : "MergeField"},
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_BEGIN},
 	{"class" : "PostProcess"},
