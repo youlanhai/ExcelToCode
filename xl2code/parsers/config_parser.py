@@ -11,7 +11,6 @@ class ConfigParser(BaseParser):
 	def __init__(self, filename, module, sheet_index = 0):
 		super(ConfigParser, self).__init__(filename, module, sheet_index)
 
-		self.key_name = getattr(module, "KEY_NAME", "ID")
 		self.is_multi_key = getattr(module, "MULTI_KEY", False)
 
 		self.config = getattr(module, "CONFIG", None)
@@ -48,5 +47,6 @@ class ConfigParser(BaseParser):
 
 			self.converters[col] = converter
 
+		self.key_name = self.converters[0].field
 		return
 

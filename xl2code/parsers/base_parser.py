@@ -44,6 +44,7 @@ class BaseParser(object):
 	def __init__(self, filename, module, sheet_index=0):
 		super(BaseParser, self).__init__()
 
+		# 表格key名。调试用
 		self.key_name = "ID"
 		self.is_multi_key = False
 
@@ -54,7 +55,7 @@ class BaseParser(object):
 		# 转换器。列索引 -> 转换器(ConverterInfo)
 		self.converters = {}
 
-		# 最终生成的数据表。key是key_name对应的数据。
+		# 最终生成的数据表。key是第一格对应的数据。
 		# 如果表格是multi_key，则value是一个数组，包含了所有key相同的行。
 		self.sheet = {}
 
@@ -86,6 +87,9 @@ class BaseParser(object):
 
 		# excel表头第一行的参数
 		self.arguments = {}
+
+		# 上一次解析行的key
+		self.last_key = None
 
 	def run(self):
 		self.do_parse()
@@ -177,14 +181,30 @@ class BaseParser(object):
 			self.parse_by_horizontal(worksheet)
 		return
 
+	def is_blank_line(self, cells, count):
+		for i in enumerate(count):
+			v = cells[i].value
+			if v != '' and v is not None:
+				return False
+
+		return True
+
 	def parse_cells(self, r, cells):
+		max_cols = len(self.headers)
+
 		# 遇到空白行，表示解析完成
+		if self.is_blank_line(cells, max_cols):
+			return
+
+		# 如果key是空，自动复制上一行key
 		first_value = cells[0].value
-		if first_value == '' or first_value is None:
-			return False
+		if first_value == '':
+			cells[0].value = self.last_key
+		else:
+			self.last_key = first_value
 
 		current_row_data = []
-		for c in xrange(len(self.headers)):
+		for c in xrange(max_cols):
 			cell_value = None
 			result_value = None
 			try:
@@ -243,6 +263,7 @@ class BaseParser(object):
 
 		if len(self.headers) == 0:
 			return log_error("Except表'%s'表头数量不能为0", self.filename)
+
 		return
 
 	def parse_arguments(self, cells):
