@@ -3,6 +3,7 @@
 # 通用类型转换关系。可通过扩展转换表，来支持自定义的类型。
 
 import tp0
+from tps import TYPE_MODULES
 
 #: 类型转换函数映射为名称
 FUNCTION_2_TYPE = {}
@@ -24,9 +25,10 @@ def update_functions():
 	global FUNCTION_2_TYPE
 
 	fun2type = {}
-	for key, val in tp0.__dict__:
-		if key.startswitch("to_"):
-			fun2type[val] = key
+	for module in TYPE_MODULES:
+		for key, val in module.__dict__.iteritems():
+			if key.startswith("to_"):
+				fun2type[val] = key
 
 	fun2type.update(_FUNCTION_2_TYPE)
 	FUNCTION_2_TYPE = fun2type
@@ -52,7 +54,9 @@ def function2type(tp):
 
 def type2function(name):
 	name = name.lower()
-	fun = getattr(tp0, "to_" + name, None)
-	if fun is not None:
-		return fun
+	to_name = "to_" + name
+	for module in TYPE_MODULES:
+		fun = getattr(module, to_name, None)
+		if fun is not None:
+			return fun
 	return TYPE_2_FUNCTION.get(name, tp0.to_str)

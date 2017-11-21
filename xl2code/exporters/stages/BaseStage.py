@@ -28,4 +28,4 @@ class BaseStage(object):
 		return
 
 	def process_sheet(self, data_module):
-		pass
+		raise RuntimeError, "该方法未实现"

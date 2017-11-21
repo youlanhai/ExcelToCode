@@ -67,7 +67,8 @@ def export_excel():
 	try:
 		exporter.run()
 	except util.ExcelToCodeException, e:
-		print e
+		print "Error", e
+		print "\n"
 		return False
 	return True
 

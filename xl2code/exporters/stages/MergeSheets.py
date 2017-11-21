@@ -74,8 +74,8 @@ class MergeSheets(BaseStage):
 		wt.max_indent = xlsconfig.TEMP_FILE_INDENT
 		wt.begin_write()
 		wt.write_value("path", outfile)
-		wt.write_sheet("info", info)
-		wt.write_sheet("main_sheet", sheet)
+		wt.write_value("info", info)
+		wt.write_value("main_sheet", sheet)
 		wt.end_write()
 		wt.close()
 

@@ -7,11 +7,15 @@ import xlsconfig
 import writers
 import stages
 import util
-from tps import tp0
+from tps import tp0, convention
 from data_module import DataModule, NewConverter
 
 
 class BaseExporter(object):
+
+	# 默认的导表步骤
+	STAGES_INFO = {}
+
 	def __init__(self, input_path, exts):
 		super(BaseExporter, self).__init__()
 		self.input_path = input_path
@@ -29,20 +33,16 @@ class BaseExporter(object):
 
 		self.stages_info = getattr(xlsconfig, "EXPORTER_STAGES", self.STAGES_INFO)
 
+		self.python_search_paths = [xlsconfig.CONVERTER_PATH, xlsconfig.TEMP_PATH]
+
 	def run(self):
-		self.gather_excels()
-
-		sys.path.insert(0, xlsconfig.CONVERTER_PATH)
-		sys.path.insert(0, xlsconfig.TEMP_PATH)
-
-		self.load_cache_file()
-		# export excels to temp python
-		self.export_excels()
-
-		self.save_cache_file()
+		convention.update_functions()
+		
+		for path in self.python_search_paths:
+			sys.path.insert(0, path)
 
 		for stage_info in self.stages_info:
-			stage_class = stages.classes.get(stage_info["class"], None)
+			stage_class = stages.CLASSES.get(stage_info["class"], None)
 			if stage_class is None:
 				util.log_error("Failed find stage '%s'", stage_info["class"])
 				break
@@ -51,8 +51,8 @@ class BaseExporter(object):
 			print "=== %s ===" % stage.get_desc()
 			stage.process(self)
 
-		sys.path.remove(xlsconfig.CONVERTER_PATH)
-		sys.path.remove(xlsconfig.TEMP_PATH)
+		for path in self.python_search_paths:
+			sys.path.remove(path)
 
 	def export_excels(self):
 		pass
@@ -123,8 +123,8 @@ class BaseExporter(object):
 		sheet = parser.sheet
 
 		wt.write_value("path", outfile)
-		wt.write_sheet("info", info)
-		wt.write_sheet("main_sheet", sheet)
+		wt.write_value("info", info)
+		wt.write_value("main_sheet", sheet)
 
 		wt.end_write()
 		wt.close()

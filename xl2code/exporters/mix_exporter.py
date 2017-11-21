@@ -11,6 +11,7 @@ from tps import tp0
 from parsers.base_parser import ConverterInfo
 
 STAGES_INFO = [
+	{"class" : "ParseExcel"},
 	{"class" : "MergeSheets", },
 	{"class" : "WriteSheets", "stage" : xlsconfig.EXPORT_STAGE_RAW},
 	{"class" : "ConvertField"},

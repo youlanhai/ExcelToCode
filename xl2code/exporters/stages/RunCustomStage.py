@@ -12,7 +12,7 @@ class RunCustomStage(BaseStage):
 		from exporters import stages
 		
 		for stage_info in xlsconfig.CUSTOM_STAGES:
-			stage_class = stages.classes.get(stage_info["class"], None)
+			stage_class = stages.CLASSES.get(stage_info["class"], None)
 			if stage_class is None:
 				util.log_error("Failed find stage '%s'", stage_info["class"])
 				break

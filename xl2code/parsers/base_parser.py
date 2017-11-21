@@ -50,6 +50,7 @@ class BaseParser(object):
 
 		self.filename = filename
 		self.module = module
+		# sheet页索引
 		self.sheet_index = sheet_index
 
 		# 转换器。列索引 -> 转换器(ConverterInfo)
@@ -109,8 +110,10 @@ class BaseParser(object):
 			value = value.encode("utf-8").strip()
 		elif tp == str:
 			value = value.strip()
+		elif tp == bool:
+			value = str(value)
 		else:
-			msg = "不支持的数据类型: %s -> '%s'" % (type(value), value)
+			msg = "不支持的数据类型: %s '%s'" % (type(value), value)
 			raise ExcelToCodeException, msg
 
 		return value
@@ -139,7 +142,7 @@ class BaseParser(object):
 			try:
 				ret = converter.convert(value)
 			except:
-				raise ExcelToCodeException, "类型转换失败(%s)" % (str(converter.convert), )
+				raise ExcelToCodeException, "类型转换失败fun = %s, value = %s" % (str(converter.convert), str(value))
 
 		if ret is None and converter.exist_default_value:
 			ret = converter.default_value
@@ -182,7 +185,7 @@ class BaseParser(object):
 		return
 
 	def is_blank_line(self, cells, count):
-		for i in enumerate(count):
+		for i in xrange(count):
 			v = cells[i].value
 			if v != '' and v is not None:
 				return False
@@ -198,7 +201,7 @@ class BaseParser(object):
 
 		# 如果key是空，自动复制上一行key
 		first_value = cells[0].value
-		if first_value == '':
+		if first_value == '' or first_value is None:
 			cells[0].value = self.last_key
 		else:
 			self.last_key = first_value
@@ -302,6 +305,11 @@ class BaseParser(object):
 			self.header_row_index -= self.vertical_start_row
 			self.data_row_index -= self.vertical_start_row
 			self.default_value_row_index -= self.vertical_start_row
+
+		if self.default_value_row_index < 0:
+			if self.arguments.get("existDefaultRow", False):
+				self.default_value_row_index = self.data_row_index
+				self.data_row_index += 1
 
 		multi_key = self.arguments.get("multiKey")
 		if multi_key is not None:

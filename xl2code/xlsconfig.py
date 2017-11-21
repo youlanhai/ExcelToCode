@@ -80,6 +80,7 @@ ARGUMENT_CONVERTER = {
 	"输出路径"		: ["outputPath", "path"],
 	"常量表" 			: ["constant", "bool"],
 	"垂直排列" 		: ["vertical", "bool"],
+	"存在默认行"		: ["existDefaultRow", "bool"],
 }
 
 # Excel表格数据所在行。索引从0开始，不填或填-1表示该行不存在。

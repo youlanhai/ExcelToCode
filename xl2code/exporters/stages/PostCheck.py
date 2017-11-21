@@ -7,7 +7,7 @@ class PostCheck(BaseStage):
 
 	def get_desc(self): return "数据合法性检查"
 
-	def post_check_sheet(self, data_module):
+	def process_sheet(self, data_module):
 		converter = data_module.converter
 		if converter is None: return
 
