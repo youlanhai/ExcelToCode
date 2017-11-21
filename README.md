@@ -64,6 +64,7 @@ converters/converter | 转换器脚本存放路径
 # 文档
 1. [配置文件参数详解](doc/how-to-config.md)
 2. [表格添加方法](doc/how-to-create-excel.md)
+3. [简单导表](doc/easy-export.md)
 
 # 路径说明
 路径 | 说明

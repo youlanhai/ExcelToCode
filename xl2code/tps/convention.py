@@ -59,4 +59,4 @@ def type2function(name):
 		fun = getattr(module, to_name, None)
 		if fun is not None:
 			return fun
-	return TYPE_2_FUNCTION.get(name, tp0.to_str)
+	return TYPE_2_FUNCTION.get(name)

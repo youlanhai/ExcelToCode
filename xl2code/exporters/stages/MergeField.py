@@ -97,8 +97,10 @@ class MergeField(BaseStage):
 	def process_sheet(self, data_module):
 		sheet = data_module.main_sheet
 		types = data_module.info["sheet_types"]["main_sheet"]
-		is_multi_key = data_module.info["arguments"].get("multiKey", False)
+		multi_key = data_module.info["arguments"].get("multiKey", False)
+		self.convert_sheet(sheet, types, multi_key)
 
+	def convert_sheet(self, sheet, types, multi_key):
 		col2type = {}
 		for type_info in types.itervalues():
 			col = type_info[0]
@@ -107,7 +109,7 @@ class MergeField(BaseStage):
 		for key in sheet.keys():
 			row = sheet[key]
 			ret = None
-			if is_multi_key:
+			if multi_key:
 				ret = []
 				for sub_row in row:
 					ret.append(self.convert_field_row(col2type, key, sub_row))

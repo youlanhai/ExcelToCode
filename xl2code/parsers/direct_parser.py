@@ -42,6 +42,10 @@ class DirectParser(BaseParser):
 				util.log_error("无效的类型'%s'，at %s", type, self.row_col_str(self.type_row_index, col))
 				continue
 
+			if method is None:
+				print "warn: type %s was not found, use `string` instead" % type
+				method = tp0.to_str
+
 			self.converters[col] = ConverterInfo((header, field, method, True))
 			self.sheet_types[header] = (col, field, header, type)
 		return

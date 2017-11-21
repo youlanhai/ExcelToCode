@@ -32,6 +32,8 @@ def to_str(value):
 		return str(value)
 	return value
 
+to_string = to_str
+
 def to_list(arg, converter=None):
 	ret = eval("[%s]" % arg)
 	if not isinstance(ret, list):
