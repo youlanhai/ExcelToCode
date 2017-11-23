@@ -19,7 +19,9 @@ class Redirect(object):
 
 	def write(self, msg):
 		try:
-			ustr = msg.decode("utf-8")
+			ustr = msg
+			if type(msg) != unicode:
+				ustr = msg.decode("utf-8")
 			stdout.write(ustr.encode(sys_encoding))
 		except:
 			stdout.write(msg)
@@ -29,8 +31,6 @@ class Redirect(object):
 
 def redirect_iostream():
 	if stdout != sys.stdout: return
-
-	if sys_encoding == "utf-8": return
 
 	stdout.write("redirect output stream.\n")
 	stdout.flush()
@@ -159,8 +159,8 @@ def if_file_newer(src, dst):
 # 返回的路径是相对于path的相对路径。
 def gather_all_files(path, exts):
 	ret = []
-
 	path = path.decode("utf-8")
+
 	path_len = len(path)
 	if path[-1] != '/': path_len += 1
 
