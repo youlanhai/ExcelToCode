@@ -33,6 +33,9 @@ class BaseWriter(object):
 	def flush(self):
 		if len(self.cache) == 0: return
 
+		for i, s in enumerate(self.cache):
+			if type(s) == unicode:
+				self.cache[i] = s.encode('utf-8')
 		text = "".join(self.cache)
 		self.cache = []
 

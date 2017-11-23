@@ -94,6 +94,6 @@ class ExtractLocale(BaseStage):
 
 		with open(file_path, "a+") as f:
 			for name, text in texts:
-				f.write("%s\n%s\n" % (name, text))
+				f.write("%s\n%s\n" % (util.to_utf8(name), util.to_utf8(text)))
 
 		return

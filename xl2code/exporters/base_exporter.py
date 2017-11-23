@@ -62,14 +62,16 @@ class BaseExporter(object):
 		cache_file = os.path.join(xlsconfig.TEMP_PATH, "cache.json")
 		try:
 			with open(cache_file, "r") as f:
-				self.parser_cache = json.load(f, object_hook = util.byteify)
-		except IOError, e:
+				self.parser_cache = json.load(f)
+		except:
 			pass
 
 	def save_cache_file(self):
 		cache_file = os.path.join(xlsconfig.TEMP_PATH, "cache.json")
+
+		content = json.dumps(self.parser_cache, ensure_ascii = False, indent = 4, sort_keys = True)
 		with open(cache_file, "w") as f:
-			json.dump(self.parser_cache, f, ensure_ascii = False, indent = 4)
+			f.write(content.encode("utf-8"))
 
 	def find_converter(self, converter_name):
 		pass

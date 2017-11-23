@@ -9,6 +9,41 @@ import xlsconfig
 class ExcelToCodeException(Exception):
 	pass
 
+stdout = sys.stdout
+stderr = sys.stderr
+sys_encoding = (stdout.encoding or "utf-8").lower()
+
+class Redirect(object):
+	
+	encoding = "utf-8"
+
+	def write(self, msg):
+		try:
+			ustr = msg.decode("utf-8")
+			stdout.write(ustr.encode(sys_encoding))
+		except:
+			stdout.write(msg)
+
+	def flush(self):
+		stdout.flush()
+
+def redirect_iostream():
+	if stdout != sys.stdout: return
+
+	if sys_encoding == "utf-8": return
+
+	stdout.write("redirect output stream.\n")
+	stdout.flush()
+
+	stream = Redirect()
+	sys.stdout = stream
+	sys.stderr = stream
+
+def native_to_utf8(s):
+	if sys_encoding != "utf-8":
+		s = s.decode(sys_encoding).encode("utf-8")
+	return s
+
 def to_utf8(s):
 	tp = type(s)
 	if tp == unicode: return s.encode("utf-8")
@@ -125,6 +160,7 @@ def if_file_newer(src, dst):
 def gather_all_files(path, exts):
 	ret = []
 
+	path = path.decode("utf-8")
 	path_len = len(path)
 	if path[-1] != '/': path_len += 1
 
@@ -190,28 +226,6 @@ def safe_makedirs(path, recreate = False):
 		os.makedirs(path)
 	elif not os.path.exists(path):
 		os.makedirs(path)
-
-
-stdout = sys.stdout
-stderr = sys.stderr
-
-class Redirect(object):
-	def write(self, msg):
-		stdout.write(msg.decode("utf-8").encode(stdout.encoding))
-
-	def flush(self):
-		stdout.flush()
-
-def redirect_iostream():
-	if stdout != sys.stdout: return
-	if not stdout.encoding or stdout.encoding.lower() == "utf-8": return
-
-	stdout.write("redirect output stream.\n")
-	stdout.flush()
-
-	stream = Redirect()
-	sys.stdout = stream
-	sys.stderr = stream
 
 
 def format_slash(path):
