@@ -32,7 +32,11 @@ def resolve_output_path(infile, path):
 	else:
 		dir = os.path.dirname(infile)
 		path = os.path.normpath(os.path.join(dir, path))
-	return path.replace('\\', '/')
+	path = path.replace('\\', '/')
+
+	if xlsconfig.OUTPUT_PATH_TO_LOWER:
+		path = path.lower()
+	return path
 
 
 class DirectExporter(BaseExporter):

@@ -64,6 +64,9 @@ class ConfigExporter(BaseExporter):
 				else:
 					outfile = compiled_pattern.sub(new_name, infile)
 
+				if xlsconfig.OUTPUT_PATH_TO_LOWER:
+					outfile = outfile.lower()
+
 				if self.export_excel_to_python(infile, outfile, converter_name, sheet_index):
 					pass
 
