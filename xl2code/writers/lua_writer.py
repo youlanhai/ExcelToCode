@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from base_writer import BaseWriter
+from util import format_string
 
 class LuaWriter(BaseWriter):
 
@@ -50,10 +51,10 @@ class LuaWriter(BaseWriter):
 			output("%g" % (value, ))
 
 		elif tp == str:
-			output('"%s"' %(value, ))
+			output('"%s"' % format_string(value))
 
 		elif tp == unicode:
-			output('"%s"' % (value.encode("utf-8"), ))
+			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
 			output("{")

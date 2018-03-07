@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
 from base_writer import BaseWriter
-
-FORMAT_CHARS = {
-	'"'  : '\\"',
-	'\\' : '\\\\',
-	'\f' : '\\f',
-	'\t' : '\\t',
-	'\r' : '\\r',
-	'\n' : '\\n',
-	'\b' : '\\b',
-}
-
-def format_str(s):
-	ret = []
-	for ch in s: ret.append(FORMAT_CHARS.get(ch, ch))
-	return "".join(ret)
-
+from util import format_string
 
 class JsonWriter(BaseWriter):
 
@@ -67,10 +52,10 @@ class JsonWriter(BaseWriter):
 			output("%g" % value)
 
 		elif tp == str:
-			output('"%s"' % format_str(value))
+			output('"%s"' % format_string(value))
 
 		elif tp == unicode:
-			output('"%s"' % format_str(value.encode("utf-8")))
+			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
 			output("[")

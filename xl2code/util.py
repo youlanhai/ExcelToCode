@@ -283,3 +283,22 @@ def byteify(input):
 		return input.encode('utf-8')
 	else:
 		return input
+
+
+FORMAT_CHAR = {
+	0	: '\\0',
+	'\\' : '\\\\',
+	'\n' : '\\n',
+	'\r' : '\\r',
+	'\b' : '\\b',
+	'\t' : '\\t',
+	'\f' : '\\f',
+	'"'  : '\\"',
+	"'"  : "\\'",
+}
+# 通用字符串格式化
+def format_string(sting):
+	ret = []
+	for s in sting:
+		ret.append(FORMAT_CHAR.get(s, s))
+	return "".join(ret)

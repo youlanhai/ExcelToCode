@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from base_writer import BaseWriter
+from util import format_string
 
 class PyWriter(BaseWriter):
 
@@ -40,10 +41,10 @@ class PyWriter(BaseWriter):
 			output("%g" % (value, ))
 
 		elif tp == str:
-			output('"%s"' %(value, ))
+			output('"%s"' % format_string(value))
 
 		elif tp == unicode:
-			output('"%s"' % (value.encode("utf-8"), ))
+			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple:
 			self._write_list(value, "(", ")", indent, max_indent)
