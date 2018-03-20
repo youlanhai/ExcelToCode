@@ -25,7 +25,21 @@ def format_number_with_openpyxl(f, cell, wb):
 	if a_fmt:
 		return numfmt.format_number(f, a_fmt, ',', '.')
 	else:
-		return "%g" % f
+		s = "%f" % f
+		# 删除'.'后面的0
+		return remove_end_zero(s)
+
+def remove_end_zero(s):
+	pos = s.find('.')
+	if pos < 0: return s
+	
+	i = len(s)
+	while i > pos and s[i - 1] == '0':
+		i -= 1
+	if s[i - 1] == '.':
+		i -= 1
+	return s[:i]
+
 
 format_number = format_number_with_openpyxl
 
