@@ -68,8 +68,7 @@ def export_excel():
 		exporter.run()
 	except util.ExcelToCodeException, e:
 		print "Error", e
-		print "\n"
-		return False
+		exit(1)
 	return True
 
 if __name__ == "__main__":
