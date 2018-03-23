@@ -155,8 +155,9 @@ class BaseParser(object):
 		else:
 			try:
 				ret = converter.convert(value)
-			except:
-				raise ExcelToCodeException, "类型转换失败fun = %s, value = %s" % (str(converter.convert), str(value))
+			except Exception, e:
+				msg = "类型转换失败fun = %s, value = %s, 异常：%s" % (str(converter.convert), str(value), str(e))
+				raise ExcelToCodeException, msg
 
 		if ret is None and converter.exist_default_value:
 			ret = converter.default_value
