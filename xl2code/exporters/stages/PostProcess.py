@@ -11,14 +11,21 @@ class PostProcess(BaseStage):
 		converter = data_module.converter
 		if converter is None: return
 
-		process_method = getattr(converter, "post_process", None)
-		if process_method is None:
+		process_method = getattr(converter, "post_process_ex", None)
+		if process_method:
+			try:
+				data_module.extra_sheets = process_method(data_module, self.exporter)
+			except:
+				traceback.print_exc()
+				util.log_error("脚本后处理失败 '%s'", data_module.path)
 			return
 
-		try:
-			data_module.extra_sheets = process_method(data_module)
-		except:
-			traceback.print_exc()
-			util.log_error("脚本处理失败 '%s'", data_module.path)
+		process_method = getattr(converter, "post_process", None)
+		if process_method:
+			try:
+				data_module.extra_sheets = process_method(data_module)
+			except:
+				traceback.print_exc()
+				util.log_error("脚本后处理失败 '%s'", data_module.path)
 
 		return

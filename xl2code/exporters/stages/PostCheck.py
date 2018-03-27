@@ -16,7 +16,7 @@ class PostCheck(BaseStage):
 			return
 
 		try:
-			check_method(data_module, self)
+			check_method(data_module, self.exporter)
 		except:
 			traceback.print_exc()
 			util.log_error("数据检查失败 '%s'", data_module.path)
