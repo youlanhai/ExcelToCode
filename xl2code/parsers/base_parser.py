@@ -166,7 +166,7 @@ class BaseParser(object):
 
 	def do_parse(self):
 		import openpyxl
-		self.workbook = openpyxl.load_workbook(self.filename)
+		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
 
 		sheets = self.workbook.worksheets
 		if self.sheet_index >= len(sheets):

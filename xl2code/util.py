@@ -181,7 +181,7 @@ def gather_all_files(path, exts):
 			if ext not in exts: continue
 
 			file_path = os.path.join(relative_path, fname)
-			ret.append(file_path.replace('\\', '/'))
+			ret.append(file_path.encode("utf-8").replace('\\', '/'))
 
 	return ret
 
