@@ -61,7 +61,7 @@ class DirectExporter(BaseExporter):
 
 		if xlsconfig.FAST_MODE:
 			cache = self.parser_cache.get(infile)
-			if cache and cache["createTime"] >= os.path.getmtime(input_full_path):
+			if cache and cache["createTime"] >= os.path.getmtime(input_full_path.decode("utf-8")):
 				outfile = cache["outputPath"]
 				data_module = util.import_file(outfile)
 
