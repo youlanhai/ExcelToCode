@@ -157,7 +157,7 @@ class BinaryWriter(BaseWriter):
 		self.var_dict[name] = sheet
 
 	def write_value(self, name, value):
-		self.var_dict[name] = sheet
+		self.var_dict[name] = value
 
 	def _write_str(self, value):
 		if value == "":
