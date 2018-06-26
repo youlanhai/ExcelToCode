@@ -11,7 +11,7 @@ class LuaWriter(BaseWriter):
 	def write_sheet(self, name, sheet):
 		self.write_value(name, sheet)
 
-		if name == "main_sheet":
+		if name == "main_sheet" and self.generator_info.get("record_keys"):
 			self.write_value("main_length", len(sheet), 0)
 
 			keys = sheet.keys()

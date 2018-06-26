@@ -156,6 +156,13 @@ class BinaryWriter(BaseWriter):
 	def write_sheet(self, name, sheet):
 		self.var_dict[name] = sheet
 
+		if name == "main_sheet" and self.generator_info.get("record_keys"):
+			self.write_value("main_length", len(sheet))
+
+			keys = sheet.keys()
+			keys.sort()
+			self.write_value("main_keys", keys)
+
 	def write_value(self, name, value):
 		self.var_dict[name] = value
 
