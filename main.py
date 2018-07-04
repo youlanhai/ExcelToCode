@@ -67,8 +67,12 @@ def export_excel():
 	try:
 		exporter.run()
 	except util.ExcelToCodeException, e:
-		print "Error", e
-		exit(1)
+		split_line = "*" * 70
+		print split_line
+		print native_str("错误：")
+		print e
+		print split_line
+		exit(-1)
 	return True
 
 if __name__ == "__main__":
