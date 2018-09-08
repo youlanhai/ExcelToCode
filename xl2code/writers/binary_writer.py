@@ -168,7 +168,7 @@ class BinaryWriter(BaseWriter):
 
 	def _write_str(self, value):
 		if value == "":
-			self.output(struct("<B", T_STR0))
+			self.output(pack("<B", T_STR0))
 
 		else:
 			index = self.string_pool.get(value)
