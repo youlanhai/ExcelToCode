@@ -16,13 +16,15 @@ FORMAT_CHARS = {
 	'\n' : '&#x000A;',
 }
 
-def format_str(s):
-	ret = []
-	for ch in s: ret.append(FORMAT_CHARS.get(ch, ch))
-	return "".join(ret)
-
-
 class XMLWriter(BaseWriter):
+
+	FORMAT_CHARS = FORMAT_CHARS
+
+	def format_str(self, s):
+		ret = []
+		for ch in s: ret.append(self.FORMAT_CHARS.get(ch, ch))
+		return "".join(ret)
+
 	def __init__(self, file_path, data_module = None, generator_info = None):
 		super(XMLWriter, self).__init__(file_path, data_module, generator_info)
 		self.output('<?xml version="1.0" encoding="utf-8"?>\n')
@@ -106,10 +108,10 @@ class XMLWriter(BaseWriter):
 			return "%g" % value
 
 		elif tp == str:
-			return format_str(value)
+			return self.format_str(value)
 
 		elif tp == unicode:
-			return format_str(value.encode("utf-8"))
+			return self.format_str(value.encode("utf-8"))
 
 		else:
 			raise ValueError, "unsupported value type %s" % str(tp)
