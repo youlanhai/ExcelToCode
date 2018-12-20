@@ -58,6 +58,8 @@ class ExtractLocale(BaseStage):
 			if text is None:
 				return
 
+			text = self.translate_text(text)
+
 			name = "%s_%s_%s" % (prefix, str(key), posfix)
 			row[col] = name
 			texts.append((name, text))
@@ -97,3 +99,6 @@ class ExtractLocale(BaseStage):
 				f.write("%s\n%s\n" % (util.to_utf8(name), util.to_utf8(text)))
 
 		return
+
+	def translate_text(self, text):
+		return util.format_string(text)
