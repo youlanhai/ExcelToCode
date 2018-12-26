@@ -302,3 +302,35 @@ def format_string(sting):
 	for s in sting:
 		ret.append(FORMAT_CHAR.get(s, s))
 	return "".join(ret)
+
+TRANSLATE_CHAR = {
+	'0' : '\0',
+	'\\' :  '\\',
+	'n' : '\n',
+	'r' : '\r',
+	'b' : '\b',
+	't' : '\t',
+	'f' : '\f',
+	'"' : '"' ,
+	"'" : "'" ,
+}
+# 通用字符串转义
+def translate_string(sting):
+	if '\\' not in sting:
+		return sting
+
+	ret = []
+	i = 0
+	n = len(sting)
+	while i < n:
+		ch = sting[i]
+		i += 1
+		if ch == '\\' and i < n:
+			next = TRANSLATE_CHAR.get(sting[i])
+			if next:
+				i += 1
+				ch = next
+		ret.append(ch)
+
+	return "".join(ret)
+

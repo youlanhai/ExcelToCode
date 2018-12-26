@@ -3,6 +3,7 @@
 # 通用类型转换函数模块
 
 import math
+import util
 
 def use_origin(arg): return arg
 def use_empty(arg): return None
@@ -168,7 +169,9 @@ def to_string_list_2(args):
 	return ret if len(ret) > 0 else None
 
 def to_text(args):
-	return args.replace('\n','\\n')
+	text = util.translate_string(args)
+	text = text.replace('\r\n', '\n')
+	return text
 
 def to_amstr(args):
 	return args + ".am"
