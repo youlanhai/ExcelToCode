@@ -114,7 +114,8 @@ class DirectExporter(BaseExporter):
 
 		self.parser_cache[infile] = {
 			"outputPath" : outfile,
-			"createTime" : time.time(),
+			"createTime" : 0 if parser.need_parse_again else time.time(),
+			"needParseAgain" : parser.need_parse_again,
 		}
 
 		return data_module
