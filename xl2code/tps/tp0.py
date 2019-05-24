@@ -19,6 +19,8 @@ def to_bool(arg):
 	else:
 		return bool(arg)
 
+to_boolean = to_bool
+
 def to_int(arg):
 	return int(to_float(arg))
 
@@ -207,3 +209,12 @@ def to_vector3_list(args):
 
 def to_path(args):
 	return args.strip().replace('\\', '/')
+
+def template_array(value_converter, args):
+	ret = []
+	for value in args.split(','):
+		val = value_converter(value.strip())
+		ret.append(val)
+	return ret
+
+template_list = template_array

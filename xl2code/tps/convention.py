@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # 通用类型转换关系。可通过扩展转换表，来支持自定义的类型。
-
+import re
 import tp0
 from tps import TYPE_MODULES
 
@@ -48,15 +48,41 @@ TYPE_2_FUNCTION = {
 	"array<float>" : tp0.to_float_list,
 }
 
+def _find_function(name):
+	for module in TYPE_MODULES:
+		fun = getattr(module, name, None)
+		if fun is not None:
+			return fun
+	return None
 
 def function2type(tp):
 	return FUNCTION_2_TYPE.get(tp, "String")
 
+TEMPLATE_PATTERN = re.compile(r"(\w+)<(\w+)>")
+
 def type2function(name):
 	name = name.lower()
-	to_name = "to_" + name
-	for module in TYPE_MODULES:
-		fun = getattr(module, to_name, None)
-		if fun is not None:
-			return fun
-	return TYPE_2_FUNCTION.get(name)
+	match = TEMPLATE_PATTERN.match(name)
+	if match is None:
+		to_name = "to_" + name
+		return _find_function(to_name)
+
+	template_type = "template_" + match.group(1)
+	value_type = "to_" + match.group(2)
+
+	# print "template args:", template_type, value_type
+
+	template_function = _find_function(template_type)
+	if template_function is None:
+		print "failed find template type:", template_type
+		return None
+
+	value_function = _find_function(value_type)
+	if value_function is None:
+		print "failed find value type:", value_type
+		return None
+
+	converter = lambda args: template_function(value_function, args)
+
+	TYPE_2_FUNCTION[converter] = name
+	return converter
