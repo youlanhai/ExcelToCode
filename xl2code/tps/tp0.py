@@ -60,8 +60,8 @@ def to_float_list(arg):
 
 # arg = "a:b, c:d"
 def to_dict(arg):
-	if type(arg) != unicode:
-		raise ValueError, "string type needed."
+	if type(arg) != unicode and type(arg) != str:
+		raise ValueError, "string type needed. but %s was givent" % (str(type(arg)))
 
 	return eval("{%s}" % arg)
 
