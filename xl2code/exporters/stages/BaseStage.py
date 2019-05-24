@@ -15,15 +15,13 @@ class BaseStage(object):
 		self.exporter = exporter
 
 		data_modules = exporter.data_modules
+		keys = data_modules.keys()
 		if self.need_sort:
-			keys = data_modules.keys()
 			keys.sort()
-			for key in keys:
-				data_module = data_modules[key]
-				self.process_sheet(data_module)
-		else:
-			for data_module in data_modules.itervalues():
-				self.process_sheet(data_module)
+
+		for key in keys:
+			data_module = data_modules[key]
+			self.process_sheet(data_module)
 
 		return
 
