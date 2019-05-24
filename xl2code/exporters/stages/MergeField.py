@@ -98,7 +98,11 @@ class MergeField(BaseStage):
 		sheet = data_module.main_sheet
 		types = data_module.info["sheet_types"]["main_sheet"]
 		multi_key = data_module.info["arguments"].get("multiKey", False)
-		self.convert_sheet(sheet, types, multi_key)
+		try:
+			self.convert_sheet(sheet, types, multi_key)
+		except Exception, e:
+			print e
+			util.log_error("处理字段失败，%s", data_module.path)
 
 	def convert_sheet(self, sheet, types, multi_key):
 		col2type = {}
@@ -109,13 +113,18 @@ class MergeField(BaseStage):
 		for key in sheet.keys():
 			row = sheet[key]
 			ret = None
-			if multi_key:
-				ret = []
-				for sub_row in row:
-					ret.append(self.convert_field_row(col2type, key, sub_row))
-			else:
-				ret = self.convert_field_row(col2type, key, row)
-			sheet[key] = ret
+			try:
+				if multi_key:
+					ret = []
+					for sub_row in row:
+						ret.append(self.convert_field_row(col2type, key, sub_row))
+				else:
+					ret = self.convert_field_row(col2type, key, row)
+				sheet[key] = ret
+			except Exception, e:
+				print "处理字段失败", key
+				raise e
+
 
 		return
 
