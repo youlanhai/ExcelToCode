@@ -212,7 +212,13 @@ def to_path(args):
 
 def template_array(value_converter, args):
 	ret = []
-	for value in args.split(','):
+	values = None
+	if isinstance(args, str) or isinstance(args, unicode):
+		values = args.split(',')
+	else:
+		values = args
+
+	for value in values:
 		val = value_converter(value.strip())
 		ret.append(val)
 	return ret

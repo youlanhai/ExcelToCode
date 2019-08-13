@@ -80,7 +80,7 @@ def type2function(name):
 	value_function = _find_function(value_type)
 	if value_function is None:
 		print "failed find value type:", value_type
-		return None
+		value_function = tp0.to_string
 
 	converter = lambda args: template_function(value_function, args)
 
