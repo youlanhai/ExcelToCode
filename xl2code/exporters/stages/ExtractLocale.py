@@ -101,4 +101,7 @@ class ExtractLocale(BaseStage):
 		return
 
 	def format_text(self, text):
+		# 先转义填写的文本。比如手写了\n，\t等
+		text = util.translate_string(text)
+		# 再统一将文本格式化成书面形式。'\n'写作'\\n'
 		return util.format_string(text)
