@@ -96,3 +96,29 @@ class BaseWriter(object):
 			comment = "%s\t%-20s%s" %(col_name, field, text)
 			self.write_comment(comment)
 
+	def write_constants(self, constants, sheet_name = None):
+		comments = self.get_field_comments(sheet_name)
+
+		for k in sorted(constants.iterkeys()):
+			comment = comments.get(k)
+			if comment:
+				self.write_comment(comment)
+			v = constants[k]
+			self.write_value(k, v)
+
+		self.flush()
+
+	def get_field_comments(self, sheet_name):
+		comments = {}
+
+		headers = self.data_module.info["sheet_types"].get(sheet_name)
+		if not headers:
+			return comments
+
+		for header in headers.itervalues():
+			col, field, text, type = header
+			col_name = util.int_to_base26(col) if col is not None else "None"
+			comment = "%s\t%s" %(col_name, text)
+			comments[field] = comment
+
+		return comments

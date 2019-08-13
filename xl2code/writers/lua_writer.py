@@ -16,7 +16,7 @@ class LuaWriter(BaseWriter):
 
 			keys = sheet.keys()
 			keys.sort()
-			self.write_value("main_keys", keys, 0)
+			self.write_value("main_keys", keys)
 
 		self.flush()
 
@@ -57,20 +57,27 @@ class LuaWriter(BaseWriter):
 			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
-			output("{")
+			if len(value) == 0:
+				output("{}")
+				return
 
+			output("{")
 			for v in value:
 				self.newline_indent(indent, max_indent)
 				self.write(v, indent + 1, max_indent)
-				output(", ")
+				output(",")
 
-			if len(value) > 0 and indent <= max_indent:
+			if indent <= max_indent:
 				output("\n")
 				self._output(indent - 1, "}")
 			else:
 				output("}")
 
 		elif tp == dict:
+			if len(value) == 0:
+				output("{}")
+				return
+
 			output("{")
 			keys = value.keys()
 			keys.sort()
@@ -82,9 +89,9 @@ class LuaWriter(BaseWriter):
 				self.write(k)
 				output("] = ")
 				self.write(value[k], indent + 1, max_indent)
-				output(", ")
+				output(",")
 
-			if len(value) > 0 and indent <= max_indent:
+			if indent <= max_indent:
 				output("\n")
 				self._output(indent - 1, "}")
 			else:
@@ -99,3 +106,5 @@ class LuaWriter(BaseWriter):
 		if indent <= max_indent:
 			self.output("\n")
 			self._output(indent)
+		else:
+			self.output(" ")

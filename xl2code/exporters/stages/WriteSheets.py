@@ -58,6 +58,10 @@ class WriteSheets(BaseStage):
 			assert(isinstance(extra_sheets, dict))
 			wt.write_module(extra_sheets)
 
+		constants = getattr(data_module, "constants", None)
+		if constants:
+			wt.write_constants(constants, "main_sheet")
+
 		wt.end_write()
 		wt.close()
 		return

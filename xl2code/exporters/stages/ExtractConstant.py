@@ -9,8 +9,12 @@ class ExtractConstant(BaseStage):
 
 	def process_sheet(self, data_module):
 		sheet = data_module.main_sheet
-		if data_module.info["arguments"].get("constant") and len(sheet) > 0:
+		if not data_module.info["arguments"].get("constant"):
+			return
+
+		data_module.main_sheet = None
+		if len(sheet) > 0:
 			no = min(sheet.iterkeys())
-			data_module.main_sheet = sheet[no]
+			data_module.constants = sheet[no]
 
 		return
