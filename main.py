@@ -9,7 +9,7 @@ sys.path.append(os.path.join(module_path, "xl2code"))
 
 import util
 import xlsconfig
-import install_package
+from misc import install_package
 from logtool import native_str
 from load_configure import load_configure
 
@@ -44,7 +44,7 @@ def main(argv):
 		return
 
 	if option.gen_header:
-		import generate_header
+		from misc import generate_header
 		generate_header.generate_header()
 
 	if option.export or option.gen_code:
@@ -52,7 +52,7 @@ def main(argv):
 			return
 
 	if option.gen_code:
-		import generate_code
+		from misc import generate_code
 		generate_code.generate_code()
 
 	print "=== 完毕 ===\n"
@@ -63,6 +63,7 @@ def export_excel():
 
 	try:
 		csv_path = os.path.join(xlsconfig.TEMP_PATH, "csv")
+		print "=== excel to csv ==="
 
 		import csvjob
 		job = csvjob.CSVJob(
