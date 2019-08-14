@@ -13,6 +13,8 @@ stdout = sys.stdout
 stderr = sys.stderr
 sys_encoding = (stdout.encoding or "utf-8").lower()
 
+has_error = False
+
 class Redirect(object):
 	
 	encoding = "utf-8"
@@ -43,6 +45,16 @@ def native_to_utf8(s):
 	if sys_encoding != "utf-8":
 		s = s.decode(sys_encoding).encode("utf-8")
 	return s
+
+def utf8_to_native(s):
+	if sys_encoding != "utf-8":
+		s = s.decode("utf-8").encode(sys_encoding)
+	return s
+
+def _S(s):
+	if stdout != sys.stdout:
+		return s
+	return utf8_to_native(s)
 
 def to_utf8(s):
 	tp = type(s)
@@ -112,8 +124,10 @@ def import_converter(filename):
 def log_error(msg, *args):
 	if len(args) > 0: msg = msg % args
 
+	msg = _S(msg)
 	if xlsconfig.FORCE_RUN:
-		print "错误：", msg
+		has_error = True
+		print _S("错误："), msg
 	else:
 		raise ExcelToCodeException, msg
 
