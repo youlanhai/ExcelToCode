@@ -54,8 +54,8 @@ class CSVJob(object):
 			i = len(files) - 1
 			while i >= 0:
 				fname = files[i]
-				parse_info = self.parser_cache[fname]
 				file_path = path.join(input_path, fname)
+				parse_info = self.parser_cache.get(fname)
 				if parse_info and parse_info.get("createTime", 0) > util.get_file_modify_time(file_path):
 					files.pop(i)
 				i -= 1
