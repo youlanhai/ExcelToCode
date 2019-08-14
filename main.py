@@ -10,7 +10,7 @@ sys.path.append(os.path.join(module_path, "xl2code"))
 import util
 import xlsconfig
 from misc import install_package
-from util import _S
+from util import _S, ExcelToCodeException
 from load_configure import load_configure
 
 def main(argv):
@@ -32,16 +32,19 @@ def main(argv):
 
 	try:
 		load_configure(option.config_file, option)
+	except ExcelToCodeException, e:
+		util.log(e)
+		exit(-1)
 	except:
 		traceback.print_exc()
 		util.log("Error: Failed to load configure file", option.config_file)
-		return
+		exit(-1)
 
 	xlsconfig.FAST_MODE = option.fast_mode
 	xlsconfig.FORCE_RUN = option.force_run
 
 	if not install_package.check_plugin(("openpyxl", )):
-		return
+		exit(-1)
 
 	if option.gen_header:
 		from misc import generate_header
@@ -49,7 +52,7 @@ def main(argv):
 
 	if option.export or option.gen_code:
 		if not export_excel():
-			return
+			exit(-1)
 
 	if option.gen_code:
 		from misc import generate_code
@@ -79,7 +82,7 @@ def export_excel():
 		exporter = cls(csv_path, (".csv", ))
 		exporter.run()
 
-	except util.ExcelToCodeException, e:
+	except ExcelToCodeException, e:
 		split_line = "*" * 70
 		util.log(split_line)
 		util.log("错误：")

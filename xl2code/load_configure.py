@@ -5,7 +5,7 @@ import imp
 
 import xlsconfig
 import util
-from util import resolve_path
+from util import resolve_path, ExcelToCodeException
 
 ######################################################################
 ### 加载配置文件。cfg_file是python格式的文件。
@@ -15,7 +15,7 @@ def load_configure(cfg_file, option):
 	util.log("load configure file", cfg_file)
 
 	if not os.path.exists(cfg_file):
-		raise RuntimeError, "配置文件不存在: %s" % cfg_file
+		raise ExcelToCodeException, "配置文件不存在: %s" % cfg_file
 
 	cfg_path = os.path.dirname(cfg_file)
 	sys.path.insert(0, cfg_path)

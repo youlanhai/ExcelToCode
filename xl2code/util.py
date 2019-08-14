@@ -41,24 +41,19 @@ def redirect_iostream():
 	sys.stdout = stream
 	sys.stderr = stream
 
-def native_to_utf8(s):
-	if sys_encoding != "utf-8":
-		if isinstance(s, unicode):
-			return s.encode("utf-8")
-		return s.decode(sys_encoding).encode("utf-8")
-	return s
-
-def utf8_to_native(s):
-	if sys_encoding != "utf-8":
-		if isinstance(s, unicode):
-			return encode(sys_encoding)
-		return str(s).decode("utf-8").encode(sys_encoding)
-	return s
-
 def _S(s):
 	if stdout != sys.stdout:
 		return s
-	return utf8_to_native(s)
+
+	if sys_encoding != "utf-8":
+		if isinstance(s, unicode):
+			return encode(sys_encoding)
+		s = str(s)
+		try:
+			return s.decode("utf-8").encode(sys_encoding)
+		except UnicodeDecodeError:
+			pass
+	return s
 
 def to_utf8(s):
 	tp = type(s)
