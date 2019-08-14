@@ -77,7 +77,7 @@ class DirectExporter(BaseExporter):
 		return True
 
 	def _parse(self, infile, input_full_path, sheet_index):
-		util.log("parse", infile)
+		# util.log("parse", infile)
 
 		parser = self.parser_class(input_full_path, None, sheet_index)
 		parser.run()

@@ -75,7 +75,7 @@ class ExcelParser(object):
 				self.parse_sheet(i, worksheet)
 		else:
 			if self.sheet_index >= len(worksheets):
-				log_error("Excel表'%s'没有子表'%d'", self.filename, self.sheet_index)
+				log_error("%s, 没有子表'%d'", self.filename, self.sheet_index)
 			else:
 				self.parse_sheet(self.sheet_index, worksheets[self.sheet_index])
 		return
@@ -86,9 +86,9 @@ class ExcelParser(object):
 		# 注意：worksheet的行列索引是从"1"开始的
 
 		if worksheet.max_column > self.max_column:
-			log("warn: Excel '%s' 列数过多：%d", self.filename, worksheet.max_column)
+			log("warn: Excel '%s' 列数过多：%d" % (self.filename, worksheet.max_column))
 		if worksheet.max_row > self.max_row:
-			log("warn: Excel '%s' 行数过多：%d", self.filename, worksheet.max_row)
+			log("warn: Excel '%s' 行数过多：%d" % (self.filename, worksheet.max_row))
 
 		self.current_sheet_index = i
 		self.sheet = []
@@ -126,7 +126,7 @@ class ExcelParser(object):
 				value = self.extract_cell_value(cells[c])
 			except ExcelToCodeException, e:
 				value = str(cells[c].value)
-				log_error("单元格 %s = [%s] 数据解析失败。原因：%s", self.row_col_str(r, c), value, str(e))
+				log_error("%s, 单元格 %s = [%s] 数据解析失败。原因：%s", self.filename, self.row_col_str(r, c), value, str(e))
 
 			current_row_data.append(value)
 

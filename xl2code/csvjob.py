@@ -90,6 +90,7 @@ class CSVJob(object):
 				"-o", self.output_path,
 				"-c", config_file,
 				self.input_path,
+				"-v",
 			]
 			if xlsconfig.EXPORT_ALL_WORKSHEET:
 				args.append("-a")

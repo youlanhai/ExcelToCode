@@ -72,7 +72,7 @@ def parse_files(files, input_path, output_path, option):
 
 def parse_file(input_path, output_path, option):
 	if option.verbose:
-		log("parse: %s", input_path)
+		log("parse: ", input_path)
 
 	parser = ExcelParser(
 		input_path,

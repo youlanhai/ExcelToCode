@@ -11,17 +11,10 @@ has_error = False
 class ExcelToCodeException(Exception):
 	pass
 
-def native_to_utf8(s):
-	if sys_encoding != "utf-8":
-		s = s.decode(sys_encoding).encode("utf-8")
-	return s
-
-def utf8_to_native(s):
+def _S(s):
 	if sys_encoding != "utf-8":
 		s = s.decode("utf-8").encode(sys_encoding)
 	return s
-
-_S = utf8_to_native
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
 def log_error(msg, *args):
@@ -31,9 +24,13 @@ def log_error(msg, *args):
 	print _S("错误："), _S(msg)
 
 def log(msg, *args):
-	if len(args) > 0: msg = msg % args
+	ret = []
+	for v in args:
+		if not isinstance(v, unicode):
+			v = str(v).decode('utf-8')
+		ret.append(v)
 
-	print _S(msg)
+	print " ".join(ret)
 
 
 def int_to_base26(value):
