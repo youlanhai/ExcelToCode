@@ -1,47 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import traceback
-import numfmt
 import xlsconfig
 import util
 from util import ExcelToCodeException, log_error
 from tps import tp0, convention
-
-def format_number_with_xlrd(f, cell, wb):
-	xf = wb.xf_list[cell.xf_index]
-	fmt_key = xf.format_key
-	fmt = wb.format_map[fmt_key]
-	s_fmt = fmt.format_str
-	a_fmt = numfmt.extract_number_format(s_fmt)
-	if a_fmt:
-		s_f = numfmt.format_number(f, a_fmt, ',', '.')
-	else:
-		s_f = "%g" % f
-	return s_f
-
-def format_number_with_openpyxl(f, cell, wb):
-	s_fmt = cell.number_format
-	a_fmt = numfmt.extract_number_format(s_fmt)
-	if a_fmt:
-		return numfmt.format_number(f, a_fmt, ',', '.')
-	else:
-		s = "%f" % f
-		# 删除'.'后面的0
-		return remove_end_zero(s)
-
-def remove_end_zero(s):
-	pos = s.find('.')
-	if pos < 0: return s
-	
-	i = len(s)
-	while i > pos and s[i - 1] == '0':
-		i -= 1
-	if s[i - 1] == '.':
-		i -= 1
-	return s[:i]
-
-
-format_number = format_number_with_openpyxl
+import csv
 
 class ConverterInfo:
 	def __init__(self, info, column = None):
@@ -109,29 +73,6 @@ class BaseParser(object):
 	def run(self):
 		self.do_parse()
 
-	# 将单元格数据转换成字符串形式。
-	# 因为'123,456'格式的字符串，会被Excel存贮成浮点数：123456，
-	# 而openpyxl仅仅是读取存贮的数据，不会自动将数字还原成字符串，所以这里手动进行转换。
-	def extract_cell_value(self, cell):
-		value = cell.value
-		tp = type(value)
-
-		if value is None:
-			value = ""
-		elif tp == float or tp == long or tp == int:
-			value = format_number(value, cell, self.workbook)
-		elif tp == unicode:
-			value = value.encode("utf-8").strip()
-		elif tp == str:
-			value = value.strip()
-		elif tp == bool:
-			value = str(value)
-		else:
-			msg = "不支持的数据类型: %s '%s'" % (type(value), value)
-			raise ExcelToCodeException, msg
-
-		return value
-
 	def get_default_value(self, col):
 		value = self.default_values.get(col, "")
 		if value == '!':
@@ -165,23 +106,20 @@ class BaseParser(object):
 		return ret
 
 	def do_parse(self):
-		import openpyxl
-		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
+		csvReader = None
+		with open(self.filename.decode("utf-8"), "rb") as f:
+			csvReader = csv.reader(f)
 
-		sheets = self.workbook.worksheets
-		if self.sheet_index >= len(sheets):
-			log_error("Excel表'%s'没有子表'%d'", self.filename, self.sheet_index)
+			self.worksheet = []
+			for row in csvReader:
+				self.worksheet.append(row)
+		
+		self.max_row = len(self.worksheet)
+		if self.max_row == 0:
+			print "表格为空：", self.filename
 			return
 
-		worksheet = sheets[self.sheet_index]
-		self.worksheet = worksheet
-
-		# 注意：worksheet的行列索引是从"1"开始的
-
-		if worksheet.max_column > 1000:
-			print "warn: Excel '%s' 列数过多：%d" % (self.filename, worksheet.max_column)
-		if worksheet.max_row > 32767:
-			print "warn: Excel '%s' 行数过多：%d" % (self.filename, worksheet.max_row)
+		self.max_column = len(self.worksheet[0])
 
 		self.parse_arguments(self.extract_cells(self.argument_row_index))
 
@@ -190,18 +128,19 @@ class BaseParser(object):
 			return
 
 		self.parse_header(self.extract_cells(self.header_row_index))
+
 		if self.default_value_row_index >= 0:
 			self.parse_defaults(self.extract_cells(self.default_value_row_index))
 
 		if self.is_vertical:
-			self.parse_by_vertical(worksheet)
+			self.parse_by_vertical(self.worksheet)
 		else:
-			self.parse_by_horizontal(worksheet)
+			self.parse_by_horizontal(self.worksheet)
 		return
 
 	def is_blank_line(self, cells, count):
 		for i in xrange(count):
-			v = cells[i].value
+			v = cells[i]
 			if v != '' and v is not None:
 				return False
 
@@ -215,18 +154,17 @@ class BaseParser(object):
 			return
 
 		# 如果key是空，自动复制上一行key
-		first_value = cells[0].value
+		first_value = cells[0]
 		if first_value == '' or first_value is None:
-			cells[0].value = self.last_key
+			cells[0] = self.last_key
 		else:
 			self.last_key = first_value
 
 		current_row_data = []
 		for c in xrange(max_cols):
-			cell_value = None
+			cell_value = cells[c]
 			result_value = None
 			try:
-				cell_value = self.extract_cell_value(cells[c])
 				result_value = self.convert_cell(r, c, cell_value)
 			except ExcelToCodeException, e:
 				# traceback.print_exc()
@@ -238,14 +176,14 @@ class BaseParser(object):
 		return True
 
 	def parse_by_horizontal(self, worksheet):
-		for r in xrange(self.data_row_index, worksheet.max_row):
-			cells = worksheet[r + 1]
+		for r in xrange(self.data_row_index, self.max_row):
+			cells = worksheet[r]
 			if not self.parse_cells(r, cells):
 				break
 		return
 
 	def parse_by_vertical(self, worksheet):
-		for c in xrange(self.data_row_index, worksheet.max_column):
+		for c in xrange(self.data_row_index, self.max_column):
 			col_index = util.int_to_base26(c)
 			cells = worksheet[col_index][self.vertical_start_row : ]
 			if not self.parse_cells(c, cells):
@@ -346,16 +284,16 @@ class BaseParser(object):
 			ret = []
 			columns = self.worksheet[col]
 			for i in xrange(self.vertical_start_row, len(columns)):
-				ret.append(self.extract_cell_value(columns[i]))
+				ret.append(columns[i])
 
 			return ret
 		else:
-			row = index + 1
-			return [self.extract_cell_value(cell) for cell in self.worksheet[row]]
+			row = index
+			return [cell for cell in self.worksheet[row]]
 
 	def row_col_str(self, row, col):
 		real_r, real_c = row, col
 		if self.is_vertical:
 			real_r = col + self.vertical_start_row
 			real_c = row
-		return "%d:%s" % (real_r + 1, util.int_to_base26(real_c))
+		return "%d:%s" % (real_r, util.int_to_base26(real_c))

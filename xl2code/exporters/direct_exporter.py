@@ -56,19 +56,11 @@ class DirectExporter(BaseExporter):
 		return
 
 	def parse_excel(self, infile, sheet_index = 0):
-		input_full_path = os.path.join(xlsconfig.INPUT_PATH, infile)
-		data_module = None
+		input_full_path = os.path.join(self.input_path, infile)
 
-		if xlsconfig.FAST_MODE:
-			cache = self.parser_cache.get(infile)
-			if cache and cache["createTime"] >= os.path.getmtime(input_full_path.decode("utf-8")):
-				outfile = cache["outputPath"]
-				data_module = util.import_file(outfile)
-
+		data_module = self._parse(infile, input_full_path, sheet_index)
 		if data_module is None:
-			data_module = self._parse(infile, input_full_path, sheet_index)
-			if data_module is None:
-				return False
+			return False
 
 		info = data_module.info
 		outfile = info["outfile"]
@@ -111,12 +103,6 @@ class DirectExporter(BaseExporter):
 		data_module = self.create_data_module(infile, outfile, converter_name, parser, info)
 		if data_module is None:
 			return None
-
-		self.parser_cache[infile] = {
-			"outputPath" : outfile,
-			"createTime" : 0 if parser.need_parse_again else time.time(),
-			"needParseAgain" : parser.need_parse_again,
-		}
 
 		return data_module
 

@@ -79,24 +79,21 @@ class ConfigExporter(BaseExporter):
 	def export_excel_to_python(self, infile, outfile, converter_name, sheet_index = 0):
 		converter = self.find_converter(converter_name)
 
-		input_path = os.path.join(xlsconfig.INPUT_PATH, infile)
+		input_path = os.path.join(self.input_path, infile)
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
 		converter_file = os.path.splitext(converter.__file__)[0] + ".py"
 
-		if xlsconfig.FAST_MODE and util.if_file_newer(output_path, input_path) and util.if_file_newer(output_path, converter_file):
-			data_module = util.import_file(outfile)
+		print infile, "-", converter_name
+		parser = self.parser_class(input_path, converter, sheet_index)
+		try:
+			parser.run()
+		except:
+			traceback.print_exc()
+			return False
 
-		else:
-			print infile, "-", converter_name
-			parser = self.parser_class(input_path, converter, sheet_index)
-			try:
-				parser.run()
-			except:
-				traceback.print_exc()
-				return False
-
-			data_module = self.create_data_module(infile, outfile, converter_name, parser)
-			if data_module is None: return False
+		data_module = self.create_data_module(infile, outfile, converter_name, parser)
+		if data_module is None:
+			return False
 
 		self.store_data_module(data_module)
 		return True
