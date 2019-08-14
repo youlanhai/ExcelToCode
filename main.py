@@ -82,7 +82,7 @@ def export_excel():
 	except util.ExcelToCodeException, e:
 		split_line = "*" * 70
 		util.log(split_line)
-		util.log(native_str("错误："))
+		util.log("错误：")
 		util.log(e)
 		util.log(split_line)
 		exit(-1)

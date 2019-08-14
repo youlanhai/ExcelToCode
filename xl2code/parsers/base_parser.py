@@ -124,7 +124,7 @@ class BaseParser(object):
 		self.parse_arguments(self.extract_cells(self.argument_row_index))
 
 		if self.version is None:
-			log_error("无效的数据表文件，必须存在版本号信息")
+			log_error("%s, 无效的数据表文件，必须存在版本号信息", self.filename)
 			return
 
 		self.parse_header(self.extract_cells(self.header_row_index))
@@ -168,7 +168,7 @@ class BaseParser(object):
 				result_value = self.convert_cell(r, c, cell_value)
 			except ExcelToCodeException, e:
 				# traceback.print_exc()
-				log_error("单元格 %s = [%s] 数据解析失败。原因：%s", self.row_col_str(r, c), str(cell_value), str(e))
+				log_error("%s, 单元格 %s = [%s] 数据解析失败。原因：%s", self.filename, self.row_col_str(r, c), str(cell_value), str(e))
 
 			current_row_data.append(result_value)
 
@@ -211,13 +211,13 @@ class BaseParser(object):
 				break
 
 			if header in self.header_2_col:
-				log_error("表头'%s'重复，at %s", header, self.row_col_str(self.header_row_index, col))
+				log_error("%s, 表头'%s'重复，at %s", self.filename, header, self.row_col_str(self.header_row_index, col))
 				continue
 
 			self.header_2_col[header] = col
 
 		if len(self.headers) == 0:
-			return log_error("Except表'%s'表头数量不能为0", self.filename)
+			return log_error("%s, 表头数量不能为0", self.filename)
 
 		return
 
@@ -246,7 +246,7 @@ class BaseParser(object):
 			except:
 				traceback.print_exc()
 
-				log_error("参数转换失败，%s = [%s]", self.row_col_str(self.argument_row_index, col), value)
+				log_error("%s, 参数转换失败，%s = [%s]", self.filename, self.row_col_str(self.argument_row_index, col), value)
 
 			self.arguments[field] = ret
 
