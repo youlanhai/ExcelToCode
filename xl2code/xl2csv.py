@@ -9,7 +9,7 @@ Excel的解析速度比较慢，可以用多进程转换为csv。
 然后再启动导表工具，进行导出处理。
 """
 
-from os import path
+from os import path, mkdir
 from argparse import ArgumentParser
 import csv
 
@@ -22,33 +22,56 @@ def main():
 	parser.add_argument("-o", "--output", help=_S("输出文件路径。如果输入路径是目录，输出路径也应该是目录"))
 	parser.add_argument("-a", "--all-worksheet", action="store_true", help=_S("是否导出所有的sheet页"))
 	parser.add_argument("input", help=_S("输入文件路径。可以是文件，也可以是目录"))
+	parser.add_argument("-c", "--config-file", help=_S("配置文件。要转换的文件列表，是相对于input的路径"))
 
 	option = parser.parse_args()
 	input_path = option.input
+	if input_path is None:
+		return log_error("没有输入路径")
+
 	output_path = option.output
 
-	inputs = None
+	if option.config_file:
+		if output_path is None:
+			output_path = input_path
+		parse_config(option.config_file, input_path, output_path, option)
+		return
+
 	if path.isfile(input_path):
 		if output_path is None:
 			output_path = path.splitext(input_path)[0] + ".csv"
-		xl2csv(input_path, output_path, option)
+		parse_file(input_path, output_path, option)
 	else:
 		if output_path is None:
 			output_path = input_path
 
-		files = util.gather_all_files(input_path, (".xlsx", ))
-		for fname in files:
-			src_path = path.join(input_path, fname)
-			dst_path = path.join(output_path, path.splitext(fname)[0] + ".csv")
-			xl2csv(src_path, dst_path, option)
-
-	if util.has_error:
-		exit(-1)
+		parse_folder(input_path, output_path, option)
 	return
 
 
-def xl2csv(input_path, output_path, option):
-	print "parse:", input_path
+def parse_config(config_file, input_path, output_path, option):
+	files = []
+	with open(config_file, "r") as f:
+		for line in f.xreadlines():
+			files.append(line.strip())
+
+	parse_files(files, input_path, output_path, option)
+
+
+def parse_folder(input_path, output_path, option):
+	files = util.gather_all_files(input_path, (".xlsx", ))
+	parse_files(files, input_path, output_path, option)
+
+
+def parse_files(files, input_path, output_path, option):
+	for fname in files:
+		src_path = path.join(input_path, fname)
+		dst_path = path.join(output_path, path.splitext(fname)[0] + ".csv")
+		parse_file(src_path, dst_path, option)
+
+
+def parse_file(input_path, output_path, option):
+	print "parse:", _S(input_path)
 	parser = Parser(
 		input_path,
 		export_all_sheet = option.all_worksheet
@@ -229,3 +252,6 @@ def remove_end_zero(s):
 
 if __name__ == "__main__":
 	main()
+
+	if util.has_error:
+		exit(-1)

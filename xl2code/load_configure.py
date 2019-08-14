@@ -28,6 +28,9 @@ def load_configure(cfg_file, option):
 	file_path = os.path.dirname(cfg_file)
 	xlsconfig.CONFIG_PATH = file_path
 
+	module_path = os.path.dirname(os.path.abspath(__file__))
+	xlsconfig.TOOL_PATH = os.path.dirname(module_path)
+
 	xlsconfig.pre_init_method(xlsconfig)
 
 	safe_parse_path(option, "project", "PROJECT_PATH")
@@ -41,6 +44,13 @@ def load_configure(cfg_file, option):
 	for k in xlsconfig.DEPENDENCIES.keys():
 		path = xlsconfig.DEPENDENCIES[k]
 		xlsconfig.DEPENDENCIES[k] = resolve_path(path)
+
+	names = (
+		"CSV_CONVERTER",
+	)
+	for name in names:
+		value = resolve_path(getattr(xlsconfig, name))
+		setattr(xlsconfig, name, value)
 
 	# 所有已知的配置中，名字叫'file_path'的路径，会自动转义
 

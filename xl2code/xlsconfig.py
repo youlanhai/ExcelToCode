@@ -34,6 +34,8 @@ TEMP_FILE_INDENT = 3
 # 输出文件路径转为小写
 OUTPUT_PATH_TO_LOWER = True
 
+# 导出所有的Excel工作表
+EXPORT_ALL_WORKSHEET = False
 ######################################################################
 ### 以下是需要配置的路径。可以通过配置文件来设置，见load_configure
 ######################################################################
@@ -101,6 +103,10 @@ SHEET_ROW_INDEX = {
 	# 默认值所在行。如果某列没填，可以用此值替代
 	"default" 	: -1,
 }
+
+CSV_CONVERTER = "$TOOL_PATH/xl2code/xl2csv.py"
+
+CSV_JOB_COUNT = 4
 
 #----------- ConfigExporter/MixExporter需要的参数 ---------------------#
 

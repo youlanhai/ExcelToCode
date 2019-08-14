@@ -199,6 +199,9 @@ def gather_all_files(path, exts):
 
 	return ret
 
+def get_file_modify_time(file_path):
+	return os.path.getmtime(file_path.decode('utf-8'))
+
 # 将src目录递归的拷贝到dst目录。
 # 与shutil.copytree不同之处在于，如果目标文件存在，会直接进行覆盖，而不是抛异常。
 def copytree(src, dst, symlinks=False, ignore=None):

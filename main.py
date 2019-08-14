@@ -61,11 +61,23 @@ def main(argv):
 def export_excel():
 	util.safe_makedirs(xlsconfig.TEMP_PATH, not xlsconfig.FAST_MODE)
 
-	import exporters
-	cls = getattr(exporters, xlsconfig.EXPORTER_CLASS)
-	exporter = cls(xlsconfig.INPUT_PATH, (".xlsx", ))
 	try:
+		csv_path = os.path.join(xlsconfig.TEMP_PATH, "csv")
+
+		import csvjob
+		job = csvjob.CSVJob(
+			xlsconfig.INPUT_PATH,
+			csv_path,
+			xlsconfig.TEMP_PATH,
+			xlsconfig.CSV_JOB_COUNT
+		)
+		job.run()
+
+		import exporters
+		cls = getattr(exporters, xlsconfig.EXPORTER_CLASS)
+		exporter = cls(csv_path, (".csv", ))
 		exporter.run()
+
 	except util.ExcelToCodeException, e:
 		split_line = "*" * 70
 		print split_line
