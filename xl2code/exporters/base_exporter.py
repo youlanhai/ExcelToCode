@@ -29,11 +29,13 @@ class BaseExporter(object):
 		self.merge_file_patterns = []
 
 		self.parser_class = None
-		self.parser_cache = {}
 
 		self.stages_info = getattr(xlsconfig, "EXPORTER_STAGES", self.STAGES_INFO)
 
-		self.python_search_paths = [xlsconfig.CONVERTER_PATH, xlsconfig.TEMP_PATH]
+		self.data_temp_path = os.path.join(xlsconfig.TEMP_PATH, "data")
+		util.safe_makedirs(self.data_temp_path)
+
+		self.python_search_paths = [xlsconfig.CONVERTER_PATH, ]
 
 	def run(self):
 		convention.update_functions()
@@ -55,12 +57,6 @@ class BaseExporter(object):
 			sys.path.remove(path)
 
 	def export_excels(self):
-		pass
-
-	def load_cache_file(self):
-		self.parser_cache = {}
-
-	def save_cache_file(self):
 		pass
 
 	def find_converter(self, converter_name):
@@ -93,7 +89,7 @@ class BaseExporter(object):
 		return True
 
 	def create_data_module(self, infile, outfile, converter_name, parser, info = None):
-		info = info if info else {}
+		info = info or {}
 		info["infile"] = infile
 		info["outfile"] = outfile
 		info["parser"] = converter_name
@@ -102,22 +98,29 @@ class BaseExporter(object):
 		info["arguments"] = parser.arguments
 		info["sheet_types"] = {"main_sheet" : parser.sheet_types}
 
-		util.ensure_package_exist(xlsconfig.TEMP_PATH, outfile)
-		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
+		data_module = DataModule(outfile, info, parser.sheet)
+
+		if xlsconfig.SAVE_MIDDLE_DATA_FILE:
+			self.save_data_module_to_file(data_module)
+
+		return data_module
+
+	def save_data_module_to_file(self, data_module):
+		info = data_module.info
+		outfile = info["outfile"]
+
+		util.ensure_package_exist(self.data_temp_path, outfile)
+		output_path = os.path.join(self.data_temp_path, outfile + ".py")
 
 		wt = writers.PyWriter(output_path, None)
 		wt.max_indent = xlsconfig.TEMP_FILE_INDENT
 		wt.begin_write()
 
-		sheet = parser.sheet
-
 		wt.write_value("path", outfile)
 		wt.write_value("info", info)
-		wt.write_value("main_sheet", sheet)
+		wt.write_value("main_sheet", data_module.main_sheet)
 
 		wt.end_write()
 		wt.close()
-
-		return DataModule(outfile, info, sheet)
 
 
