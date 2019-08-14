@@ -15,13 +15,13 @@ def generate_header():
 def create_header_in_path(path):
 	ext = ".xlsx" if xlsconfig.USE_OPENPYXL else ".xls"
 	excel_files = gather_all_files(path, set((ext, )))
-	print "total excel files:", len(excel_files)
+	util.log("total excel files:", len(excel_files))
 
 	return create_header_for_excels(excel_files)
 
 
 def create_header_for_excels(excel_files):
-	print "=== create header for excels ..."
+	util.log("=== create header for excels ...")
 
 	if xlsconfig.USE_OPENPYXL:
 		from gen_header_with_openpyxl import create_header

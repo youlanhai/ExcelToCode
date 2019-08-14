@@ -83,7 +83,7 @@ class ConfigExporter(BaseExporter):
 		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
 		converter_file = os.path.splitext(converter.__file__)[0] + ".py"
 
-		print infile, "-", converter_name
+		util.log(infile, "-", converter_name)
 		parser = self.parser_class(input_path, converter, sheet_index)
 		try:
 			parser.run()

@@ -18,7 +18,7 @@ class MergeFiles(MergeSheets):
 
 	def merge_sub_files(self, exporter, outfile, sub_files):
 		assert(len(sub_files) > 0)
-		print "合并文件", outfile, "<-", sub_files
+		util.log("合并文件", outfile, "<-", sub_files)
 
 		if outfile in exporter.data_modules:
 			util.log_error("合并文件失败，目标文件'%s'已经存在", outfile)

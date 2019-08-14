@@ -69,5 +69,5 @@ def create_header(input_file, converter, sheet_index):
 		col += 1
 
 	book.save(input_file)
-	print "生成表头：", input_file
+	util.log("生成表头：", input_file)
 	return True

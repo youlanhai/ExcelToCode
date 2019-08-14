@@ -92,7 +92,7 @@ class CSVJob(object):
 			if xlsconfig.EXPORT_ALL_WORKSHEET:
 				args.append("-a")
 
-			print "start process: ", " ".join(args)
+			util.log("start process: ", " ".join(args))
 			p = subprocess.Popen(args)
 			processes.append(p)
 
@@ -101,10 +101,10 @@ class CSVJob(object):
 			p.wait()
 			ret = p.returncode
 			if ret != 0:
-				print "subprocess[%d] exit with error: %d" % (i, ret)
+				util.log("subprocess[%d] exit with error: %d" % (i, ret))
 				has_error = True
 			else:
-				print "subprocess[%d] exit." % (i, )
+				util.log("subprocess[%d] exit." % (i, ))
 
 		if has_error:
 			raise util.ExcelToCodeException, "转换csv失败"

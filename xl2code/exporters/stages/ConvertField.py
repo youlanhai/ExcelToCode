@@ -13,7 +13,7 @@ class ConvertField(BaseStage):
 		converter = data_module.converter
 		if converter is None: return
 
-		print "post convert:", data_module.path
+		util.log("post convert:", data_module.path)
 
 		col_2_cfg = getattr(converter, "COL_2_CFG", None)
 		if col_2_cfg is None:
@@ -25,7 +25,7 @@ class ConvertField(BaseStage):
 				header = info[0]
 				type_info = types.get(header)
 				if type_info is None:
-					print "header '%s' doesn't exist" % header
+					util.log("header '%s' doesn't exist" % header)
 					continue
 
 				col = type_info[0]

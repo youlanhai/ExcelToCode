@@ -13,7 +13,7 @@ class WriteJavaFileList(BaseStage):
 
 		file_path = util.resolve_path(info["file_path"])
 		util.ensure_folder_exist(file_path)
-		print "生成文件列表", file_path
+		util.log("生成文件列表", file_path)
 
 		only_name = os.path.splitext(os.path.basename(file_path))[0]
 

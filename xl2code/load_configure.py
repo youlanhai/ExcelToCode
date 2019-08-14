@@ -4,6 +4,7 @@ import sys
 import imp
 
 import xlsconfig
+import util
 from util import resolve_path
 
 ######################################################################
@@ -11,7 +12,7 @@ from util import resolve_path
 ######################################################################
 def load_configure(cfg_file, option):
 	cfg_file = os.path.abspath(cfg_file)
-	print "load configure file", cfg_file
+	util.log("load configure file", cfg_file)
 
 	if not os.path.exists(cfg_file):
 		raise RuntimeError, "配置文件不存在: %s" % cfg_file

@@ -16,7 +16,7 @@ class WriteJavaFileEnum(BaseStage):
 
 		file_path = util.resolve_path(info["file_path"])
 		util.ensure_folder_exist(file_path)
-		print "生成枚举类", file_path
+		util.log("生成枚举类", file_path)
 
 		wt = BaseWriter(file_path, None)
 		

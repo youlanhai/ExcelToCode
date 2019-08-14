@@ -101,7 +101,7 @@ class MergeField(BaseStage):
 		try:
 			self.convert_sheet(sheet, types, multi_key)
 		except Exception, e:
-			print e
+			util.log(e)
 			util.log_error("处理字段失败，%s", data_module.path)
 
 	def convert_sheet(self, sheet, types, multi_key):
@@ -122,7 +122,7 @@ class MergeField(BaseStage):
 					ret = self.convert_field_row(col2type, key, row)
 				sheet[key] = ret
 			except Exception, e:
-				print "处理字段失败", key
+				util.log("处理字段失败", key)
 				raise e
 
 

@@ -18,7 +18,7 @@ class RunCustomStage(BaseStage):
 				break
 			
 			stage = stage_class(stage_info)
-			print "=== %s ===" % stage.get_desc()
+			util.log("=== %s ===" % stage.get_desc())
 			stage.process(exporter)
 
 		return

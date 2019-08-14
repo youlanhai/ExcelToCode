@@ -70,16 +70,16 @@ def type2function(name):
 	template_type = "template_" + match.group(1)
 	value_type = "to_" + match.group(2)
 
-	# print "template args:", template_type, value_type
+	# util.log("template args:", template_type, value_type)
 
 	template_function = _find_function(template_type)
 	if template_function is None:
-		print "failed find template type:", template_type
+		util.log("failed find template type:", template_type)
 		return None
 
 	value_function = _find_function(value_type)
 	if value_function is None:
-		print "failed find value type:", value_type
+		util.log("failed find value type:", value_type)
 		value_function = tp0.to_string
 
 	converter = lambda args: template_function(value_function, args)

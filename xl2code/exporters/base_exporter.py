@@ -50,7 +50,7 @@ class BaseExporter(object):
 				break
 			
 			stage = stage_class(stage_info)
-			print "=== %s ===" % stage.get_desc()
+			util.log("=== %s ===" % stage.get_desc())
 			stage.process(self)
 
 		for path in self.python_search_paths:
@@ -63,10 +63,10 @@ class BaseExporter(object):
 		pass
 
 	def gather_excels(self):
-		print "=== 搜索Excel文件 ..."
+		util.log("=== 搜索Excel文件 ...")
 
 		self.excel_files = util.gather_all_files(self.input_path, self.exts)
-		print "发现 %d 个excel文件" % len(self.excel_files)
+		util.log("发现 %d 个excel文件" % len(self.excel_files))
 
 	def store_data_module(self, data_module):
 		module_info = data_module.info

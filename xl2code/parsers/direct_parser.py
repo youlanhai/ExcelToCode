@@ -44,7 +44,7 @@ class DirectParser(BaseParser):
 				continue
 
 			if method is None:
-				print "warn: type %s was not found, use `string` instead" % type
+				util.log("warn: type %s was not found, use `string` instead" % type)
 				method = tp0.to_str
 				self.need_parse_again = True
 

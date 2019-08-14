@@ -44,7 +44,7 @@ class MergeSheets(BaseStage):
 
 	def merge_sub_files(self, exporter, outfile, sub_files):
 		assert(len(sub_files) > 0)
-		print "合并分表", outfile, "<-", sub_files
+		util.log("合并分表", outfile, "<-", sub_files)
 
 		if outfile in exporter.data_modules:
 			util.log_error("合并分表失败，目标表格'%s'已经存在", outfile)

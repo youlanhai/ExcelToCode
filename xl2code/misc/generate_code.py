@@ -8,7 +8,7 @@ import util
 import codegen
 
 def generate_code():
-	print "=== 生成代码类文件 ..."
+	util.log("=== 生成代码类文件 ...")
 
 	configure_file_path = os.path.join(xlsconfig.TEMP_PATH, "configures.py")
 	if not os.path.exists(configure_file_path):

@@ -116,7 +116,7 @@ class BaseParser(object):
 		
 		self.max_row = len(self.worksheet)
 		if self.max_row == 0:
-			print "表格为空：", self.filename
+			util.log("表格为空：", self.filename)
 			return
 
 		self.max_column = len(self.worksheet[0])

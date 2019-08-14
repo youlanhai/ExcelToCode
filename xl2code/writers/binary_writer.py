@@ -192,7 +192,7 @@ class BinaryWriter(BaseWriter):
 			self._write_str(value.encode("utf-8"))
 
 		else:
-			print value
+			util.log(value)
 			raise TypeError, "invalid key type %s" % (str(tp), )
 
 	def _write(self, value):
@@ -231,7 +231,7 @@ class BinaryWriter(BaseWriter):
 				self._write(value[k])
 
 		else:
-			print value
+			util.log(value)
 			raise TypeError, "unsupported value type %s" % (str(tp), )
 
 		return

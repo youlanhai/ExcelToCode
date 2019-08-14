@@ -36,7 +36,7 @@ class ConfigParser(BaseParser):
 
 			cfg = self.header_2_config.get(header)
 			if cfg is None:
-				print "警告：表头%s = '%s'没有被解析。" % (self.row_col_str(self.header_row_index, col), header, )
+				util.log("警告：表头%s = '%s'没有被解析。" % (self.row_col_str(self.header_row_index, col), header, ))
 
 			else:
 				converter = ConverterInfo(cfg)

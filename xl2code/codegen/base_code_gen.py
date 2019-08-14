@@ -26,7 +26,7 @@ class BaseCodeGen(object):
 
 		if content == origin_content: return
 
-		print "生成", path
+		util.log("生成", path)
 
 		with open(path, "wb") as f:
 			f.write(content)

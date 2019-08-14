@@ -14,23 +14,23 @@ def check_plugin(plugins):
 		try:
 			importlib.import_module(name)
 		except ImportError, e:
-			print "错误：没有发现插件：'%s'，尝试自动安装 ..." % (name, )
+			util.log("错误：没有发现插件：'%s'，尝试自动安装 ..." % (name, ))
 
 			ret = install(name)
-			print "-" * 60
-			print "安装插件%s： '%s'" % ("成功" if ret else "失败", name, )
+			util.log("-" * 60)
+			util.log("安装插件%s： '%s'" % ("成功" if ret else "失败", name, ))
 
 			if not ret: return False
 
 			need_restart = True
 
-	if need_restart: print "请重启导表工具"
+	if need_restart: util.log("请重启导表工具")
 	return True
 
 def install(name):
 	package_path = xlsconfig.DEPENDENCIES.get(name)
 	if package_path is None:
-		print "错误：没有找到安装包：'%s'" % (name, )
+		util.log("错误：没有找到安装包：'%s'" % (name, ))
 		return
 
 	output_path = xlsconfig.TEMP_PATH
@@ -44,7 +44,7 @@ def install(name):
 		zf.extractall(output_path)
 
 	if not os.path.exists(os.path.join(setup_path, "setup.py")):
-		print "错误：没有找到安装文件：'%s/setup.py'" % setup_path
+		util.log("错误：没有找到安装文件：'%s/setup.py'" % setup_path)
 		return False
 
 	old_cwd = os.getcwd()
@@ -65,7 +65,7 @@ def install(name):
 	return False
 
 def _install_in_path():
-	print os.getcwd()
+	util.log(os.getcwd())
 
 	cmd = """python setup.py build > build.log"""
 	os.system(cmd)
@@ -77,5 +77,5 @@ def sudo(cmd):
 	if sys.platform != "win32":
 		cmd = "sudo " + cmd
 
-	#print cmd
+	#util.log(cmd)
 	os.system(cmd)
