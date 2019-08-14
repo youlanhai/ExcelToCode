@@ -13,7 +13,6 @@ class DirectParser(BaseParser):
 
 		self.field_row_index = xlsconfig.SHEET_ROW_INDEX["field"]
 		self.type_row_index = xlsconfig.SHEET_ROW_INDEX["type"]
-		self.need_parse_again = False
 
 	# 使用Excel表头提供的信息，构造转换器
 	def parse_header(self, cells):
@@ -39,14 +38,13 @@ class DirectParser(BaseParser):
 			method = None
 			try:
 				method = convention.type2function(type)
-			except:
-				util.log_error("无效的类型'%s'，at %s", type, self.row_col_str(self.type_row_index, col))
+			except util.ExcelToCodeException, e:
+				util.log_error("无效的类型'%s'，at %s, %s", type, self.row_col_str(self.type_row_index, col), e)
 				continue
 
 			if method is None:
 				util.log("warn: type %s was not found, use `string` instead" % type)
 				method = tp0.to_str
-				self.need_parse_again = True
 
 			self.converters[col] = ConverterInfo((header, field, method, True))
 			self.sheet_types[header] = (col, field, header, type)

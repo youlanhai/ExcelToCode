@@ -2,6 +2,7 @@
 import os
 from base_writer import BaseWriter
 from struct import pack
+import util
 
 def pack_debug(fmt, *args):
 	return " ".join([str(x) for x in args]) + " "

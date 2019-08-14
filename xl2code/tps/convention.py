@@ -4,6 +4,8 @@
 import re
 import tp0
 from tps import TYPE_MODULES
+from util import log
+import xlsconfig
 
 #: 类型转换函数映射为名称
 FUNCTION_2_TYPE = {}
@@ -53,6 +55,8 @@ def _find_function(name):
 		fun = getattr(module, name, None)
 		if fun is not None:
 			return fun
+
+	setattr(tp0, name, tp0.to_str)
 	return None
 
 def function2type(tp):
@@ -70,16 +74,16 @@ def type2function(name):
 	template_type = "template_" + match.group(1)
 	value_type = "to_" + match.group(2)
 
-	# util.log("template args:", template_type, value_type)
+	# log("template args:", template_type, value_type)
 
 	template_function = _find_function(template_type)
 	if template_function is None:
-		util.log("failed find template type:", template_type)
+		log("warn: failed find template type:", template_type)
 		return None
 
 	value_function = _find_function(value_type)
 	if value_function is None:
-		util.log("failed find value type:", value_type)
+		log("warn: failed find value type:", value_type)
 		value_function = tp0.to_string
 
 	converter = lambda args: template_function(value_function, args)
