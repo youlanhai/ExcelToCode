@@ -30,7 +30,11 @@ def log(msg, *args):
 			v = str(v).decode('utf-8')
 		ret.append(v)
 
-	print " ".join(ret)
+	try:
+		msg = u" ".join(ret)
+		print msg
+	except:
+		print ret
 
 
 def int_to_base26(value):

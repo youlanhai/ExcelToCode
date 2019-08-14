@@ -130,7 +130,11 @@ def log(*args):
 			v = str(v).decode('utf-8')
 		ret.append(v)
 
-	print " ".join(ret)
+	try:
+		msg = u" ".join(ret)
+		print msg
+	except:
+		print ret
 
 def log_verbose(*args):
 	pass
