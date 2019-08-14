@@ -3,6 +3,7 @@ import os
 import sys
 import shutil
 import re
+import time
 
 import xlsconfig
 
@@ -14,6 +15,8 @@ stderr = sys.stderr
 sys_encoding = (stdout.encoding or "utf-8").lower()
 
 has_error = False
+
+SPLIT_LINE = "*" * 70
 
 class Redirect(object):
 	
@@ -128,6 +131,9 @@ def log(*args):
 		ret.append(v)
 
 	print " ".join(ret)
+
+def log_verbose(*args):
+	pass
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
 def log_error(msg, *args):
@@ -359,3 +365,14 @@ def translate_string(sting):
 
 	return "".join(ret)
 
+
+class Watcher(object):
+	def __init__(self, name):
+		self.name = name
+		self.begin_time = time.time()
+
+	def stop(self):
+		self.end_time = time.time()
+
+	def report(self):
+		log("%s 耗时 %.2fs" % (self.name, self.end_time - self.begin_time))

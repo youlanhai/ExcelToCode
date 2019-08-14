@@ -48,6 +48,7 @@ class CSVJob(object):
 
 	def collect_files(self, input_path):
 		files = util.gather_all_files(input_path, (".xlsx", ))
+		util.log("发现excel文件数量：", len(files))
 
 		# 移除没有修改的文件
 		if xlsconfig.FAST_MODE:
@@ -60,6 +61,7 @@ class CSVJob(object):
 					files.pop(i)
 				i -= 1
 
+		util.log("需要导出的excel数量：", len(files))
 		return files
 
 	def parse_files(self):
@@ -92,7 +94,7 @@ class CSVJob(object):
 			if xlsconfig.EXPORT_ALL_WORKSHEET:
 				args.append("-a")
 
-			util.log("start process: ", " ".join(args))
+			util.log_verbose("start process: ", " ".join(args))
 			p = subprocess.Popen(args)
 			processes.append(p)
 

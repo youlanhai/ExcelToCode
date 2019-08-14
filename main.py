@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from argparse import ArgumentParser
+import time
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(module_path, "xl2code"))
@@ -75,19 +76,28 @@ def export_excel():
 			xlsconfig.TEMP_PATH,
 			xlsconfig.CSV_JOB_COUNT
 		)
+
+		w1 = util.Watcher("转换csv")
 		job.run()
+		w1.stop()
 
 		import exporters
 		cls = getattr(exporters, xlsconfig.EXPORTER_CLASS)
 		exporter = cls(csv_path, (".csv", ))
+
+		w2 = util.Watcher("导出数据")
 		exporter.run()
+		w2.stop()
+
+		util.log(util.SPLIT_LINE)
+		w1.report()
+		w2.report()
 
 	except ExcelToCodeException, e:
-		split_line = "*" * 70
-		util.log(split_line)
+		util.log(util.SPLIT_LINE)
 		util.log("错误：")
 		util.log(e)
-		util.log(split_line)
+		util.log(util.SPLIT_LINE)
 		exit(-1)
 	return True
 
