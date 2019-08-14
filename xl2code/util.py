@@ -7,47 +7,16 @@ import time
 
 import xlsconfig
 
-class ExcelToCodeException(Exception):
-	pass
-
-stdout = sys.stdout
-stderr = sys.stderr
-sys_encoding = (stdout.encoding or "utf-8").lower()
+sys_encoding = (sys.stdout.encoding or "utf-8").lower()
 
 has_error = False
 
 SPLIT_LINE = "*" * 70
 
-class Redirect(object):
-	
-	encoding = "utf-8"
-
-	def write(self, msg):
-		try:
-			ustr = msg
-			if type(msg) != unicode:
-				ustr = msg.decode("utf-8")
-			stdout.write(ustr.encode(sys_encoding))
-		except:
-			stdout.write(msg)
-
-	def flush(self):
-		stdout.flush()
-
-def redirect_iostream():
-	if stdout != sys.stdout: return
-
-	stdout.write("redirect output stream.\n")
-	stdout.flush()
-
-	stream = Redirect()
-	sys.stdout = stream
-	sys.stderr = stream
+class ExcelToCodeException(Exception):
+	pass
 
 def _S(s):
-	if stdout != sys.stdout:
-		return s
-
 	if sys_encoding != "utf-8":
 		if isinstance(s, unicode):
 			return encode(sys_encoding)
@@ -125,13 +94,21 @@ def import_converter(filename):
 
 def log(*args):
 	ret = []
-	for v in args:
-		if not isinstance(v, unicode):
-			v = str(v).decode('utf-8')
-		ret.append(v)
+	if sys_encoding == "utf-8":
+		for v in args:
+			if isinstance(v, unicode):
+				v = v.encode('utf-8')
+			else:
+				v = str(v)
+			ret.append(v)
+	else:
+		for v in args:
+			if not isinstance(v, unicode):
+				v = str(v).decode('utf-8')
+			ret.append(v)
 
 	try:
-		msg = u" ".join(ret)
+		msg = " ".join(ret)
 		print msg
 	except:
 		print ret

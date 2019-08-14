@@ -13,7 +13,13 @@ class ExcelToCodeException(Exception):
 
 def _S(s):
 	if sys_encoding != "utf-8":
-		s = s.decode("utf-8").encode(sys_encoding)
+		if isinstance(s, unicode):
+			return encode(sys_encoding)
+		s = str(s)
+		try:
+			return s.decode("utf-8").encode(sys_encoding)
+		except UnicodeDecodeError:
+			pass
 	return s
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
@@ -25,13 +31,21 @@ def log_error(msg, *args):
 
 def log(msg, *args):
 	ret = []
-	for v in args:
-		if not isinstance(v, unicode):
-			v = str(v).decode('utf-8')
-		ret.append(v)
+	if sys_encoding == "utf-8":
+		for v in args:
+			if isinstance(v, unicode):
+				v = v.encode('utf-8')
+			else:
+				v = str(v)
+			ret.append(v)
+	else:
+		for v in args:
+			if not isinstance(v, unicode):
+				v = str(v).decode('utf-8')
+			ret.append(v)
 
 	try:
-		msg = u" ".join(ret)
+		msg = " ".join(ret)
 		print msg
 	except:
 		print ret
