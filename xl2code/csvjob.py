@@ -67,7 +67,7 @@ class CSVJob(object):
 		if len(files) == 0:
 			return
 
-		job = min(self.job, files)
+		job = min(self.job, len(files))
 
 		group_count = len(files) // job
 		processes = []

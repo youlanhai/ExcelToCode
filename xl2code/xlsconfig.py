@@ -104,7 +104,7 @@ SHEET_ROW_INDEX = {
 	"default" 	: -1,
 }
 
-CSV_CONVERTER = "$TOOL_PATH/xl2code/xl2csv.py"
+CSV_CONVERTER = "$TOOL_PATH/xl2csv/xl2csv.py"
 
 CSV_JOB_COUNT = 4
 
