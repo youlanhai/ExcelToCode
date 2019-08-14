@@ -184,8 +184,7 @@ class BaseParser(object):
 
 	def parse_by_vertical(self, worksheet):
 		for c in xrange(self.data_row_index, self.max_column):
-			col_index = util.int_to_base26(c)
-			cells = worksheet[col_index][self.vertical_start_row : ]
+			cells = self.get_colum_cells(c)
 			if not self.parse_cells(c, cells):
 				break
 		return
@@ -277,19 +276,18 @@ class BaseParser(object):
 
 		self.default_values = default_values
 
+	def get_colum_cells(self, col):
+		ret = []
+		worksheet = self.worksheet
+		for row in xrange(self.vertical_start_row, self.max_row):
+			ret.append(worksheet[row][col])
+		return ret
+
 	def extract_cells(self, index):
 		if self.is_vertical:
-			col = util.int_to_base26(index)
-
-			ret = []
-			columns = self.worksheet[col]
-			for i in xrange(self.vertical_start_row, len(columns)):
-				ret.append(columns[i])
-
-			return ret
+			return self.get_colum_cells(index)
 		else:
-			row = index
-			return [cell for cell in self.worksheet[row]]
+			return self.worksheet[index]
 
 	def row_col_str(self, row, col):
 		real_r, real_c = row, col

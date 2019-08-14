@@ -102,7 +102,7 @@ class ExcelParser(object):
 			cells = worksheet[r + 1]
 
 			# 遇到空白行，表示解析完成
-			if self.is_blank_line(cells, col_count):
+			if r > 5 and self.is_blank_line(cells, col_count):
 				break
 
 			if not self.parse_cells(r, cells, col_count):
