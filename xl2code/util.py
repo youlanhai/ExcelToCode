@@ -104,7 +104,14 @@ def log(*args):
 	else:
 		for v in args:
 			if not isinstance(v, unicode):
-				v = str(v).decode('utf-8')
+				v = str(v)
+				try:
+					v = v.decode('utf-8')
+				except:
+					try:
+						v = v.decode(sys_encoding)
+					except:
+						pass
 			ret.append(v)
 
 	try:
@@ -124,7 +131,15 @@ def log_error(msg, *args):
 		has_error = True
 		log("错误：", msg)
 	else:
-		raise ExcelToCodeException, msg
+		raise ExcelToCodeException, _S(msg)
+
+# 致命错误，无法被忽略
+def log_fatal(msg, *args):
+	if len(args) > 0: msg = msg % args
+
+	has_error = True
+	log("错误：", msg)
+	raise ExcelToCodeException, _S(msg)
 
 # 确保文件所在的路径存在。file_path是文件的路径。
 def ensure_folder_exist(file_path):
