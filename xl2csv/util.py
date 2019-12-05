@@ -72,7 +72,10 @@ def int_to_base26(value):
 def ensure_folder_exist(file_path):
 	output_dir = path.dirname(file_path)
 	if not path.isdir(output_dir):
-		os.makedirs(output_dir)
+		try:
+			os.makedirs(output_dir)
+		except Exception, e:
+			print e
 
 	return
 
