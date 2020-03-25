@@ -48,11 +48,16 @@ class DirectExporter(BaseExporter):
 
 	def export_excels(self):
 		for infile in self.excel_files:
-			if self.parse_excel(infile, 0):
-				pass
+			error = None
+			try:
+				ok = self.parse_excel(infile, 0)
+				if not ok:
+					error = "导表失败"
+			except Exception as e:
+				error = e
 
-			elif not xlsconfig.FORCE_RUN:
-				return
+			if error:
+				util.log_error(error, file = infile)
 		return
 
 	def parse_excel(self, infile, sheet_index = 0):

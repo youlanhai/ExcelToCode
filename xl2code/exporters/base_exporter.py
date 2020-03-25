@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import traceback
 
 import xlsconfig
 import writers
@@ -50,8 +51,14 @@ class BaseExporter(object):
 				break
 			
 			stage = stage_class(stage_info)
-			util.log("=== %s ===" % stage.get_desc())
-			stage.process(self)
+			try:
+				util.log("=== %s ===" % stage.get_desc())
+				stage.process(self)
+			except util.ExcelToCodeException as e:
+				raise e
+			except Exception as e:
+				traceback.print_exc()
+				raise util.ExcelToCodeException(stage.get_desc())
 
 		for path in self.python_search_paths:
 			sys.path.remove(path)

@@ -17,7 +17,7 @@ class PostProcess(BaseStage):
 				data_module.extra_sheets = process_method(data_module, self.exporter)
 			except:
 				traceback.print_exc()
-				util.log_error("脚本后处理失败 '%s'", data_module.path)
+				util.log_error("脚本后处理失败", file = data_module.path)
 			return
 
 		process_method = getattr(converter, "post_process", None)
@@ -26,6 +26,6 @@ class PostProcess(BaseStage):
 				data_module.extra_sheets = process_method(data_module)
 			except:
 				traceback.print_exc()
-				util.log_error("脚本后处理失败 '%s'", data_module.path)
+				util.log_error("脚本后处理失败", file = data_module.path)
 
 		return

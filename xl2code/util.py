@@ -14,7 +14,15 @@ has_error = False
 SPLIT_LINE = "*" * 70
 
 class ExcelToCodeException(Exception):
-	pass
+	def __init__(self, value = "", file = ""):
+		if isinstance(value, ExcelToCodeException):
+			self.value = value.value
+		else:
+			self.value = str(value)
+		self.file = str(file)
+
+	def __str__(self):
+		return "%s, file: %s" % (self.value, self.file)
 
 def _S(s):
 	if sys_encoding != "utf-8":
@@ -124,22 +132,25 @@ def log_verbose(*args):
 	pass
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
-def log_error(msg, *args):
+def log_error(msg, *args, **kargs):
 	if len(args) > 0: msg = msg % args
+
+	file = kargs and kargs.get("file")
 
 	if xlsconfig.FORCE_RUN:
 		has_error = True
 		log("错误：", msg)
 	else:
-		raise ExcelToCodeException, _S(msg)
+		raise ExcelToCodeException(msg, file)
 
 # 致命错误，无法被忽略
-def log_fatal(msg, *args):
+def log_fatal(msg, *args, **kargs):
 	if len(args) > 0: msg = msg % args
 
+	file = kargs and kargs.get("file")
 	has_error = True
 	log("错误：", msg)
-	raise ExcelToCodeException, _S(msg)
+	raise ExcelToCodeException(msg, file)
 
 # 确保文件所在的路径存在。file_path是文件的路径。
 def ensure_folder_exist(file_path):

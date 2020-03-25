@@ -17,7 +17,20 @@ class WriteSheets(BaseStage):
 		data_modules = export.data_modules
 
 		for writer_info in xlsconfig.DATA_WRITERS:
-			if writer_info["stage"] != self.stage: continue
+			if writer_info["stage"] != self.stage:
+				continue
+
+			only_files = writer_info.get("only_files")
+			if only_files is not None:
+				for name in only_files:
+					data_module = data_modules.get(name)
+					if not data_module:
+						print "Failed find data module:", name
+						continue
+
+					outfile = data_module.info["outfile"]
+					self.write_one_sheet(writer_info, outfile, data_module)
+				continue
 
 			for data_module in data_modules.itervalues():
 				outfile = data_module.info["outfile"]

@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import traceback
+import util
 
 # 导表阶段
 class BaseStage(object):
@@ -21,7 +23,17 @@ class BaseStage(object):
 
 		for key in keys:
 			data_module = data_modules[key]
-			self.process_sheet(data_module)
+			error = None
+			try:
+				self.process_sheet(data_module)
+			except util.ExcelToCodeException as e:
+				error = e
+			except Exception as e:
+				traceback.print_exc()
+				error = e
+
+			if error:
+				util.log_error(e, file = key)
 
 		return
 
