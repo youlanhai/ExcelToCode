@@ -14,7 +14,7 @@ class ExcelToCodeException(Exception):
 def _S(s):
 	if sys_encoding != "utf-8":
 		if isinstance(s, unicode):
-			return encode(sys_encoding)
+			return s.encode(sys_encoding)
 		s = str(s)
 		try:
 			return s.decode("utf-8").encode(sys_encoding)
@@ -24,8 +24,10 @@ def _S(s):
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
 def log_error(msg, *args):
-	if len(args) > 0: msg = msg % args
+	if len(args) > 0:
+		msg = msg % args
 
+	global has_error
 	has_error = True
 	print _S("错误："), _S(msg)
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from os import path, mkdir
+from os import path
 import csv
 
 import util
-from util import _S, log, log_error, ExcelToCodeException
+from util import log, log_error, ExcelToCodeException
 
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",

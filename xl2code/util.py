@@ -29,7 +29,7 @@ class ExcelToCodeException(Exception):
 def _S(s):
 	if sys_encoding != "utf-8":
 		if isinstance(s, unicode):
-			return encode(sys_encoding)
+			return s.encode(sys_encoding)
 		s = str(s)
 		try:
 			return s.decode("utf-8").encode(sys_encoding)
