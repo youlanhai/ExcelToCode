@@ -4,10 +4,12 @@ import sys
 import shutil
 import re
 import time
+import locale
 
 import xlsconfig
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
+print "sys encoding:", sys_encoding
 
 has_error = False
 

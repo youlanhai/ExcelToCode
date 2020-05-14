@@ -15,7 +15,8 @@ from util import _S, ExcelToCodeException
 from load_configure import load_configure
 
 def main(argv):
-	print "system encoding:", sys.stdout.encoding
+	print "stdout encoding:", sys.stdout.encoding
+
 
 	# util.redirect_iostream()
 
