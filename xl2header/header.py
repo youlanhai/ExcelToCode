@@ -6,9 +6,9 @@ class Header:
 		self.field = ""
 		self.field_type = ""
 		self.type = None
-		self.index = 0
+		self.index = -1
 		self.end_title = ""
-		self.end_index = 0
+		self.end_index = -1
 		self.children = None
 		self.parent = None
 

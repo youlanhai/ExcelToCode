@@ -87,6 +87,29 @@ class ExcelParser(object):
 		self.parse_header()
 		return
 
+	def generate_header(self, header_file):
+		new_header, new_arguments = header_util.load_header_list(header_file)
+
+		for header in new_header.children:
+			old = self.header_root.find_child(header.title)
+			header.index = old.index if old else -1
+
+		if not self.is_vertical:
+			max_row = self.worksheet.max_row
+			offset = len(new_header.children) + 1
+			self.worksheet.insert_cols(0, offset)
+			for c, header in enumerate(new_header.children):
+				if header.index >= 0:
+					index = offset + header.index
+					col = util.int_to_base26(index)
+					self.worksheet.move_range("%s%d:%s%d" % (col, 1, col, max_row + 1), cols = c - index)
+				else:
+					values = [None, None, header.title, header.field, header.field_type]
+					for r, v in enumerate(values):
+						self.worksheet.cell(r + 1, c + 1).value = v
+
+		self.workbook.save(self.filename.decode("utf-8"))
+
 	def parse_header(self):
 		header_cells = self.extract_cells(self.header_row_index)
 		field_cells = self.extract_cells(self.field_row_index)
@@ -119,7 +142,8 @@ class ExcelParser(object):
 		compatible_posfix = '：'
 
 		self.arguments = {}
-		for col in xrange(0, len(cells), 2):
+		col = 0
+		while col + 1 < len(cells):
 			header = self.parse_cell_value(cells[col])
 			if header is None:
 				break
@@ -128,15 +152,16 @@ class ExcelParser(object):
 				split = len(header) - len(compatible_posfix)
 				header = header[:split]
 
-			converter = xlsconfig.ARGUMENT_CONVERTER.get(header)
-			if converter is None:
-				continue
+			# converter = xlsconfig.ARGUMENT_CONVERTER.get(header)
+			# if converter is None:
+			# 	continue
+			# field, type = converter
+			# value = self.parse_cell_value(cells[col + 1])
+			value = cells[col + 1].value
+			self.arguments[header] = value
+			col += 2
 
-			field, type = converter
-			value = self.parse_cell_value(cells[col + 1])
-			self.arguments[field] = value
-
-		self.is_vertical = self.arguments.get("vertical", False)
+		self.is_vertical = self.arguments.get("垂直排列", False)
 		if self.is_vertical:
 			self.header_row_index -= self.vertical_start_row
 			self.field_row_index -= self.vertical_start_row
