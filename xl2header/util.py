@@ -134,3 +134,13 @@ def remove_end_zero(s):
 	if s[i - 1] == '.':
 		i -= 1
 	return s[:i]
+
+def byteify(input):
+	if isinstance(input, dict):
+		return {byteify(key): byteify(value) for key, value in input.iteritems()}
+	elif isinstance(input, list):
+		return [byteify(element) for element in input]
+	elif isinstance(input, unicode):
+		return input.encode('utf-8')
+	else:
+		return input

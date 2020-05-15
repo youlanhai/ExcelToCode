@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
 from header import Header
+import json
+import util
 
 SPLITER_PATTERN = re.compile(r"\[|\{|\]|\}")
 
@@ -106,3 +108,43 @@ def tree_to_list(children, root):
 			node.index = child.end_index
 			root.add_child(node)
 	return
+
+
+# arguments和表头内容的分隔符。需要至少10个‘=’
+SPLITER = "==========================================="
+
+def save_header_list(file_path, root, arguments):
+	with open(file_path, "wb") as f:
+		json.dump(arguments, f, indent = 4, sort_keys=True, ensure_ascii = False)
+		f.write('\n')
+		f.write(SPLITER)
+		f.write('\n')
+
+		for child in root.children:
+			f.write("%s, %s, %s\n" % (child.title, child.field, child.field_type))
+
+def load_header_list(file_path):
+	content = None
+	with open(file_path, "r") as f:
+		content = f.read()
+
+	arguments = None
+	match = re.search(r"==========*", content)
+	if match:
+		argument_content = content[:match.start()]
+		arguments = json.loads(argument_content, object_hook = util.byteify)
+		content = content[match.end():]
+
+	root = Header.new_root()
+	for line in content.split('\n'):
+		line = line.strip()
+		if len(line) == 0:
+			continue
+
+		title, field, field_type = line.split(',')
+		node = Header()
+		node.title = title.strip()
+		node.field = field.strip()
+		node.field_type = field_type.strip()
+		root.add_child(node)
+	return root, arguments

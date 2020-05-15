@@ -20,9 +20,23 @@ def main():
 	option = parser.parse_args()
 
 	if option.excel_to_header:
-		p = ExcelParser(option.excel_path)
+		excel_to_header(option.excel_path, option.header_path, path.isdir(option.excel_path))
+
+def excel_to_header(excel_path, header_path, recursive):
+	if not recursive:
+		p = ExcelParser(excel_path)
 		p.parse()
-		p.save(option.header_path)
+		p.save(header_path)
+		return
+
+	files = util.gather_all_files(excel_path, (".xlsx", ))
+	util.log("发现excel文件数量：", len(files))
+
+	for file_path in files:
+		src_full_path = path.join(excel_path, file_path)
+		dst_full_path = path.join(header_path, path.splitext(file_path)[0] + ".txt")
+
+		excel_to_header(src_full_path, dst_full_path, False)
 
 
 if __name__ == "__main__":

@@ -46,7 +46,7 @@ class ExcelParser(object):
 		# 当前的sheet页
 		self.worksheet = None
 
-		self.header_root = None
+		self.header_root = Header.new_root()
 
 		self.argument_row_index = xlsconfig.SHEET_ROW_INDEX["argument"]
 		self.header_row_index = xlsconfig.SHEET_ROW_INDEX["header"]
@@ -92,7 +92,7 @@ class ExcelParser(object):
 		field_cells = self.extract_cells(self.field_row_index)
 		type_cells = self.extract_cells(self.type_row_index)
 
-		root = Header.new_root()
+		root = self.header_root
 
 		for col, cell in enumerate(header_cells):
 			title = self.parse_cell_value(cell)
@@ -112,8 +112,6 @@ class ExcelParser(object):
 
 		if len(root.children) == 0:
 			return log_error("%s, 表头数量不能为0", self.filename)
-
-		self.header_root = root
 		return
 
 	def parse_arguments(self):
@@ -141,6 +139,7 @@ class ExcelParser(object):
 		self.is_vertical = self.arguments.get("vertical", False)
 		if self.is_vertical:
 			self.header_row_index -= self.vertical_start_row
+			self.field_row_index -= self.vertical_start_row
 			self.type_row_index -= self.vertical_start_row
 			self.data_row_index -= self.vertical_start_row
 
@@ -150,7 +149,7 @@ class ExcelParser(object):
 		ret = []
 		worksheet = self.worksheet
 		for row in xrange(self.vertical_start_row, self.max_row):
-			ret.append(worksheet[row][col])
+			ret.append(worksheet[row + 1][col])
 		return ret
 
 	def extract_cells(self, index):
@@ -163,6 +162,11 @@ class ExcelParser(object):
 		return "%d:%s" % (row, util.int_to_base26(col))
 
 	def save(self, output_path):
+		output_path = output_path.decode('utf-8')
+		util.ensure_folder_exist(output_path)
+		header_util.save_header_list(output_path, self.header_root, self.arguments)
+
+	def save_test(self, output_path):
 		tree = header_util.gen_header_tree(self.header_root)
 		list = header_util.gen_header_list(tree)
 
@@ -172,8 +176,10 @@ class ExcelParser(object):
 		list_data = []
 		self.save_as_list(list, list_data)
 
+		arguments = self.arguments
+
 		data = {
-			"arguments" : self.arguments,
+			"arguments" : arguments,
 			# "header" : self.headers,
 			"tree" : tree_data,
 			"list" : list_data,
@@ -183,10 +189,6 @@ class ExcelParser(object):
 		util.ensure_folder_exist(output_path)
 		with open(output_path, "wb") as f:
 			json.dump(data, f, indent = 4, sort_keys=True, ensure_ascii = False)
-
-			f.write("\n")
-			# text = merge.to_list()
-			# f.write(text)
 
 	def save_as_tree(self, node, data):
 		self.save_tree_children(node.children, data)
