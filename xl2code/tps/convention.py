@@ -5,7 +5,6 @@ import re
 import tp0
 from tps import TYPE_MODULES
 from util import log
-import xlsconfig
 
 #: 类型转换函数映射为名称
 FUNCTION_2_TYPE = {}
@@ -51,16 +50,27 @@ TYPE_2_FUNCTION = {
 }
 
 def _find_function(name):
+	method = TYPE_2_FUNCTION.get(name)
+	if method:
+		return method
+
 	for module in TYPE_MODULES:
 		fun = getattr(module, name, None)
 		if fun is not None:
 			return fun
 
-	setattr(tp0, name, tp0.to_str)
+	# 确保只显示一次警告
+	TYPE_2_FUNCTION[name] = tp0.to_str
 	return None
 
 def function2type(tp):
-	return FUNCTION_2_TYPE.get(tp, "String")
+	name = FUNCTION_2_TYPE.get(tp)
+	if name is None:
+		for t, f in TYPE_2_FUNCTION.iteritems():
+			if tp == f:
+				return t
+	return "String"
+
 
 TEMPLATE_PATTERN = re.compile(r"(\w+)<(\w+)>")
 
@@ -86,7 +96,8 @@ def type2function(name):
 		log("warn: failed find value type:", value_type)
 		value_function = tp0.to_string
 
-	converter = lambda args: template_function(value_function, args)
+	def converter(args):
+		return template_function(value_function, args)
 
-	TYPE_2_FUNCTION[converter] = name
+	TYPE_2_FUNCTION[name] = converter
 	return converter
