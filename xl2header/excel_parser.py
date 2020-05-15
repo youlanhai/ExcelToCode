@@ -5,7 +5,7 @@ import json
 import xlsconfig
 import util
 from util import log, log_error, ExcelToCodeException
-import merge_field
+import header_util
 from header import Header
 
 FORMAT_MAP = {
@@ -163,8 +163,8 @@ class ExcelParser(object):
 		return "%d:%s" % (row, util.int_to_base26(col))
 
 	def save(self, output_path):
-		tree = merge_field.gen_header_tree(self.header_root)
-		list = merge_field.gen_header_list(tree)
+		tree = header_util.gen_header_tree(self.header_root)
+		list = header_util.gen_header_list(tree)
 
 		tree_data = []
 		self.save_as_tree(tree, tree_data)
