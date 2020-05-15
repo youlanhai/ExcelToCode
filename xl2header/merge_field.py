@@ -1,141 +1,108 @@
 # -*- coding: utf-8 -*-
 import re
-import copy
+from header import Header
 
 SPLITER_PATTERN = re.compile(r"\[|\{|\]|\}")
 
-class MergeField:
-	def __init__(self, header_list):
-		self.header_list = header_list
-		self.fields = None
+def gen_header_tree(list_root):
+	root = Header.new_root()
 
-	def merge_fields(self):
-		parent = {
-			"values" : [],
-			"dict": True,
-		}
-		self.fields = parent
-		last_field = ""
-		for field, header in self.iter_fields(self.header_list):
-			print "merge_fields", field
+	last_field = ""
+	parent = root
+	for field, header in lex_fields(list_root.children):
+		print "merge_fields", field
 
-			if field == '{':
-				value = copy.copy(header)
-				value["parent"] = parent
-				value["values"] = []
-				value["tp"] = "dict"
-				value["field"] = last_field
+		if field == '{' or field == '[':
+			value = header.clone()
+			value.parent = parent
+			value.children = []
+			value.type = field
+			value.field = last_field
 
-				if last_field:
-					parent["values"].pop()
+			if last_field:
+				parent.children.pop()
 
-				self.add_value(parent, value)
-				parent = value
-				last_field = ""
+			parent.add_child(value)
+			parent = value
+			last_field = ""
 
-			elif field == '}':
-				parent["end"] = header["title"]
-				parent = parent.pop("parent")
-				last_field = ""
+		elif field == '}' or field == ']':
+			parent.end_title = header.title
+			parent.end_index = header.index
+			parent = parent.parent
+			last_field = ""
 
-			elif field == '[':
-				value = copy.copy(header)
-				value["parent"] = parent
-				value["values"] = []
-				value["tp"] = "list"
-				value["field"] = last_field
+		else:
+			value = header.clone()
+			value.field = field
+			parent.add_child(value)
+			last_field = field
 
-				if last_field:
-					parent["values"].pop()
+	return root
 
-				self.add_value(parent, value)
-				parent = value
-				last_field = ""
+def lex_fields(header_list):
+	for header in header_list:
+		field = header.field
 
-			elif field == ']':
-				parent["end"] = header["title"]
-				parent = parent.pop("parent")
-				last_field = ""
+		while len(field) > 0:
+			spliter = SPLITER_PATTERN.search(field)
+			if spliter is None:
+				yield (field, header)
+				break
 
-			else:
-				value = copy.copy(header)
-				value["field"] = field
-				self.add_value(parent, value)
-				last_field = field
+			split_pos = spliter.start()
+			if split_pos > 0:
+				yield (field[0:split_pos].strip(), header)
 
-	def to_list(self):
-		self.header_list = []
-		self.headers = {}
+			yield (field[split_pos], header)
 
-		self.fields_to_list(self.fields)
+			field = field[split_pos + 1:].strip()
+	return
 
-		ret = []
-		for header in self.header_list:
-			ret.append("%s,%s,%s" % (header["title"], header["field"], header["type"]))
-		return "\n".join(ret)
+def gen_header_list(tree):
+	root = Header.new_root()
+	tree_to_list(tree.children, root)
+	return root
 
-	def fields_to_list(self, fields):
-		for value in fields["values"]:
-			title = value["title"]
-			exist_value = self.headers.get(title)
-			if exist_value:
-				exist_value["field"] += value["field"]
-				exist_value["type"] = value["type"]
-				exist_value["tp"] = value.get("tp")
-				exist_value["values"] = value.get("values")
-				value = exist_value
-			else:
-				self.headers[title] = value
-				self.header_list.append(value)
+	# ret = []
+	# for header in root.children:
+	# 	ret.append("%s,%s,%s" % (header["title"], header["field"], header["type"]))
+	# return "\n".join(ret)
 
-			tp = value.get("tp")
-			if tp == "list":
-				value["field"] = value["field"] + '['
-				self.fields_to_list(value)
-				value.pop("values", None)
+def tree_to_list(children, root):
+	for child in children:
+		node = root.find_child(child.title)
+		if node:
+			# 存在同名的结点。直接修改参数，合并field名称
+			node.field += child.field
+			node.field_type = child.field_type
+			node.index = child.index
+		else:
+			# 克隆一份出来，不影响原始数据
+			node = Header()
+			node.title = child.title
+			node.field = child.field
+			node.field_type = child.field_type
+			node.index = child.index
+			root.add_child(node)
 
-				if value["end"] in self.headers:
-					self.header_list[-1]["field"] += "]"
-				else:
-					node = copy.copy(value)
-					node["title"] = node["end"]
-					node["field"] = "]"
-					self.header_list.append(node)
+		if child.type is None:
+			continue
 
-			elif tp == "dict":
-				value["field"] = value["field"] + '{'
-				self.fields_to_list(value)
-				value.pop("values", None)
+		# type is '{' or '['
+		node.field += child.type
+		tree_to_list(child.children, root)
 
-				if value["end"] in self.headers:
-					self.header_list[-1]["field"] += "}"
-				else:
-					node = copy.copy(value)
-					node["title"] = node["end"]
-					node["field"] = "}"
-					self.header_list.append(node)
-		return
+		end_mark = '}' if child.type == '{' else ']'
 
-	@staticmethod
-	def add_value(node, value):
-		node["values"].append(value)
-
-	@staticmethod
-	def iter_fields(headers):
-		for header in headers:
-			field = header["field"]
-
-			while len(field) > 0:
-				spliter = SPLITER_PATTERN.search(field)
-				if spliter is None:
-					yield (field, header)
-					break
-
-				split_pos = spliter.start()
-				if split_pos > 0:
-					yield (field[0:split_pos].strip(), header)
-
-				yield (field[split_pos], header)
-
-				field = field[split_pos + 1:].strip()
-		return
+		if root.find_child(child.end_title):
+			root.children[-1].field += end_mark
+		else:
+			# 为结束符增加一个新结点
+			node = Header()
+			node.title = child.end_title
+			node.field = end_mark
+			node.field_type = child.field_type
+			node.index = child.end_index
+			root.add_child(node)
+	return

@@ -5,7 +5,8 @@ import json
 import xlsconfig
 import util
 from util import log, log_error, ExcelToCodeException
-from merge_field import MergeField
+import merge_field
+from header import Header
 
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
@@ -45,8 +46,7 @@ class ExcelParser(object):
 		# 当前的sheet页
 		self.worksheet = None
 
-		self.headers = {}
-		self.header_list = []
+		self.header_root = None
 
 		self.argument_row_index = xlsconfig.SHEET_ROW_INDEX["argument"]
 		self.header_row_index = xlsconfig.SHEET_ROW_INDEX["header"]
@@ -92,27 +92,28 @@ class ExcelParser(object):
 		field_cells = self.extract_cells(self.field_row_index)
 		type_cells = self.extract_cells(self.type_row_index)
 
+		root = Header.new_root()
+
 		for col, cell in enumerate(header_cells):
 			title = self.parse_cell_value(cell)
 			if not title:
 				break
 
-			if title in self.headers:
+			if root.find_child(title):
 				log_error("%s, 表头'%s'重复，at %s", self.filename, title, self.row_col_str(self.header_row_index, col))
 				continue
 
-			header = {
-				"title" : title,
-				"index" : col,
-				"field" : self.parse_cell_value(field_cells[col]),
-				"type" : self.parse_cell_value(type_cells[col]),
-			}
-			self.headers[title] = header
-			self.header_list.append(header)
+			header = Header()
+			header.index = col
+			header.title = title
+			header.field = self.parse_cell_value(field_cells[col])
+			header.field_type = self.parse_cell_value(type_cells[col])
+			root.add_child(header)
 
-		if len(self.headers) == 0:
+		if len(root.children) == 0:
 			return log_error("%s, 表头数量不能为0", self.filename)
 
+		self.header_root = root
 		return
 
 	def parse_arguments(self):
@@ -162,19 +163,53 @@ class ExcelParser(object):
 		return "%d:%s" % (row, util.int_to_base26(col))
 
 	def save(self, output_path):
-		merge = MergeField(self.header_list)
-		merge.merge_fields()
+		tree = merge_field.gen_header_tree(self.header_root)
+		list = merge_field.gen_header_list(tree)
+
+		tree_data = []
+		self.save_as_tree(tree, tree_data)
+
+		list_data = []
+		self.save_as_list(list, list_data)
 
 		data = {
 			"arguments" : self.arguments,
 			# "header" : self.headers,
-			"fields" : merge.fields,
+			"tree" : tree_data,
+			"list" : list_data,
 		}
+
 		output_path = output_path.decode('utf-8')
 		util.ensure_folder_exist(output_path)
 		with open(output_path, "wb") as f:
 			json.dump(data, f, indent = 4, sort_keys=True, ensure_ascii = False)
 
 			f.write("\n")
-			text = merge.to_list()
-			f.write(text)
+			# text = merge.to_list()
+			# f.write(text)
+
+	def save_as_tree(self, node, data):
+		self.save_tree_children(node.children, data)
+
+	def save_tree_children(self, children, data):
+		for child in children:
+			v = {
+				"title" 	: child.title,
+				"field" 	: child.field,
+				"field_type" : child.field_type,
+				"type" 		: child.type,
+				"index" 	: child.index,
+				"end_title" : child.end_title,
+				"end_index" : child.end_index,
+			}
+
+			if child.children is not None:
+				children_data = []
+				self.save_tree_children(child.children, children_data)
+				v["children"] = children_data
+
+			data.append(v)
+
+	def save_as_list(self, node, data):
+		for child in node.children:
+			data.append("%s, %s, %s" % (child.title, child.field, child.field_type))
