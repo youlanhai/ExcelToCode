@@ -33,3 +33,6 @@ SHEET_ROW_INDEX = {
 	# 如果是垂直排列的话，从第几行开始才是真正的数据
 	"verticalStartRow" : 2,
 }
+
+MAX_ROW = 65535
+MAX_COLUMN = 1000

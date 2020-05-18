@@ -11,9 +11,10 @@ class ExcelToCodeException(Exception):
 	def __init__(self, value = "", file = ""):
 		if isinstance(value, ExcelToCodeException):
 			self.value = value.value
+			self.file = value.file
 		else:
-			self.value = str(value)
-		self.file = str(file)
+			self.value = _S(value)
+			self.file = str(file)
 
 	def __str__(self):
 		return "%s, file: %s" % (self.value, self.file)
@@ -76,6 +77,9 @@ def int_to_base26(value):
 		ret = chr(asciiA + mod - 1) + ret
 
 	return ret
+
+def row_col_str(row, col):
+	return "%s:%d" % (int_to_base26(col), row + 1)
 
 # 确保文件所在的路径存在。file_path是文件的路径。
 def ensure_folder_exist(file_path):
