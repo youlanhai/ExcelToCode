@@ -54,3 +54,20 @@ class Header:
 
 	def add_child(self, child):
 		self.children.append(child)
+
+
+class Argument:
+	def __init__(self, values = None):
+		if values is None:
+			self.values = []
+		else:
+			self.values = values
+
+	def find(self, key):
+		for k, v in self.values:
+			if key == k:
+				return v
+		return None
+
+	def add(self, key, value):
+		self.values.append((key, value))

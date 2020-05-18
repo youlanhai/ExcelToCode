@@ -5,7 +5,7 @@ import xlsconfig
 import util
 from util import ExcelToCodeException, row_col_str
 import header_util
-from header import Header
+from header import Header, Argument
 
 def format_number(f, cell, parser):
 	return str(f)
@@ -16,7 +16,7 @@ FORMAT_MAP = {
 	int 	: format_number,
 	long 	: format_number,
 	float 	: format_number,
-	bool 	: lambda value, cell, parser: str(value),
+	bool 	: lambda value, cell, parser: str(value).upper(),
 	str 	: lambda value, cell, parser: value.strip(),
 	unicode : lambda value, cell, parser: value.encode("utf-8").strip()
 }
@@ -29,7 +29,8 @@ class ExcelParser(object):
 	def __init__(
 		self,
 		filename,
-		sheet_index = 0
+		sheet_index = 0,
+		force = False
 	):
 		super(ExcelParser, self).__init__()
 
@@ -44,11 +45,14 @@ class ExcelParser(object):
 		self.worksheet = None
 
 		self.header_root = Header.new_root()
+		self.arguments = Argument()
 
 		self.argument_row_index = xlsconfig.SHEET_ROW_INDEX["argument"]
 
 		# 表格是否是垂直排列
 		self.is_vertical = False
+
+		self.force = force
 
 	# 将单元格数据转换成字符串形式。
 	def parse_cell_value(self, cell):
@@ -72,13 +76,13 @@ class ExcelParser(object):
 		self.worksheet = self.workbook.worksheets[self.sheet_index]
 
 		self.sheet_proxy = HorizontalSheetProxy(self, self.worksheet)
-		self.sheet_proxy.init()
 
 		self.parse_arguments()
 
 		if self.is_vertical:
 			self.sheet_proxy = VerticalSheetProxy(self, self.worksheet)
-			self.sheet_proxy.init()
+
+		self.sheet_proxy.init()
 
 		self.parse_header()
 		return
@@ -90,13 +94,14 @@ class ExcelParser(object):
 		for i, header in enumerate(new_header.children):
 			old = self.header_root.find_child(header.title)
 			header.index = old.index if old else -1
-			changed = changed or old != header.index
+			changed = changed or i != header.index
 
-		if not changed:
+		if not changed and not self.force:
 			return
 
 		print "generate header for:", self.filename
 		self.sheet_proxy.generate_header(new_header)
+		self.sheet_proxy.generate_arguments(new_arguments)
 		self.workbook.save(self.filename.decode("utf-8"))
 
 	def parse_header(self):
@@ -129,15 +134,15 @@ class ExcelParser(object):
 	def parse_arguments(self):
 		compatible_posfix = '：'
 
-		self.arguments = {}
 		header = None
 		row = self.argument_row_index
 		for col in xrange(self.sheet_proxy.max_column):
 			cell = self.sheet_proxy.get_cell(row, col)
-			if cell is None or cell.value is None:
-				break
 
 			if col % 2 == 0:
+				if cell is None or cell.value is None:
+					break
+
 				header = self.parse_cell_value(cell)
 				if not isinstance(header, str):
 					msg = "参数key必须是字符串类型。 value = %s, at %s" % (str(cell.value), self.sheet_proxy.get_cell_addr(cell))
@@ -151,10 +156,11 @@ class ExcelParser(object):
 				# if converter is None:
 				# 	continue
 				# field, type = converter
-				# value = self.parse_cell_value(cells[col + 1])
-				self.arguments[header] = cell.value
+				value = self.parse_cell_value(cell)
+				self.arguments.add(header, value)
 
-		self.is_vertical = self.arguments.get("垂直排列", False)
+		vertical = self.arguments.find("垂直排列")
+		self.is_vertical = vertical == "TRUE" or vertical == "1"
 		return
 
 	def save(self, output_path):
@@ -172,7 +178,7 @@ class ExcelParser(object):
 		list_data = []
 		self.save_as_list(list, list_data)
 
-		arguments = self.arguments
+		arguments = self.arguments.values
 
 		data = {
 			"arguments" : arguments,
@@ -221,6 +227,8 @@ class SheetProxy(object):
 		super(SheetProxy, self).__init__()
 		self.parser = parser
 		self.worksheet = worksheet
+		self.max_row = xlsconfig.MAX_ROW
+		self.max_column = xlsconfig.MAX_COLUMN
 		self.header_index = xlsconfig.SHEET_ROW_INDEX["header"]
 		self.field_index = xlsconfig.SHEET_ROW_INDEX["field"]
 		self.type_index = xlsconfig.SHEET_ROW_INDEX["type"]
@@ -245,6 +253,12 @@ class SheetProxy(object):
 	# 根据表头描述信息，生成表头
 	def generate_header(self, new_header):
 		pass
+
+	def generate_arguments(self, arguments):
+		for c, (key, value) in enumerate(arguments.values):
+			self.worksheet.cell(1, c * 2 + 1).value = key
+			self.worksheet.cell(1, c * 2 + 2).value = value
+		self.worksheet.cell(1, len(arguments.values) * 2 + 1).value = None
 
 
 class VerticalSheetProxy(SheetProxy):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from header import Header
+from header import Header, Argument
 import json
 import util
 
@@ -120,8 +120,9 @@ SPLITER = "==========================================="
 
 def save_header_list(file_path, root, arguments):
 	with open(file_path, "wb") as f:
-		json.dump(arguments, f, indent = 4, sort_keys=True, ensure_ascii = False)
-		f.write('\n')
+		for key, value in arguments.values:
+			f.write("%s, %s\n" % (key, value))
+
 		f.write(SPLITER)
 		f.write('\n')
 
@@ -133,12 +134,19 @@ def load_header_list(file_path):
 	with open(file_path, "r") as f:
 		content = f.read()
 
-	arguments = None
+	arguments = Argument()
 	match = re.search(r"==========*", content)
 	if match:
 		argument_content = content[:match.start()]
-		arguments = json.loads(argument_content, object_hook = util.byteify)
 		content = content[match.end():]
+
+		for line in argument_content.split('\n'):
+			line = line.strip()
+			if len(line) == 0:
+				continue
+
+			key, value = line.split(',')
+			arguments.add(key, value)
 
 	root = Header.new_root()
 	for line in content.split('\n'):
