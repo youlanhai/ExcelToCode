@@ -140,6 +140,7 @@ def log_error(msg, *args, **kargs):
 	file = kargs and kargs.get("file")
 
 	if xlsconfig.FORCE_RUN:
+		global has_error
 		has_error = True
 		log("错误：", msg)
 	else:
@@ -150,6 +151,7 @@ def log_fatal(msg, *args, **kargs):
 	if len(args) > 0: msg = msg % args
 
 	file = kargs and kargs.get("file")
+	global has_error
 	has_error = True
 	log("错误：", msg)
 	raise ExcelToCodeException(msg, file)
