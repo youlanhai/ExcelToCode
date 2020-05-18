@@ -31,7 +31,7 @@ def log_error(msg, *args):
 	has_error = True
 	print _S("错误："), _S(msg)
 
-def log(msg, *args):
+def log(*args):
 	ret = []
 	if sys_encoding == "utf-8":
 		for v in args:

@@ -23,6 +23,7 @@ def main():
 	parser.add_argument("input", help=_S("输入文件路径。可以是文件，也可以是目录"))
 	parser.add_argument("-c", "--config-file", help=_S("配置文件。要转换的文件列表，是相对于input的路径"))
 	parser.add_argument("-v", "--verbose", action="store_true", help=_S("输出更多日志"))
+	parser.add_argument("-i", "--index", default = "", help=_S("当前进程编号"))
 
 	option = parser.parse_args()
 	input_path = option.input
@@ -72,7 +73,7 @@ def parse_files(files, input_path, output_path, option):
 
 def parse_file(input_path, output_path, option):
 	if option.verbose:
-		log("parse: ", input_path)
+		log("[%s]parse: %s" % (option.index, input_path))
 
 	parser = ExcelParser(
 		input_path,
