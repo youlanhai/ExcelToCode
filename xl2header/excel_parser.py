@@ -7,15 +7,20 @@ from util import ExcelToCodeException, row_col_str
 import header_util
 from header import Header
 
+def format_number(f, cell, parser):
+	return str(f)
+
+
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
-	int 	: util.format_number,
-	long 	: util.format_number,
-	float 	: util.format_number,
+	int 	: format_number,
+	long 	: format_number,
+	float 	: format_number,
 	bool 	: lambda value, cell, parser: str(value),
 	str 	: lambda value, cell, parser: value.strip(),
 	unicode : lambda value, cell, parser: value.encode("utf-8").strip()
 }
+
 
 class ExcelParser(object):
 
@@ -158,7 +163,7 @@ class ExcelParser(object):
 		header_util.save_header_list(output_path, self.header_root, self.arguments)
 
 	def save_test(self, output_path):
-		tree = header_util.gen_header_tree(self.header_root)
+		tree = header_util.gen_header_tree(self.header_root, self.filename)
 		list = header_util.gen_header_list(tree)
 
 		tree_data = []

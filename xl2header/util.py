@@ -13,7 +13,7 @@ class ExcelToCodeException(Exception):
 			self.value = value.value
 			self.file = value.file
 		else:
-			self.value = _S(value)
+			self.value = value
 			self.file = str(file)
 
 	def __str__(self):
@@ -99,7 +99,8 @@ def gather_all_files(path, exts):
 	path = path.decode("utf-8")
 
 	path_len = len(path)
-	if path[-1] != '/': path_len += 1
+	if path[-1] != '/':
+		path_len += 1
 
 	for root, dirs, files in os.walk(path):
 		i = 0
@@ -109,35 +110,20 @@ def gather_all_files(path, exts):
 			else:
 				i += 1
 
-		relative_path = root[path_len : ]
+		relative_path = root[path_len:]
 
 		for fname in files:
-			if fname.startswith("~$"): continue
+			if fname.startswith("~$"):
+				continue
 
 			ext = os.path.splitext(fname)[1]
-			if ext not in exts: continue
+			if ext not in exts:
+				continue
 
 			file_path = os.path.join(relative_path, fname)
 			ret.append(file_path.encode("utf-8").replace('\\', '/'))
 
 	return ret
-
-# 因为'123,456'格式的字符串，会被Excel存贮成浮点数：123456，
-# 而openpyxl仅仅是读取存贮的数据，不会自动将数字还原成字符串，所以这里手动进行转换。
-def format_number(f, cell, parser):
-	return str(f)
-
-def remove_end_zero(s):
-	pos = s.find('.')
-	if pos < 0:
-		return s
-
-	i = len(s)
-	while i > pos and s[i - 1] == '0':
-		i -= 1
-	if s[i - 1] == '.':
-		i -= 1
-	return s[:i]
 
 def byteify(input):
 	if isinstance(input, dict):

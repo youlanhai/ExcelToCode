@@ -6,11 +6,12 @@ import util
 
 SPLITER_PATTERN = re.compile(r"\[|\{|\]|\}")
 
-def gen_header_tree(list_root):
+def gen_header_tree(list_root, filename = ""):
 	root = Header.new_root()
 
 	last_field = ""
 	parent = root
+	indent = 0
 	for field, header in lex_fields(list_root.children):
 		print "merge_fields", field
 
@@ -27,12 +28,14 @@ def gen_header_tree(list_root):
 			parent.add_child(value)
 			parent = value
 			last_field = ""
+			indent += 1
 
 		elif field == '}' or field == ']':
 			parent.end_title = header.title
 			parent.end_index = header.index
 			parent = parent.parent
 			last_field = ""
+			indent -= 1
 
 		else:
 			value = header.clone()
@@ -40,6 +43,8 @@ def gen_header_tree(list_root):
 			parent.add_child(value)
 			last_field = field
 
+	if indent != 0:
+		raise util.ExcelToCodeException("括号不匹配", filename)
 	return root
 
 def lex_fields(header_list):

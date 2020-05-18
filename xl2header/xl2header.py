@@ -6,7 +6,7 @@ from os import path
 from argparse import ArgumentParser
 
 import util
-from util import _S
+from util import _S, ExcelToCodeException
 
 from excel_parser import ExcelParser
 
@@ -24,11 +24,17 @@ def main():
 	elif option.excel_from_header:
 		excel_from_header(option.excel_path, option.header_path, path.isdir(option.header_path))
 
+	if util.has_error:
+		exit(-1)
+
 def excel_to_header(excel_path, header_path, recursive):
 	if not recursive:
-		p = ExcelParser(excel_path)
-		p.parse()
-		p.save(header_path)
+		try:
+			p = ExcelParser(excel_path)
+			p.parse()
+			p.save(header_path)
+		except ExcelToCodeException as e:
+			util.log_error(str(e))
 		return
 
 	files = util.gather_all_files(excel_path, (".xlsx", ))
@@ -43,9 +49,12 @@ def excel_to_header(excel_path, header_path, recursive):
 
 def excel_from_header(excel_path, header_path, recursive):
 	if not recursive:
-		p = ExcelParser(excel_path)
-		p.parse()
-		p.generate_header(header_path)
+		try:
+			p = ExcelParser(excel_path)
+			p.parse()
+			p.generate_header(header_path)
+		except ExcelToCodeException as e:
+			util.log_error(str(e))
 		return
 
 	files = util.gather_all_files(excel_path, (".xlsx", ))
@@ -55,7 +64,7 @@ def excel_from_header(excel_path, header_path, recursive):
 		src_full_path = path.join(excel_path, file_path)
 		dst_full_path = path.join(header_path, path.splitext(file_path)[0] + ".txt")
 
-		excel_to_header(src_full_path, dst_full_path, False)
+		excel_from_header(src_full_path, dst_full_path, False)
 
 
 if __name__ == "__main__":
