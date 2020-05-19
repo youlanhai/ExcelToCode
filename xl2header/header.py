@@ -55,6 +55,9 @@ class Header:
 	def add_child(self, child):
 		self.children.append(child)
 
+	def equal(self, v):
+		return self.title == v.title and self.field == v.field and self.field_type == v.field_type
+
 
 class Argument:
 	def __init__(self, values = None):

@@ -39,33 +39,33 @@ def excel_to_header(excel_path, header_path, recursive):
 		return
 
 	files = util.gather_all_files(excel_path, (".xlsx", ))
-	util.log("发现excel文件数量：", len(files))
+	util.log("发现excel文件数量: %d", len(files))
 
 	for file_path in files:
-		src_full_path = path.join(excel_path, file_path)
-		dst_full_path = path.join(header_path, path.splitext(file_path)[0] + ".txt")
+		excel_full_path = path.join(excel_path, file_path)
+		header_full_path = path.join(header_path, path.splitext(file_path)[0] + ".txt")
 
-		excel_to_header(src_full_path, dst_full_path, False)
+		excel_to_header(excel_full_path, header_full_path, False)
 
 
 def excel_from_header(excel_path, header_path, recursive, force = False):
 	if not recursive:
 		try:
-			p = ExcelParser(excel_path, force = force)
+			p = ExcelParser(excel_path, force = force, auto_create = True)
 			p.parse()
 			p.generate_header(header_path)
 		except ExcelToCodeException as e:
 			util.log_error(str(e))
 		return
 
-	files = util.gather_all_files(excel_path, (".xlsx", ))
-	util.log("发现excel文件数量：", len(files))
+	files = util.gather_all_files(header_path, (".txt", ))
+	util.log("发现表头文件数量: %d", len(files))
 
 	for file_path in files:
-		src_full_path = path.join(excel_path, file_path)
-		dst_full_path = path.join(header_path, path.splitext(file_path)[0] + ".txt")
+		excel_full_path = path.join(excel_path, path.splitext(file_path)[0] + ".xlsx")
+		header_full_path = path.join(header_path, file_path)
 
-		excel_from_header(src_full_path, dst_full_path, False, force = force)
+		excel_from_header(excel_full_path, header_full_path, False, force = force)
 
 
 if __name__ == "__main__":

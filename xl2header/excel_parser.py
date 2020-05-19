@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import json
+from os import path
 
 import xlsconfig
 import util
-from util import ExcelToCodeException, row_col_str
+from util import ExcelToCodeException, row_col_str, log
 import header_util
 from header import Header, Argument
 
@@ -30,7 +31,8 @@ class ExcelParser(object):
 		self,
 		filename,
 		sheet_index = 0,
-		force = False
+		force = False,
+		auto_create = False
 	):
 		super(ExcelParser, self).__init__()
 
@@ -53,6 +55,7 @@ class ExcelParser(object):
 		self.is_vertical = False
 
 		self.force = force
+		self.auto_create = auto_create
 
 	# 将单元格数据转换成字符串形式。
 	def parse_cell_value(self, cell):
@@ -72,7 +75,13 @@ class ExcelParser(object):
 		except:
 			raise ExcelToCodeException("请安装插件: openpyxl")
 
-		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
+		u_filename = self.filename.decode("utf-8")
+		if not path.exists(u_filename):
+			if not self.auto_create:
+				raise ExcelToCodeException("Excel文件不存在", self.filename)
+			return
+
+		self.workbook = openpyxl.load_workbook(u_filename)
 		self.worksheet = self.workbook.worksheets[self.sheet_index]
 
 		self.sheet_proxy = HorizontalSheetProxy(self, self.worksheet)
@@ -90,19 +99,74 @@ class ExcelParser(object):
 	def generate_header(self, header_file):
 		new_header, new_arguments = header_util.load_header_list(header_file)
 
-		changed = len(new_header.children) != len(self.header_root.children)
+		# 更新索引
 		for i, header in enumerate(new_header.children):
 			old = self.header_root.find_child(header.title)
 			header.index = old.index if old else -1
-			changed = changed or i != header.index
 
-		if not changed and not self.force:
+		if not self.force and not self.is_changed(new_header, new_arguments):
 			return
 
-		print "generate header for:", self.filename
+		if not self.workbook:
+			vertical = new_arguments.find("垂直排列")
+			self.is_vertical = vertical == "TRUE" or vertical == "1"
+
+			log("create excel: %s", self.filename)
+			self.create_new_excel()
+
+		log("generate header for: " + self.filename)
 		self.sheet_proxy.generate_header(new_header)
 		self.sheet_proxy.generate_arguments(new_arguments)
-		self.workbook.save(self.filename.decode("utf-8"))
+
+		u_filename = self.filename.decode("utf-8")
+		util.ensure_folder_exist(u_filename)
+		self.workbook.save(u_filename)
+
+	def create_new_excel(self):
+		import openpyxl
+		self.workbook = openpyxl.Workbook()
+		self.worksheet = self.workbook.active
+
+		cls = VerticalSheetProxy if self.is_vertical else HorizontalSheetProxy
+		self.sheet_proxy = cls(self, self.worksheet)
+		self.sheet_proxy.init()
+
+	def is_changed(self, new_header, new_arguments):
+		len1 = len(new_header.children)
+		len2 = len(self.header_root.children)
+		if len1 != len2:
+			log("header length not equal: %d != %d", len1, len2)
+			return True
+
+		for index, header in enumerate(new_header.children):
+			if index != header.index:
+				log("header index not equal: %d != %d", index, header.index)
+				return True
+
+			old = self.header_root.find_child(header.title)
+			if old is None:
+				log("old header not exist")
+				return True
+
+			if not header.equal(old):
+				log(
+					"header value not equal: (%s, %s, %s) != (%s, %s, %s)",
+					header.title, header.field, header.field_type, old.title, old.field, old.field_type)
+				return True
+
+		len1 = len(new_arguments.values)
+		len2 = len(self.arguments.values)
+		if len1 != len2:
+			log("arguments length not equal: %d != %d", len1, len2)
+			return True
+
+		for index, pair in enumerate(new_arguments.values):
+			old = self.arguments.values[index]
+			if pair != old:
+				log("arguments value not equal: (%s, %s) != (%s, %s)", pair[0], pair[1], old[0], old[1])
+				return True
+
+		return False
 
 	def parse_header(self):
 		header_cells = self.sheet_proxy.get_cells(self.sheet_proxy.header_index)

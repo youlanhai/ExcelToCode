@@ -40,25 +40,10 @@ def log_error(msg, *args):
 	print _S("错误："), _S(msg)
 
 def log(msg, *args):
-	ret = []
-	if sys_encoding == "utf-8":
-		for v in args:
-			if isinstance(v, unicode):
-				v = v.encode('utf-8')
-			else:
-				v = str(v)
-			ret.append(v)
-	else:
-		for v in args:
-			if not isinstance(v, unicode):
-				v = str(v).decode('utf-8')
-			ret.append(v)
+	if len(args) > 0:
+		msg = msg % args
 
-	try:
-		msg = " ".join(ret)
-		print msg
-	except:
-		print ret
+	print _S(msg)
 
 
 def int_to_base26(value):

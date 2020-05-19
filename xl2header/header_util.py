@@ -145,7 +145,9 @@ def load_header_list(file_path):
 			if len(line) == 0:
 				continue
 
-			key, value = line.split(',')
+			values = line.split(',')
+			key = values[0].strip()
+			value = values[1].strip()
 			arguments.add(key, value)
 
 	root = Header.new_root()
@@ -154,10 +156,10 @@ def load_header_list(file_path):
 		if len(line) == 0:
 			continue
 
-		title, field, field_type = line.split(',')
+		values = line.split(',')
 		node = Header()
-		node.title = title.strip()
-		node.field = field.strip()
-		node.field_type = field_type.strip()
+		node.title = values[0].strip()
+		node.field = values[1].strip()
+		node.field_type = values[2].strip() if len(values) >= 3 else "empty"
 		root.add_child(node)
 	return root, arguments
