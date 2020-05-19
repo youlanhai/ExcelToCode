@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import util
 
 INDENTS = [" " * (i * 4) for i in xrange(10)]
 
@@ -14,7 +15,7 @@ class BaseCodeGen(object):
 
 	def run(self):
 		pass
-		
+
 	def save_to_file(self, path):
 		content = "".join(self.content)
 		self.content = []
@@ -24,7 +25,8 @@ class BaseCodeGen(object):
 			with open(path, "rb") as f:
 				origin_content = f.read()
 
-		if content == origin_content: return
+		if content == origin_content:
+			return
 
 		util.log("生成", path)
 
@@ -38,12 +40,13 @@ class BaseCodeGen(object):
 
 	def write(self, indent, *args):
 		assert(type(indent) == int)
-		if indent > 0: self.content.append(INDENTS[indent])
+		if indent > 0:
+			self.content.append(INDENTS[indent])
 		self.content.extend(args)
 
 	def write_line(self, indent = 0, *args):
 		assert(type(indent) == int)
-		if indent > 0: self.content.append(INDENTS[indent])
+		if indent > 0:
+			self.content.append(INDENTS[indent])
 		self.content.extend(args)
 		self.content.append("\n")
-

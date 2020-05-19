@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import traceback
-import time
 
 import xlsconfig
 import util
@@ -111,7 +109,6 @@ class DirectExporter(BaseExporter):
 
 		return data_module
 
-
 	def match_converter(self, outfile):
 		return outfile
 
@@ -119,7 +116,8 @@ class DirectExporter(BaseExporter):
 		sub_name = '^' + sub_name + '$'
 		# 如果目标表格存在，则追加到尾部
 		for i, pattern in enumerate(pattern_list):
-			if to_name != pattern[0]: continue
+			if to_name != pattern[0]:
+				continue
 
 			for j in xrange(1, len(pattern)):
 				if sub_name == pattern[j]:
@@ -139,8 +137,3 @@ class DirectExporter(BaseExporter):
 
 	def add_merge_file_pattern(self, to_name, sub_name):
 		self.add_merge_pattern(self.merge_file_patterns, to_name, sub_name)
-
-
-
-
-

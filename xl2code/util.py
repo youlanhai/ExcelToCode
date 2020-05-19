@@ -4,8 +4,6 @@ import sys
 import shutil
 import re
 import time
-import locale
-
 import xlsconfig
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
@@ -39,8 +37,10 @@ def _S(s):
 
 def to_utf8(s):
 	tp = type(s)
-	if tp == unicode: return s.encode("utf-8")
-	if tp == str: return s
+	if tp == unicode:
+		return s.encode("utf-8")
+	if tp == str:
+		return s
 	return s
 
 def int_to_base26(value):
@@ -135,7 +135,8 @@ def log_verbose(*args):
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
 def log_error(msg, *args, **kargs):
-	if len(args) > 0: msg = msg % args
+	if len(args) > 0:
+		msg = msg % args
 
 	file = kargs and kargs.get("file")
 
@@ -148,7 +149,8 @@ def log_error(msg, *args, **kargs):
 
 # 致命错误，无法被忽略
 def log_fatal(msg, *args, **kargs):
-	if len(args) > 0: msg = msg % args
+	if len(args) > 0:
+		msg = msg % args
 
 	file = kargs and kargs.get("file")
 	global has_error
@@ -174,7 +176,8 @@ def ensure_package_exist(root, file_path):
 	paths = sub_path.replace('\\', '/').split('/')
 	for path in paths:
 		full_path = os.path.join(full_path, path)
-		if os.path.isdir(full_path): continue
+		if os.path.isdir(full_path):
+			continue
 
 		os.mkdir(full_path)
 		init_path = os.path.join(full_path, "__init__.py")
@@ -201,7 +204,8 @@ def gather_all_files(path, exts):
 	path = path.decode("utf-8")
 
 	path_len = len(path)
-	if path[-1] != '/': path_len += 1
+	if path[-1] != '/':
+		path_len += 1
 
 	for root, dirs, files in os.walk(path):
 		i = 0
@@ -211,13 +215,15 @@ def gather_all_files(path, exts):
 			else:
 				i += 1
 
-		relative_path = root[path_len : ]
+		relative_path = root[path_len:]
 
 		for fname in files:
-			if fname.startswith("~$"): continue
+			if fname.startswith("~$"):
+				continue
 
 			ext = os.path.splitext(fname)[1]
-			if ext not in exts: continue
+			if ext not in exts:
+				continue
 
 			file_path = os.path.join(relative_path, fname)
 			ret.append(file_path.encode("utf-8").replace('\\', '/'))
@@ -239,7 +245,6 @@ def copytree(src, dst, symlinks=False, ignore=None):
 	if not os.path.isdir(dst):
 		os.makedirs(dst)
 
-	errors = []
 	for name in names:
 		if name in ignored_names:
 			continue
@@ -294,7 +299,7 @@ def resolve_macro(name, namespace):
 
 			key = p.group(1)
 			val = None
-			
+
 			for obj in namespace:
 				if isinstance(obj, dict):
 					val = obj.get(key)
@@ -345,9 +350,10 @@ def format_string(sting):
 		ret.append(FORMAT_CHAR.get(s, s))
 	return "".join(ret)
 
+
 TRANSLATE_CHAR = {
 	'0' : '\0',
-	'\\' :  '\\',
+	'\\': '\\',
 	'n' : '\n',
 	'r' : '\r',
 	'b' : '\b',
@@ -356,6 +362,7 @@ TRANSLATE_CHAR = {
 	'"' : '"' ,
 	"'" : "'" ,
 }
+
 # 通用字符串转义
 def translate_string(sting):
 	if '\\' not in sting:

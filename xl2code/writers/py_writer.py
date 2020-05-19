@@ -74,7 +74,7 @@ class PyWriter(BaseWriter):
 			self.endlist_indent(value, "}", indent, max_indent)
 
 		else:
-			raise TypeError, "unsupported type %s" % (str(tp), )
+			raise TypeError("unsupported type %s" % str(tp))
 
 		return
 
@@ -87,7 +87,7 @@ class PyWriter(BaseWriter):
 			self.output(", ")
 
 		self.endlist_indent(value, posfix, indent, max_indent)
-		
+
 	def newline_indent(self, indent, max_indent):
 		if indent <= max_indent:
 			self.output("\n")

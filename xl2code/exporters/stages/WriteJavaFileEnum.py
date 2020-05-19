@@ -19,7 +19,7 @@ class WriteJavaFileEnum(BaseStage):
 		util.log("生成枚举类", file_path)
 
 		wt = BaseWriter(file_path, None)
-		
+
 		indent = 0
 		wt._output_line(indent, "// 此文件由导表工具自动生成，禁止手动修改。")
 		wt._output_line()

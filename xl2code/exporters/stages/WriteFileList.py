@@ -24,4 +24,3 @@ class WriteFileList(BaseStage):
 		wt.end_write()
 		wt.close()
 		return
-

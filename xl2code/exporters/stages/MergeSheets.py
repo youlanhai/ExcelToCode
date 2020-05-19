@@ -18,7 +18,7 @@ class MergeSheets(BaseStage):
 
 	def merge(self, exporter, merge_patterns):
 		data_modules = exporter.data_modules
-		
+
 		for value in merge_patterns:
 			outfile = value[0]
 

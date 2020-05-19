@@ -23,7 +23,7 @@ class JsonWriter(BaseWriter):
 	def write_value(self, name, value, max_indent = None):
 		if max_indent is None:
 			max_indent = self.max_indent
-			
+
 		self.ensure_split()
 
 		indent = 1
@@ -60,15 +60,19 @@ class JsonWriter(BaseWriter):
 		elif tp == tuple or tp == list:
 			output("[")
 			indent += 1
-			if indent <= max_indent: output("\n")
+			if indent <= max_indent:
+				output("\n")
 
 			for i, v in enumerate(value):
-				if indent <= max_indent: self._output(indent)
+				if indent <= max_indent:
+					self._output(indent)
 
 				self.write(v, indent, max_indent)
-				if i + 1 < len(value): output(", ")
+				if i + 1 < len(value):
+					output(", ")
 
-				if indent <= max_indent: output("\n")
+				if indent <= max_indent:
+					output("\n")
 
 			if indent <= max_indent:
 				self._output(indent - 1, "]")
@@ -79,19 +83,23 @@ class JsonWriter(BaseWriter):
 		elif tp == dict:
 			output("{")
 			indent += 1
-			if indent <= max_indent: output("\n")
+			if indent <= max_indent:
+				output("\n")
 
 			keys = value.keys()
 			keys.sort()
 			for i, k in enumerate(keys):
-				if indent <= max_indent: self._output(indent)
+				if indent <= max_indent:
+					self._output(indent)
 
 				self.write(str(k), indent, max_indent)
 				output(" : ")
 				self.write(value[k], indent, max_indent)
-				if i + 1 < len(value): output(", ")
+				if i + 1 < len(value):
+					output(", ")
 
-				if indent <= max_indent: output("\n")
+				if indent <= max_indent:
+					output("\n")
 
 			if indent <= max_indent:
 				self._output(indent - 1, "}")
@@ -100,6 +108,6 @@ class JsonWriter(BaseWriter):
 			indent -= 1
 
 		else:
-			raise TypeError, "unsupported type %s" % (str(tp), )
+			raise TypeError("unsupported type %s" % str(tp))
 
 		return

@@ -4,7 +4,7 @@ import traceback
 import xlsconfig
 import util
 from util import ExcelToCodeException, log_error
-from tps import tp0, convention
+from tps import convention
 import csv
 
 class ConverterInfo:
@@ -76,7 +76,7 @@ class BaseParser(object):
 	def get_default_value(self, col):
 		value = self.default_values.get(col, "")
 		if value == '!':
-			raise ExcelToCodeException, "该项必填"
+			raise ExcelToCodeException("该项必填")
 		value = value.replace("\\!", "!")
 		return value
 
@@ -91,14 +91,14 @@ class BaseParser(object):
 		ret = None
 		if value == "":
 			if not converter.can_default:
-				raise ExcelToCodeException, "该项必填"
+				raise ExcelToCodeException("该项必填")
 
 		else:
 			try:
 				ret = converter.convert(value)
 			except Exception, e:
 				msg = "类型转换失败fun = %s, value = %s, 异常：%s" % (str(converter.convert), str(value), str(e))
-				raise ExcelToCodeException, msg
+				raise ExcelToCodeException(msg)
 
 		if ret is None and converter.exist_default_value:
 			ret = converter.default_value
@@ -113,7 +113,7 @@ class BaseParser(object):
 			self.worksheet = []
 			for row in csvReader:
 				self.worksheet.append(row)
-		
+
 		self.max_row = len(self.worksheet)
 		if self.max_row == 0:
 			util.log("表格为空：", self.filename)
@@ -191,14 +191,14 @@ class BaseParser(object):
 
 	def add_row(self, current_row_data):
 		key_value = current_row_data[0]
-		
+
 		if self.is_multi_key:
 			row = self.sheet.setdefault(key_value, [])
 			row.append(current_row_data)
 
 		else:
 			if key_value in self.sheet:
-				raise ExcelToCodeException, "Key'%s'重复" % key_value
+				raise ExcelToCodeException("Key'%s'重复" % key_value)
 
 			self.sheet[key_value] = current_row_data
 
@@ -227,14 +227,16 @@ class BaseParser(object):
 		self.arguments = {}
 		for col in xrange(0, len(cells), 2):
 			header = cells[col]
-			if header is None: break
+			if header is None:
+				break
 
 			if header.endswith(compatible_posfix):
 				split = len(header) - len(compatible_posfix)
 				header = header[:split]
 
 			converter = xlsconfig.ARGUMENT_CONVERTER.get(header)
-			if converter is None: continue
+			if converter is None:
+				continue
 
 			field, type = converter
 			method = convention.type2function(type)

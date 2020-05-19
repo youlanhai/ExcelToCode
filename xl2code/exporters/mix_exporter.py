@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
 import os
-import sys
-import traceback
 import xlsconfig
 import util
-import stages
 from direct_exporter import DirectExporter
-from tps import tp0
-from parsers.base_parser import ConverterInfo
 
 STAGES_INFO = [
 	{"class" : "ParseExcel"},
@@ -72,4 +66,3 @@ class MixExporter(DirectExporter):
 
 		converter._name = name
 		return converter
-

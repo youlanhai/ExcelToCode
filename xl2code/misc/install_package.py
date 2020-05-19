@@ -5,6 +5,8 @@ import shutil
 import importlib
 from zipfile import ZipFile
 from distutils.sysconfig import get_python_lib
+import util
+import traceback
 
 import xlsconfig
 
@@ -13,18 +15,20 @@ def check_plugin(plugins):
 	for name in plugins:
 		try:
 			importlib.import_module(name)
-		except ImportError, e:
+		except ImportError:
 			util.log("错误：没有发现插件：'%s'，尝试自动安装 ..." % (name, ))
 
 			ret = install(name)
 			util.log("-" * 60)
 			util.log("安装插件%s： '%s'" % ("成功" if ret else "失败", name, ))
 
-			if not ret: return False
+			if not ret:
+				return False
 
 			need_restart = True
 
-	if need_restart: util.log("请重启导表工具")
+	if need_restart:
+		util.log("请重启导表工具")
 	return True
 
 def install(name):
@@ -77,5 +81,5 @@ def sudo(cmd):
 	if sys.platform != "win32":
 		cmd = "sudo " + cmd
 
-	#util.log(cmd)
+	# util.log(cmd)
 	os.system(cmd)

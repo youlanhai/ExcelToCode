@@ -55,6 +55,7 @@ class NodeRoot(NodeBase):
 	def set(self, nodes, key, value):
 		self.data[key] = value
 
+
 FIELD_NODE_MAP = {
 	"-" : NodeNormal,
 	'[' : NodeListPush,
@@ -109,7 +110,7 @@ class MergeField(BaseStage):
 		for type_info in types.itervalues():
 			col = type_info[0]
 			col2type[col] = TypeDescriptor(type_info[1])
-		
+
 		for key in sheet.keys():
 			row = sheet[key]
 			ret = None
@@ -124,8 +125,6 @@ class MergeField(BaseStage):
 			except Exception, e:
 				util.log("处理字段失败", key)
 				raise e
-
-
 		return
 
 	def convert_field_row(self, col2type, key, row):
@@ -134,8 +133,9 @@ class MergeField(BaseStage):
 
 		for col, value in enumerate(row):
 			type_desc = col2type.get(col)
-			if type_desc is None: continue
+			if type_desc is None:
+				continue
 
 			type_desc.apply(root.nodes, value)
-			
+
 		return root.end()

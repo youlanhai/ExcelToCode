@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from copy import copy
 import util
 import xlsconfig
 
@@ -18,20 +17,22 @@ class BaseWriter(object):
 		if generator_info:
 			self.max_indent = generator_info.get("max_indent", self.max_indent)
 		if data_module:
-			arguments = data_module.info["arguments"];
+			arguments = data_module.info["arguments"]
 			if arguments.get("multiKey"):
 				self.max_indent += 1
 			self.max_indent = arguments.get("indent", self.max_indent)
 		self.open_file()
 
 	def __fini__(self):
-		if self.handle: self.close()
+		if self.handle:
+			self.close()
 
 	def open_file(self):
 		self.handle = open(self.file_path, "wb")
 
 	def flush(self):
-		if len(self.cache) == 0: return
+		if len(self.cache) == 0:
+			return
 
 		for i, s in enumerate(self.cache):
 			if type(s) == unicode:
@@ -46,9 +47,9 @@ class BaseWriter(object):
 		self.handle.close()
 		self.handle = None
 
-
 	def begin_write(self):
 		self.output("\n")
+
 	def end_write(self): pass
 
 	def write_sheet(self, name, sheet): pass
@@ -60,17 +61,20 @@ class BaseWriter(object):
 
 	def _output(self, indent, *args):
 		assert(type(indent) == int)
-		if indent > 0: self.cache.append(INDENTS[indent])
+		if indent > 0:
+			self.cache.append(INDENTS[indent])
 		self.cache.extend(args)
 
 	def _output_line(self, indent = 0, *args):
 		assert(type(indent) == int)
-		if indent > 0: self.cache.append(INDENTS[indent])
+		if indent > 0:
+			self.cache.append(INDENTS[indent])
 		self.cache.extend(args)
 		self.cache.append("\n")
 
 	def _output_indent(self, indent, max_indent):
-		if indent <= max_indent: self.output("\n")
+		if indent <= max_indent:
+			self.output("\n")
 
 	def write_module(self, module):
 		for k in sorted(module.iterkeys()):
@@ -81,19 +85,21 @@ class BaseWriter(object):
 		self.flush()
 
 	def write_types_comment(self, sheet_name):
-		if not self.data_module: return
+		if not self.data_module:
+			return
 
 		module_info = self.data_module.info
 
 		sheet_types = module_info["sheet_types"].get(sheet_name)
-		if sheet_types is None: return
+		if sheet_types is None:
+			return
 
 		sheet_types = sheet_types.values()
 		sheet_types.sort(key = lambda v : v[0])
 		for info in sheet_types:
 			col, field, text, type = info
 			col_name = util.int_to_base26(col) if col is not None else "None"
-			comment = "%s\t%-20s%s" %(col_name, field, text)
+			comment = "%s\t%-20s%s" % (col_name, field, text)
 			self.write_comment(comment)
 
 	def write_constants(self, constants, sheet_name = None):
@@ -118,7 +124,7 @@ class BaseWriter(object):
 		for header in headers.itervalues():
 			col, field, text, type = header
 			col_name = util.int_to_base26(col) if col is not None else "None"
-			comment = "%s\t%s" %(col_name, text)
+			comment = "%s\t%s" % (col_name, text)
 			comments[field] = comment
 
 		return comments

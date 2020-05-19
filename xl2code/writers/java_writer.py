@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from copy import copy
 from json_writer import JsonWriter
 import util
 
@@ -37,10 +35,12 @@ class JavaWriter(JsonWriter):
 		self.write_value("header", headers, 2)
 
 	def write_sheet(self, name, sheet):
-		if name != "main_sheet": return
+		if name != "main_sheet":
+			return
 
 		max_indent = self.max_indent
-		if self.is_multi_key: max_indent += 1
+		if self.is_multi_key:
+			max_indent += 1
 
 		body = []
 
@@ -62,4 +62,5 @@ class JavaWriter(JsonWriter):
 
 		self.write_value("body", body, max_indent)
 
-	def write_module(self, module): pass
+	def write_module(self, module):
+		pass

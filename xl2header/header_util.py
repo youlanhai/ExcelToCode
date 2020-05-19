@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 from header import Header, Argument
-import json
 import util
 
 SPLITER_PATTERN = re.compile(r"\[|\{|\]|\}")

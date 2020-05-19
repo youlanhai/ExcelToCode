@@ -56,7 +56,7 @@ class ExcelParser(object):
 		if method:
 			return method(value, cell, self)
 
-		raise ExcelToCodeException, "不支持的数据类型: %s" % str(tp)
+		raise ExcelToCodeException("不支持的数据类型: %s" % str(tp))
 
 	def parse(self):
 		try:

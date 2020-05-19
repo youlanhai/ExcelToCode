@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-
-import traceback
-import xlsconfig
 import util
-from tps import tp0, convention
+from tps import convention
 from base_parser import ConverterInfo, BaseParser
 
 class ConfigParser(BaseParser):
@@ -14,7 +11,7 @@ class ConfigParser(BaseParser):
 		self.is_multi_key = getattr(module, "MULTI_KEY", False)
 
 		self.config = getattr(module, "CONFIG", None)
-		
+
 		self.header_2_config = {}
 
 	def run(self):
@@ -49,4 +46,3 @@ class ConfigParser(BaseParser):
 
 		self.key_name = self.converters[0].field
 		return
-

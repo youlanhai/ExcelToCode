@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
 from base_writer import BaseWriter
 from struct import pack
 import util
@@ -8,10 +7,11 @@ def pack_debug(fmt, *args):
 	return " ".join([str(x) for x in args]) + " "
 # pack = pack_debug
 
+
 MAGIC = "bt"
 VERSION = 0x0001
 
-T_EOF 		= 0 #end of file
+T_EOF 		= 0  # end of file
 T_NONE 		= 1
 T_TRUE 		= 2
 T_FALSE 	= 3
@@ -61,7 +61,7 @@ def w_int(v):
 	if INT32_MIN <= v <= INT32_MAX: return pack("<Bi", T_INT32, v)
 	if INT64_MIN <= v <= INT64_MAX: return pack("<Bq", T_INT64, v)
 
-	raise ValueError, "value is too large."
+	raise ValueError("value is too large.")
 
 def w_float(v):
 	return pack("<Bf", T_FLOAT, v)
@@ -99,7 +99,7 @@ class BinaryWriter(BaseWriter):
 		content = type, number | string_index | list | dict
 			type = uint8
 
-			number = int8 | int16 | int32 | int64 | float | double 
+			number = int8 | int16 | int32 | int64 | float | double
 
 			string_index = uint of (type - T_STR0)
 
@@ -194,7 +194,7 @@ class BinaryWriter(BaseWriter):
 
 		else:
 			util.log(value)
-			raise TypeError, "invalid key type %s" % (str(tp), )
+			raise TypeError("invalid key type %s" % str(tp))
 
 	def _write(self, value):
 		tp = type(value)
@@ -218,7 +218,8 @@ class BinaryWriter(BaseWriter):
 
 		elif tp == list or tp == tuple:
 			self.output(w_list(len(value)))
-			for v in value: self._write(v)
+			for v in value:
+				self._write(v)
 
 		elif tp == set:
 			self._write(sorted(value))
@@ -233,6 +234,6 @@ class BinaryWriter(BaseWriter):
 
 		else:
 			util.log(value)
-			raise TypeError, "unsupported value type %s" % (str(tp), )
+			raise TypeError("unsupported value type %s" % str(tp))
 
 		return

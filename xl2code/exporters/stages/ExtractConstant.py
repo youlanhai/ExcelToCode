@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import traceback
-import util
 from BaseStage import BaseStage
 
 class ExtractConstant(BaseStage):

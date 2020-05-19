@@ -22,7 +22,8 @@ class XMLWriter(BaseWriter):
 
 	def format_str(self, s):
 		ret = []
-		for ch in s: ret.append(self.FORMAT_CHARS.get(ch, ch))
+		for ch in s:
+			ret.append(self.FORMAT_CHARS.get(ch, ch))
 		return "".join(ret)
 
 	def __init__(self, file_path, data_module = None, generator_info = None):
@@ -88,7 +89,7 @@ class XMLWriter(BaseWriter):
 		self._output_line(indent, "</%s>" % key)
 
 	def write_value(self, name, value):
-		self.write(key, value, 1)
+		self.write(name, value, 1)
 
 	def write_comment(self, comment):
 		self.output("<!-- %s -->\n" % comment)
@@ -114,7 +115,7 @@ class XMLWriter(BaseWriter):
 			return self.format_str(value.encode("utf-8"))
 
 		else:
-			raise ValueError, "unsupported value type %s" % str(tp)
+			raise ValueError("unsupported value type %s" % str(tp))
 
 		return
 

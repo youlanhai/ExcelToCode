@@ -9,7 +9,8 @@ class PostProcess(BaseStage):
 
 	def process_sheet(self, data_module):
 		converter = data_module.converter
-		if converter is None: return
+		if converter is None:
+			return
 
 		process_method = getattr(converter, "post_process_ex", None)
 		if process_method:

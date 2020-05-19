@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
 import util
 import xlsconfig
 from base_code_gen import BaseCodeGen
-from tps import tp0
 
 BUILTIN_TYPES = set((
 	"int", "long", "float", "boolean", "String",
@@ -32,7 +30,7 @@ class JavaCodeGen(BaseCodeGen):
 		self.write_line()
 
 		package = util.to_utf8(generator_info.get("package", xlsconfig.DEFAULT_JAVA_PACKAGE))
-		
+
 		self.write_line(0, "package %s;" % package)
 		self.write_line()
 
@@ -50,7 +48,7 @@ class JavaCodeGen(BaseCodeGen):
 
 	def collect_members(self, config):
 		# info = (0, "ID", "编号", "int", )
-		
+
 		items = []
 		for k, info in config.iteritems():
 			col, field, text, type = info
@@ -61,12 +59,14 @@ class JavaCodeGen(BaseCodeGen):
 
 	def gen_class(self, items, indent):
 		self.write(indent, "public class ", self.class_name)
-		
+
 		base = self.generator_info.get("base")
-		if base: self.output(" extends ", base.encode("utf-8"))
+		if base:
+			self.output(" extends ", base.encode("utf-8"))
 
 		interface = self.generator_info.get("interface")
-		if interface: self.output(" implements ", interface.encode("utf-8"))
+		if interface:
+			self.output(" implements ", interface.encode("utf-8"))
 
 		self.output(" {")
 		self.write_line()
@@ -74,8 +74,8 @@ class JavaCodeGen(BaseCodeGen):
 
 		indent += 1
 		self.gen_field_list(items, indent)
-		#self.gen_contructor(self.class_name, indent)
-		#self.gen_init_method(items, indent)
+		# self.gen_contructor(self.class_name, indent)
+		# self.gen_init_method(items, indent)
 		self.gen_get_set(items, indent)
 		indent -= 1
 

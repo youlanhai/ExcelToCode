@@ -15,14 +15,15 @@ def load_configure(cfg_file, option):
 	util.log("load configure file", cfg_file)
 
 	if not os.path.exists(cfg_file):
-		raise ExcelToCodeException, "配置文件不存在: %s" % cfg_file
+		raise ExcelToCodeException("配置文件不存在: %s" % cfg_file)
 
 	cfg_path = os.path.dirname(cfg_file)
 	sys.path.insert(0, cfg_path)
 
 	cfg = imp.load_source("custom_configure", cfg_file)
 	for k, v in cfg.__dict__.iteritems():
-		if k.startswith('_'): continue
+		if k.startswith('_'):
+			continue
 
 		setattr(xlsconfig, k, v)
 
@@ -40,7 +41,6 @@ def load_configure(cfg_file, option):
 	safe_parse_path(option, "temp", "TEMP_PATH")
 	safe_parse_path(option, "converter", "CONVERTER_PATH")
 	safe_parse_path(option, "locale_path", "LOCALE_OUTPUT_PATH")
-
 
 	for k in xlsconfig.DEPENDENCIES.keys():
 		path = xlsconfig.DEPENDENCIES[k]

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
 import os
-import traceback
 import util
 import xlsconfig
 from BaseStage import BaseStage
@@ -14,7 +13,7 @@ def get_field_name(content):
 	return field
 
 class ExtractLocale(BaseStage):
-	
+
 	@property
 	def need_sort(self): return True
 
@@ -28,7 +27,7 @@ class ExtractLocale(BaseStage):
 	def process_sheet(self, data_module):
 		types = data_module.info["sheet_types"]["main_sheet"]
 		sheet = data_module.main_sheet
-		
+
 		# 名字转换规则
 		#	 文件路径_key[_multiKey流水号]_field
 		# 文件路径中的斜线转换成'.'
@@ -53,6 +52,7 @@ class ExtractLocale(BaseStage):
 		fields.add("")
 
 		texts = []
+
 		def extract_row_text(row, key, col, posfix):
 			text = row[col]
 			if text is None:
@@ -65,7 +65,8 @@ class ExtractLocale(BaseStage):
 			texts.append((name, text))
 
 		for i, title in enumerate(keys):
-			if not title.endswith(":locale"): continue
+			if not title.endswith(":locale"):
+				continue
 
 			type_info = types[title]
 			col = type_info[0]

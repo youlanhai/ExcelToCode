@@ -11,7 +11,8 @@ class ConvertField(BaseStage):
 
 	def process_sheet(self, data_module):
 		converter = data_module.converter
-		if converter is None: return
+		if converter is None:
+			return
 
 		util.log("post convert:", data_module.path)
 
@@ -51,7 +52,7 @@ class ConvertField(BaseStage):
 		ret = None
 		if value is None or value == "":
 			if not converter.can_default:
-				raise ValueError, "该项必填"
+				raise ValueError("该项必填")
 
 		else:
 			ret = converter.convert(value)
@@ -70,4 +71,3 @@ class ConvertField(BaseStage):
 				traceback.print_exc()
 				util.log_error("key: %s, 列: %s, 二次转换失败，value = %s", str(key_value), util.int_to_base26(col), tp0.to_str(value))
 		return
-

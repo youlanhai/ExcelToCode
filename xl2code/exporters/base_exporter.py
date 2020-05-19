@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import json
 import traceback
 
 import xlsconfig
 import writers
 import stages
 import util
-from tps import tp0, convention
+from tps import convention
 from data_module import DataModule, NewConverter
 
 
@@ -40,7 +39,7 @@ class BaseExporter(object):
 
 	def run(self):
 		convention.update_functions()
-		
+
 		for path in self.python_search_paths:
 			sys.path.insert(0, path)
 
@@ -49,7 +48,7 @@ class BaseExporter(object):
 			if stage_class is None:
 				util.log_error("Failed find stage '%s'", stage_info["class"])
 				break
-			
+
 			stage = stage_class(stage_info)
 			try:
 				util.log("=== %s ===" % stage.get_desc())
@@ -129,5 +128,3 @@ class BaseExporter(object):
 
 		wt.end_write()
 		wt.close()
-
-

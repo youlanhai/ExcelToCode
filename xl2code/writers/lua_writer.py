@@ -98,7 +98,7 @@ class LuaWriter(BaseWriter):
 				output("}")
 
 		else:
-			raise TypeError, "unsupported type %s" % (str(tp), )
+			raise TypeError("unsupported type %s" % str(tp))
 
 		return
 

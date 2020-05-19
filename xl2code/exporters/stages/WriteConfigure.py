@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import xlsconfig
-import util
 import writers
 from BaseStage import BaseStage
 
@@ -18,7 +17,10 @@ class WriteConfigure(BaseStage):
 
 		sheet = {}
 		for k, v in exporter.configures.iteritems():
-			sheet[k] = {"types" : v.types, "arguments" : v.arguments }
+			sheet[k] = {
+				"types" : v.types,
+				"arguments" : v.arguments
+			}
 		wt.write_sheet("configures", sheet)
 
 		wt.write_value("merges", exporter.merge_patterns)
@@ -27,4 +29,3 @@ class WriteConfigure(BaseStage):
 
 		wt.end_write()
 		wt.close()
-

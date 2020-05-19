@@ -4,6 +4,7 @@ import openpyxl_extend
 import xlsconfig
 from openpyxl.styles import PatternFill
 from tps.convention import function2type
+import util
 
 header_fill = PatternFill(patternType="solid", fgColor="FABF8F")
 type_fill = PatternFill(patternType="solid", fgColor="82C3D4")
@@ -21,7 +22,8 @@ def create_header(input_file, converter, sheet_index):
 	headers = {}
 	for i, cell in enumerate(table[header_row]):
 		header = cell.value
-		if header is None or header == "": break
+		if header is None or header == "":
+			break
 		headers[header] = i + 1
 
 	hidden_fileds = getattr(converter, "HIDDEN_FIELDS", ())
@@ -35,8 +37,10 @@ def create_header(input_file, converter, sheet_index):
 
 		header_2_field[header] = field
 
-		if header in headers: continue
-		if field in hidden_fileds: continue
+		if header in headers:
+			continue
+		if field in hidden_fileds:
+			continue
 
 		new_headers.append((header, field, type))
 
@@ -44,7 +48,8 @@ def create_header(input_file, converter, sheet_index):
 		table.insert_rows(field_row, 1, True)
 		for header, column in headers.iteritems():
 			field = header_2_field.get(header)
-			if field is None: continue
+			if field is None:
+				continue
 
 			cell = table.cell(row = field_row, column = column, value = field)
 			cell.fill = field_fill

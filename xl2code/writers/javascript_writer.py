@@ -35,7 +35,7 @@ class JavaScriptWriter(BaseWriter):
 			output("%g" % (value, ))
 
 		elif tp == str:
-			output('"%s"' %(value, ))
+			output('"%s"' % (value, ))
 
 		elif tp == unicode:
 			output('"%s"' % (value.encode("utf-8"), ))
@@ -74,7 +74,7 @@ class JavaScriptWriter(BaseWriter):
 				output("}")
 
 		else:
-			raise TypeError, "unsupported type %s" % (str(tp), )
+			raise TypeError("unsupported type %s" % str(tp))
 
 		return
 

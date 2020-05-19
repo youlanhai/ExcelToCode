@@ -22,7 +22,8 @@ class NewConverter(object):
 	def compare_types(self, types, filename):
 		for k, info1 in self.types.iteritems():
 			info2 = types.get(k)
-			if info2 and self.if_info_equal(info1, info2): continue
+			if info2 and self.if_info_equal(info1, info2):
+				continue
 
 			util.log_error("'%s':'%s'与'%s':'%s'表头不一致", filename, info2, info1, self.filename)
 			return False

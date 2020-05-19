@@ -46,15 +46,16 @@ class ConfigExporter(BaseExporter):
 		file_2_converter = {}
 
 		for value in xlsconfig.CONVENTION_TABLE:
-			pattern 	= value[0]
-			converter_name 	= value[1]
-			new_name 	= value[2] if len(value) > 2 else None
+			pattern = value[0]
+			converter_name = value[1]
+			new_name = value[2] if len(value) > 2 else None
 			sheet_index = value[3] if len(value) > 3 else 0
 
 			compiled_pattern = re.compile(pattern)
 
 			for infile in self.excel_files:
-				if not compiled_pattern.match(infile): continue
+				if not compiled_pattern.match(infile):
+					continue
 				if infile in file_2_converter:
 					util.log_error("文件'%s'匹配到了多个转换器", infile)
 
@@ -80,8 +81,6 @@ class ConfigExporter(BaseExporter):
 		converter = self.find_converter(converter_name)
 
 		input_path = os.path.join(self.input_path, infile)
-		output_path = os.path.join(xlsconfig.TEMP_PATH, outfile + ".py")
-		converter_file = os.path.splitext(converter.__file__)[0] + ".py"
 
 		util.log(infile, "-", converter_name)
 		parser = self.parser_class(input_path, converter, sheet_index)
@@ -97,5 +96,3 @@ class ConfigExporter(BaseExporter):
 
 		self.store_data_module(data_module)
 		return True
-
-

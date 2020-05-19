@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import traceback
 import xlsconfig
 import util
 from tps import tp0, convention
@@ -21,9 +20,9 @@ class DirectParser(BaseParser):
 		if self.is_vertical:
 			self.field_row_index -= self.vertical_start_row
 			self.type_row_index -= self.vertical_start_row
-		
-		field_row 	= self.extract_cells(self.field_row_index)
-		type_row 	= self.extract_cells(self.type_row_index)
+
+		field_row = self.extract_cells(self.field_row_index)
+		type_row = self.extract_cells(self.type_row_index)
 
 		self.key_name = field_row[0]
 
