@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from os import path
 import csv
+import datetime
 
 import util
 from util import log, log_error, ExcelToCodeException
@@ -12,7 +13,8 @@ FORMAT_MAP = {
 	float 	: util.format_number,
 	bool 	: lambda value, cell, parser: str(value),
 	str 	: lambda value, cell, parser: value.strip(),
-	unicode : lambda value, cell, parser: value.encode("utf-8").strip()
+	unicode : lambda value, cell, parser: value.encode("utf-8").strip(),
+	datetime.time : lambda value, cell, parser: str(value),
 }
 
 class ExcelParser(object):
