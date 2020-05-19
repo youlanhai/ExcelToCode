@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 from os import path
+import openpyxl
 
 import xlsconfig
 import util
@@ -70,11 +71,6 @@ class ExcelParser(object):
 		raise ExcelToCodeException("不支持的数据类型: %s, at %s" % (str(tp), addr), self.filename)
 
 	def parse(self):
-		try:
-			import openpyxl
-		except:
-			raise ExcelToCodeException("请安装插件: openpyxl")
-
 		u_filename = self.filename.decode("utf-8")
 		if not path.exists(u_filename):
 			if not self.auto_create:
@@ -123,7 +119,6 @@ class ExcelParser(object):
 		self.workbook.save(u_filename)
 
 	def create_new_excel(self):
-		import openpyxl
 		self.workbook = openpyxl.Workbook()
 		self.worksheet = self.workbook.active
 

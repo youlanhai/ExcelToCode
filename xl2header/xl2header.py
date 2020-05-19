@@ -8,6 +8,11 @@ from argparse import ArgumentParser
 import util
 from util import _S, ExcelToCodeException
 
+try:
+	import openpyxl
+except:
+	raise ExcelToCodeException("请安装插件: openpyxl")
+
 from excel_parser import ExcelParser
 
 def main():
