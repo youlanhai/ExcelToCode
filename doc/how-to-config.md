@@ -196,7 +196,7 @@ Direct模式下，数据描述信息全部由Excel表提供。表格的行"argum
 
 ![](images/direct-header@2x.png)
 
-# Config模式
+# Config模式(废弃)
 Config模式下，数据描述信息有转换器脚本提供。因此，表头结构简单，但是需要提供额外的转换器脚本文件。
 
 ![](images/config-header@2x.png)

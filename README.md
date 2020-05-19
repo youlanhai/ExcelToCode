@@ -78,3 +78,5 @@ xl2code/exporters/stages | 导表阶段。可以定制化导表过程。比如�
 xl2code/parsers | excel解析器。解析单个excel表格
 xl2code/tps | 通用类型转换器。用于将数据转换成具体的Python数据类型
 xl2code/writers | 写出器。用于将Python数据表，写出成不同格式的数据表。如，Lua、Json等。
+xl2csv | excel表转换成csv表的工具
+xl2header | excel与表头描述文件互转的工具
