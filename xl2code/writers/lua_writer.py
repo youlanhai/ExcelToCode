@@ -6,6 +6,17 @@ class LuaWriter(BaseWriter):
 
 	def begin_write(self):
 		super(LuaWriter, self).begin_write()
+
+		self.array_prefix = self.generator_info.get("array_prefix", "{")
+		self.array_posfix = self.generator_info.get("array_posfix", "}")
+
+		self.dict_prefix = self.generator_info.get("dict_prefix", "{")
+		self.dict_posfix = self.generator_info.get("dict_posfix", "}")
+
+		header = self.generator_info.get("header")
+		if header:
+			self.output(header, "\n")
+
 		self.output("module(...)", "\n\n")
 
 	def write_sheet(self, name, sheet):
@@ -57,11 +68,12 @@ class LuaWriter(BaseWriter):
 			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
+			output(self.array_prefix)
+
 			if len(value) == 0:
-				output("{}")
+				output(self.array_posfix)
 				return
 
-			output("{")
 			for v in value:
 				self.newline_indent(indent, max_indent)
 				self.write(v, indent + 1, max_indent)
@@ -69,16 +81,16 @@ class LuaWriter(BaseWriter):
 
 			if indent <= max_indent:
 				output("\n")
-				self._output(indent - 1, "}")
+				self._output(indent - 1, self.array_posfix)
 			else:
-				output("}")
+				output(self.array_posfix)
 
 		elif tp == dict:
+			output(self.dict_prefix)
 			if len(value) == 0:
-				output("{}")
+				output(self.dict_posfix)
 				return
 
-			output("{")
 			keys = value.keys()
 			keys.sort()
 
@@ -93,9 +105,9 @@ class LuaWriter(BaseWriter):
 
 			if indent <= max_indent:
 				output("\n")
-				self._output(indent - 1, "}")
+				self._output(indent - 1, self.dict_posfix)
 			else:
-				output("}")
+				output(self.dict_posfix)
 
 		else:
 			raise TypeError("unsupported type %s" % str(tp))

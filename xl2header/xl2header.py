@@ -35,6 +35,7 @@ def main():
 
 def excel_to_header(excel_path, header_path, recursive):
 	if not recursive:
+		print "parse:", excel_path
 		try:
 			p = ExcelParser(excel_path)
 			p.parse()
@@ -55,6 +56,7 @@ def excel_to_header(excel_path, header_path, recursive):
 
 def excel_from_header(excel_path, header_path, recursive, force = False):
 	if not recursive:
+		print "parse:", excel_path
 		try:
 			p = ExcelParser(excel_path, force = force, auto_create = True)
 			p.parse()

@@ -15,6 +15,7 @@ FORMAT_MAP = {
 	str 	: lambda value, cell, parser: value.strip(),
 	unicode : lambda value, cell, parser: value.encode("utf-8").strip(),
 	datetime.time : lambda value, cell, parser: str(value),
+	datetime.datetime : lambda value, cell, parser: str(value),
 }
 
 class ExcelParser(object):
@@ -53,7 +54,6 @@ class ExcelParser(object):
 	def extract_cell_value(self, cell):
 		value = cell.value
 		tp = type(value)
-
 		method = self.FORMAT_MAP.get(tp)
 		if method:
 			return method(value, cell, self)
@@ -66,7 +66,11 @@ class ExcelParser(object):
 		except:
 			return log_error("请安装插件: openpyxl")
 
-		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
+		# 支持excel公式
+		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"), data_only = True)
+		# 不支持excel公式
+		# self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
+
 
 		worksheets = self.workbook.worksheets
 		self.sheets = [None] * len(worksheets)
