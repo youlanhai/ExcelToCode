@@ -2,7 +2,7 @@
 import sys
 import os
 from os import path
-from . import numfmt
+import numfmt
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
 

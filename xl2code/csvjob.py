@@ -85,7 +85,7 @@ class CSVJob(object):
 					f.write('\n')
 
 			args = [
-				"python",
+				"python3",
 				xlsconfig.CSV_CONVERTER,
 				"-o", self.output_path,
 				"-c", config_file,

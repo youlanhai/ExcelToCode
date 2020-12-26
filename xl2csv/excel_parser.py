@@ -3,8 +3,8 @@ from os import path
 import csv
 import datetime
 
-from . import util
-from .util import log, log_error, ExcelToCodeException
+import util
+from util import log, log_error, ExcelToCodeException
 
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
@@ -149,6 +149,6 @@ class ExcelParser(object):
 
 	def save_sheet(self, sheet, output_path):
 		util.ensure_folder_exist(output_path)
-		with open(output_path, "w", encoding = "utf-8") as f:
+		with open(output_path, "w", encoding = "utf-8", newline='') as f:
 			writer = csv.writer(f)
 			writer.writerows(sheet)
