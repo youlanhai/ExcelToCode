@@ -3,12 +3,7 @@ from .base_writer import BaseWriter
 from struct import pack
 import util
 
-def pack_debug(fmt, *args):
-	return " ".join([str(x) for x in args]) + " "
-# pack = pack_debug
-
-
-MAGIC = "bt"
+MAGIC = b"bt"
 VERSION = 0x0001
 
 T_EOF 		= 0  # end of file
@@ -147,7 +142,7 @@ class BinaryWriter(BaseWriter):
 		self.cache.extend(tail_cache)
 
 		# flush cache to file
-		text = "".join(self.cache)
+		text = b"".join(self.cache)
 		self.cache = []
 		self.handle.write(text)
 
@@ -168,7 +163,8 @@ class BinaryWriter(BaseWriter):
 		self.var_dict[name] = value
 
 	def _write_str(self, value):
-		if value == "":
+		value = value.encode("utf-8")
+		if value == b"":
 			self.output(pack("<B", T_STR0))
 
 		else:
