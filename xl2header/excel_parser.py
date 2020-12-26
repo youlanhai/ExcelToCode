@@ -16,11 +16,9 @@ def format_number(f, cell, parser):
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
 	int 	: format_number,
-	int 	: format_number,
 	float 	: format_number,
 	bool 	: lambda value, cell, parser: str(value).upper(),
 	str 	: lambda value, cell, parser: value.strip(),
-	str : lambda value, cell, parser: value.encode("utf-8").strip()
 }
 
 
@@ -71,7 +69,7 @@ class ExcelParser(object):
 		raise ExcelToCodeException("不支持的数据类型: %s, at %s" % (str(tp), addr), self.filename)
 
 	def parse(self):
-		u_filename = self.filename.decode("utf-8")
+		u_filename = self.filename
 		if not path.exists(u_filename):
 			if not self.auto_create:
 				raise ExcelToCodeException("Excel文件不存在", self.filename)
@@ -114,7 +112,7 @@ class ExcelParser(object):
 		self.sheet_proxy.generate_header(new_header)
 		self.sheet_proxy.generate_arguments(new_arguments)
 
-		u_filename = self.filename.decode("utf-8")
+		u_filename = self.filename
 		util.ensure_folder_exist(u_filename)
 		self.workbook.save(u_filename)
 
@@ -223,7 +221,6 @@ class ExcelParser(object):
 		return
 
 	def save(self, output_path):
-		output_path = output_path.decode('utf-8')
 		util.ensure_folder_exist(output_path)
 		header_util.save_header_list(output_path, self.header_root, self.arguments)
 
@@ -246,9 +243,8 @@ class ExcelParser(object):
 			"list" : list_data,
 		}
 
-		output_path = output_path.decode('utf-8')
 		util.ensure_folder_exist(output_path)
-		with open(output_path, "wb") as f:
+		with open(output_path, "w") as f:
 			json.dump(data, f, indent = 4, sort_keys=True, ensure_ascii = False)
 
 	def save_as_tree(self, node, data):

@@ -189,9 +189,6 @@ class BinaryWriter(BaseWriter):
 		elif tp == str:
 			self._write_str(value)
 
-		elif tp == str:
-			self._write_str(value.encode("utf-8"))
-
 		else:
 			util.log(value)
 			raise TypeError("invalid key type %s" % str(tp))
@@ -212,9 +209,6 @@ class BinaryWriter(BaseWriter):
 
 		elif tp == str:
 			self._write_str(value)
-
-		elif tp == str:
-			self._write_str(value.encode("utf-8"))
 
 		elif tp == list or tp == tuple:
 			self.output(w_list(len(value)))

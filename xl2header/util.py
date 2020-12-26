@@ -20,14 +20,6 @@ class ExcelToCodeException(Exception):
 		return "%s, file: %s" % (self.value, self.file)
 
 def _S(s):
-	if sys_encoding != "utf-8":
-		if isinstance(s, str):
-			return s.encode(sys_encoding)
-		s = str(s)
-		try:
-			return s.decode("utf-8").encode(sys_encoding)
-		except UnicodeDecodeError:
-			pass
 	return s
 
 # 打印错误日志。如果不是FORCE_FUN模式，会将错误日志以异常的形式抛出。
@@ -81,7 +73,6 @@ def ensure_folder_exist(file_path):
 # 返回的路径是相对于path的相对路径。
 def gather_all_files(path, exts):
 	ret = []
-	path = path.decode("utf-8")
 
 	path_len = len(path)
 	if path[-1] != '/':
@@ -106,16 +97,6 @@ def gather_all_files(path, exts):
 				continue
 
 			file_path = os.path.join(relative_path, fname)
-			ret.append(file_path.encode("utf-8").replace('\\', '/'))
+			ret.append(file_path.replace('\\', '/'))
 
 	return ret
-
-def byteify(input):
-	if isinstance(input, dict):
-		return {byteify(key): byteify(value) for key, value in input.items()}
-	elif isinstance(input, list):
-		return [byteify(element) for element in input]
-	elif isinstance(input, str):
-		return input.encode('utf-8')
-	else:
-		return input

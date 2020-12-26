@@ -43,9 +43,6 @@ class PyWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == str:
-			output('"%s"' % format_string(value.encode("utf-8")))
-
 		elif tp == tuple:
 			self._write_list(value, "(", ")", indent, max_indent)
 

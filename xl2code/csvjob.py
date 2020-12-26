@@ -7,8 +7,8 @@ import subprocess
 import json
 import time
 
-from . import xlsconfig
-from . import util
+import xlsconfig
+import util
 
 class CSVJob(object):
 
@@ -30,7 +30,7 @@ class CSVJob(object):
 		cache_file = path.join(self.temp_path, "cache.json")
 		try:
 			with open(cache_file, "r") as f:
-				self.parser_cache = json.load(f, object_hook = util.byteify)
+				self.parser_cache = json.load(f)
 		except:
 			pass
 
@@ -79,7 +79,7 @@ class CSVJob(object):
 			section = files[start : end]
 
 			config_file = path.join(self.temp_path, "job-%d.txt" % i)
-			with open(config_file, "wb") as f:
+			with open(config_file, "w") as f:
 				for name in section:
 					f.write(name)
 					f.write('\n')

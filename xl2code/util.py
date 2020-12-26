@@ -4,7 +4,7 @@ import sys
 import shutil
 import re
 import time
-from . import xlsconfig
+import xlsconfig
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
 print("sys encoding:", sys_encoding)
@@ -25,22 +25,9 @@ class ExcelToCodeException(Exception):
 		return "%s, file: %s" % (self.value, self.file)
 
 def _S(s):
-	if sys_encoding != "utf-8":
-		if isinstance(s, str):
-			return s.encode(sys_encoding)
-		s = str(s)
-		try:
-			return s.decode("utf-8").encode(sys_encoding)
-		except UnicodeDecodeError:
-			pass
 	return s
 
 def to_utf8(s):
-	tp = type(s)
-	if tp == str:
-		return s.encode("utf-8")
-	if tp == str:
-		return s
 	return s
 
 def int_to_base26(value):
@@ -104,25 +91,8 @@ def import_converter(filename):
 
 def log(*args):
 	ret = []
-	if sys_encoding == "utf-8":
-		for v in args:
-			if isinstance(v, str):
-				v = v.encode('utf-8')
-			else:
-				v = str(v)
-			ret.append(v)
-	else:
-		for v in args:
-			if not isinstance(v, str):
-				v = str(v)
-				try:
-					v = v.decode('utf-8')
-				except:
-					try:
-						v = v.decode(sys_encoding)
-					except:
-						pass
-			ret.append(v)
+	for v in args:
+		ret.append(str(v))
 
 	try:
 		msg = " ".join(ret)
@@ -201,7 +171,6 @@ def if_file_newer(src, dst):
 # 返回的路径是相对于path的相对路径。
 def gather_all_files(path, exts):
 	ret = []
-	path = path.decode("utf-8")
 
 	path_len = len(path)
 	if path[-1] != '/':
@@ -226,12 +195,12 @@ def gather_all_files(path, exts):
 				continue
 
 			file_path = os.path.join(relative_path, fname)
-			ret.append(file_path.encode("utf-8").replace('\\', '/'))
+			ret.append(file_path.replace('\\', '/'))
 
 	return ret
 
 def get_file_modify_time(file_path):
-	return os.path.getmtime(file_path.decode('utf-8'))
+	return os.path.getmtime(file_path)
 
 # 将src目录递归的拷贝到dst目录。
 # 与shutil.copytree不同之处在于，如果目标文件存在，会直接进行覆盖，而不是抛异常。
@@ -318,18 +287,6 @@ def resolve_macro(name, namespace):
 def resolve_path(path, namespace = None):
 	ns = namespace if namespace else (xlsconfig, )
 	return os.path.normpath(resolve_macro(path, ns))
-
-# 将json加载的字符串转换为utf-8
-# https://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-from-json
-def byteify(input):
-	if isinstance(input, dict):
-		return {byteify(key): byteify(value) for key, value in input.items()}
-	elif isinstance(input, list):
-		return [byteify(element) for element in input]
-	elif isinstance(input, str):
-		return input.encode('utf-8')
-	else:
-		return input
 
 
 FORMAT_CHAR = {

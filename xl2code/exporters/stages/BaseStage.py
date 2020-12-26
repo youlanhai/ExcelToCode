@@ -33,7 +33,7 @@ class BaseStage(object):
 				error = e
 
 			if error:
-				util.log_error(e, file = key)
+				util.log_error(error, file = key)
 
 		return
 

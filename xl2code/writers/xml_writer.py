@@ -111,9 +111,6 @@ class XMLWriter(BaseWriter):
 		elif tp == str:
 			return self.format_str(value)
 
-		elif tp == str:
-			return self.format_str(value.encode("utf-8"))
-
 		else:
 			raise ValueError("unsupported value type %s" % str(tp))
 

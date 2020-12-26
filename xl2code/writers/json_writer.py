@@ -54,9 +54,6 @@ class JsonWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == str:
-			output('"%s"' % format_string(value.encode("utf-8")))
-
 		elif tp == tuple or tp == list:
 			output("[")
 			indent += 1

@@ -34,11 +34,7 @@ def to_float(arg):
 	return float(arg)
 
 def to_str(value):
-	if type(value) == str:
-		return value.encode("utf-8")
-	elif type(value) != str:
-		return str(value)
-	return value
+	return str(value)
 
 
 # 兼容名称

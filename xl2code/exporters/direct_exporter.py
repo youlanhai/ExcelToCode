@@ -53,6 +53,8 @@ class DirectExporter(BaseExporter):
 					error = "导表失败"
 			except Exception as e:
 				error = e
+				import traceback
+				traceback.print_exc()
 
 			if error:
 				util.log_error(error, file = infile)

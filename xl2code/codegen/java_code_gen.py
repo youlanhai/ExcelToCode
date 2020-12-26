@@ -37,7 +37,7 @@ class JavaCodeGen(BaseCodeGen):
 		imports = generator_info.get("imports")
 		if imports:
 			for imp in imports:
-				self.write_line(0, "import %s;" % imp.encode("utf-8"))
+				self.write_line(0, "import %s;" % imp)
 			self.write_line()
 
 		items = self.collect_members(self.module)
@@ -62,11 +62,11 @@ class JavaCodeGen(BaseCodeGen):
 
 		base = self.generator_info.get("base")
 		if base:
-			self.output(" extends ", base.encode("utf-8"))
+			self.output(" extends ", base)
 
 		interface = self.generator_info.get("interface")
 		if interface:
-			self.output(" implements ", interface.encode("utf-8"))
+			self.output(" implements ", interface)
 
 		self.output(" {")
 		self.write_line()

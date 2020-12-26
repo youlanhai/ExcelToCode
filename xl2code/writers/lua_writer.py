@@ -64,9 +64,6 @@ class LuaWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == str:
-			output('"%s"' % format_string(value.encode("utf-8")))
-
 		elif tp == tuple or tp == list:
 			output(self.array_prefix)
 

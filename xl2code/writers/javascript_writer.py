@@ -37,9 +37,6 @@ class JavaScriptWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % (value, ))
 
-		elif tp == str:
-			output('"%s"' % (value.encode("utf-8"), ))
-
 		elif tp == tuple or tp == list:
 			output("[")
 

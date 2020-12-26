@@ -28,15 +28,12 @@ class BaseWriter(object):
 			self.close()
 
 	def open_file(self):
-		self.handle = open(self.file_path, "wb")
+		self.handle = open(self.file_path, "w")
 
 	def flush(self):
 		if len(self.cache) == 0:
 			return
 
-		for i, s in enumerate(self.cache):
-			if type(s) == str:
-				self.cache[i] = s.encode('utf-8')
 		text = "".join(self.cache)
 		self.cache = []
 

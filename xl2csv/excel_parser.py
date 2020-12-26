@@ -9,11 +9,9 @@ from .util import log, log_error, ExcelToCodeException
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
 	int 	: util.format_number,
-	int 	: util.format_number,
 	float 	: util.format_number,
 	bool 	: lambda value, cell, parser: str(value),
 	str 	: lambda value, cell, parser: value.strip(),
-	str : lambda value, cell, parser: value.encode("utf-8").strip(),
 	datetime.time : lambda value, cell, parser: str(value),
 	datetime.datetime : lambda value, cell, parser: str(value),
 }
@@ -67,10 +65,7 @@ class ExcelParser(object):
 			return log_error("请安装插件: openpyxl")
 
 		# 支持excel公式
-		self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"), data_only = True)
-		# 不支持excel公式
-		# self.workbook = openpyxl.load_workbook(self.filename.decode("utf-8"))
-
+		self.workbook = openpyxl.load_workbook(self.filename, data_only = True)
 
 		worksheets = self.workbook.worksheets
 		self.sheets = [None] * len(worksheets)
@@ -153,8 +148,7 @@ class ExcelParser(object):
 			self.save_sheet(self.sheet, output_path)
 
 	def save_sheet(self, sheet, output_path):
-		output_path = output_path.decode('utf-8')
 		util.ensure_folder_exist(output_path)
-		with open(output_path, "wb") as f:
+		with open(output_path, "w") as f:
 			writer = csv.writer(f)
 			writer.writerows(sheet)

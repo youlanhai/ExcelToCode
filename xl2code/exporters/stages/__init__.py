@@ -20,6 +20,6 @@ classes_name = (
 CLASSES = {}
 
 for name in classes_name:
-	module = __import__(name, globals(), locals(), [name, ])
+	module = __import__("exporters.stages." + name, globals(), locals(), [name, ])
 	cls = getattr(module, name)
 	CLASSES[name] = cls

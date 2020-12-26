@@ -56,7 +56,7 @@ class CSharpCodeGen(BaseCodeGen):
 		imports = generator_info.get("imports")
 		if imports:
 			for imp in imports:
-				self.write_line(0, "using %s;" % imp.encode("utf-8"))
+				self.write_line(0, "using %s;" % imp)
 			self.write_line()
 
 		items = self.collect_members(self.module)
@@ -93,7 +93,7 @@ class CSharpCodeGen(BaseCodeGen):
 
 		base = self.generator_info.get("base")
 		if base:
-			self.output(" : ", base.encode("utf-8"))
+			self.output(" : ", base)
 
 		self.write_line()
 		self.write_line(indent, "{")

@@ -22,7 +22,7 @@ class BaseCodeGen(object):
 
 		origin_content = None
 		if os.path.exists(path):
-			with open(path, "rb") as f:
+			with open(path, "r") as f:
 				origin_content = f.read()
 
 		if content == origin_content:
@@ -30,7 +30,7 @@ class BaseCodeGen(object):
 
 		util.log("生成", path)
 
-		with open(path, "wb") as f:
+		with open(path, "w") as f:
 			f.write(content)
 
 		return

@@ -3,9 +3,9 @@ import os
 import sys
 import imp
 
-from . import xlsconfig
-from . import util
-from .util import resolve_path, ExcelToCodeException
+import xlsconfig
+import util
+from util import resolve_path, ExcelToCodeException
 
 ######################################################################
 ### 加载配置文件。cfg_file是python格式的文件。

@@ -107,7 +107,7 @@ class BaseParser(object):
 
 	def do_parse(self):
 		csvReader = None
-		with open(self.filename.decode("utf-8"), "rb") as f:
+		with open(self.filename, "r", encoding = "utf-8") as f:
 			csvReader = csv.reader(f)
 
 			self.worksheet = []

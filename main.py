@@ -1,9 +1,8 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 import sys
 import traceback
 from argparse import ArgumentParser
-import time
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(module_path, "xl2code"))
@@ -17,9 +16,6 @@ from load_configure import load_configure
 def main(argv):
 	print("stdout encoding:", sys.stdout.encoding)
 
-
-	# util.redirect_iostream()
-
 	parser = ArgumentParser(description=_S("导表工具"))
 	parser.add_argument("config_file", help=_S("配置文件路径"))
 	parser.add_argument("--gen-header", action="store_true", help=_S("根据转换器信息生成Excel表头"))
@@ -31,8 +27,6 @@ def main(argv):
 	parser.add_argument("-output", help=_S("输出路径"))
 	parser.add_argument("-temp", help=_S("临时目录"))
 	option = parser.parse_args(argv)
-
-	#parser.print_help()
 
 	try:
 		load_configure(option.config_file, option)
@@ -100,6 +94,7 @@ def export_excel():
 		util.log(util.SPLIT_LINE)
 		util.log("错误：")
 		util.log(e)
+		traceback.print_exc()
 		util.log(util.SPLIT_LINE)
 		exit(-1)
 	return True

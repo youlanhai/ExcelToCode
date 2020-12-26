@@ -31,7 +31,7 @@ def create_header(input_file, converter, sheet_index):
 	header_2_field = {}
 	new_headers = []
 	for info in converter.CONFIG:
-		header = info[0].decode("utf-8")
+		header = info[0]
 		field = info[1]
 		type = function2type(info[2])
 
