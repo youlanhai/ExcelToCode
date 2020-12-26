@@ -3,17 +3,17 @@ from os import path
 import csv
 import datetime
 
-import util
-from util import log, log_error, ExcelToCodeException
+from . import util
+from .util import log, log_error, ExcelToCodeException
 
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
 	int 	: util.format_number,
-	long 	: util.format_number,
+	int 	: util.format_number,
 	float 	: util.format_number,
 	bool 	: lambda value, cell, parser: str(value),
 	str 	: lambda value, cell, parser: value.strip(),
-	unicode : lambda value, cell, parser: value.encode("utf-8").strip(),
+	str : lambda value, cell, parser: value.encode("utf-8").strip(),
 	datetime.time : lambda value, cell, parser: str(value),
 	datetime.datetime : lambda value, cell, parser: str(value),
 }
@@ -104,7 +104,7 @@ class ExcelParser(object):
 		row_count = min(worksheet.max_row, self.max_row)
 		col_count = min(worksheet.max_column, self.max_column)
 
-		for r in xrange(row_count):
+		for r in range(row_count):
 			cells = worksheet[r + 1]
 
 			# 遇到空白行，表示解析完成
@@ -117,7 +117,7 @@ class ExcelParser(object):
 		return
 
 	def is_blank_line(self, cells, col_count):
-		for i in xrange(col_count):
+		for i in range(col_count):
 			v = cells[i].value
 			if v != '' and v is not None:
 				return False
@@ -126,11 +126,11 @@ class ExcelParser(object):
 
 	def parse_cells(self, r, cells, col_count):
 		current_row_data = []
-		for c in xrange(col_count):
+		for c in range(col_count):
 			value = None
 			try:
 				value = self.extract_cell_value(cells[c])
-			except ExcelToCodeException, e:
+			except ExcelToCodeException as e:
 				value = str(cells[c].value)
 				log_error("%s, 单元格 %s = [%s] 数据解析失败。原因：%s", self.filename, self.row_col_str(r, c), value, str(e))
 

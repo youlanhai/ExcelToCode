@@ -20,7 +20,7 @@ class NewConverter(object):
 		self.filename = filename
 
 	def compare_types(self, types, filename):
-		for k, info1 in self.types.iteritems():
+		for k, info1 in self.types.items():
 			info2 = types.get(k)
 			if info2 and self.if_info_equal(info1, info2):
 				continue
@@ -30,7 +30,7 @@ class NewConverter(object):
 		return True
 
 	def if_info_equal(self, info1, info2):
-		for i in xrange(1, 4):
+		for i in range(1, 4):
 			if info1[i] != info2[i]:
 				return False
 		return True

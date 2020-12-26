@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import traceback
 import util
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class PostCheck(BaseStage):
 

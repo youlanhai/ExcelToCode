@@ -21,7 +21,7 @@ class ExcelToCodeException(Exception):
 
 def _S(s):
 	if sys_encoding != "utf-8":
-		if isinstance(s, unicode):
+		if isinstance(s, str):
 			return s.encode(sys_encoding)
 		s = str(s)
 		try:
@@ -37,13 +37,13 @@ def log_error(msg, *args):
 
 	global has_error
 	has_error = True
-	print _S("错误："), _S(msg)
+	print(_S("错误："), _S(msg))
 
 def log(msg, *args):
 	if len(args) > 0:
 		msg = msg % args
 
-	print _S(msg)
+	print(_S(msg))
 
 
 def int_to_base26(value):
@@ -72,8 +72,8 @@ def ensure_folder_exist(file_path):
 	if not path.isdir(output_dir):
 		try:
 			os.makedirs(output_dir)
-		except Exception, e:
-			print e
+		except Exception as e:
+			print(e)
 
 	return
 
@@ -112,10 +112,10 @@ def gather_all_files(path, exts):
 
 def byteify(input):
 	if isinstance(input, dict):
-		return {byteify(key): byteify(value) for key, value in input.iteritems()}
+		return {byteify(key): byteify(value) for key, value in input.items()}
 	elif isinstance(input, list):
 		return [byteify(element) for element in input]
-	elif isinstance(input, unicode):
+	elif isinstance(input, str):
 		return input.encode('utf-8')
 	else:
 		return input

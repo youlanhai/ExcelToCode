@@ -96,7 +96,7 @@ class BaseParser(object):
 		else:
 			try:
 				ret = converter.convert(value)
-			except Exception, e:
+			except Exception as e:
 				msg = "类型转换失败fun = %s, value = %s, 异常：%s" % (str(converter.convert), str(value), str(e))
 				raise ExcelToCodeException(msg)
 
@@ -139,7 +139,7 @@ class BaseParser(object):
 		return
 
 	def is_blank_line(self, cells, count):
-		for i in xrange(count):
+		for i in range(count):
 			v = cells[i]
 			if v != '' and v is not None:
 				return False
@@ -161,12 +161,12 @@ class BaseParser(object):
 			self.last_key = first_value
 
 		current_row_data = []
-		for c in xrange(max_cols):
+		for c in range(max_cols):
 			cell_value = cells[c]
 			result_value = None
 			try:
 				result_value = self.convert_cell(r, c, cell_value)
-			except ExcelToCodeException, e:
+			except ExcelToCodeException as e:
 				# traceback.print_exc()
 				log_error("%s, 单元格 %s = [%s] 数据解析失败。原因：%s", self.filename, self.row_col_str(r, c), str(cell_value), str(e))
 
@@ -176,14 +176,14 @@ class BaseParser(object):
 		return True
 
 	def parse_by_horizontal(self, worksheet):
-		for r in xrange(self.data_row_index, self.max_row):
+		for r in range(self.data_row_index, self.max_row):
 			cells = worksheet[r]
 			if not self.parse_cells(r, cells):
 				break
 		return
 
 	def parse_by_vertical(self, worksheet):
-		for c in xrange(self.data_row_index, self.max_column):
+		for c in range(self.data_row_index, self.max_column):
 			cells = self.get_colum_cells(c)
 			if not self.parse_cells(c, cells):
 				break
@@ -225,7 +225,7 @@ class BaseParser(object):
 		compatible_posfix = '：'
 
 		self.arguments = {}
-		for col in xrange(0, len(cells), 2):
+		for col in range(0, len(cells), 2):
 			header = cells[col]
 			if header is None:
 				break
@@ -281,7 +281,7 @@ class BaseParser(object):
 	def get_colum_cells(self, col):
 		ret = []
 		worksheet = self.worksheet
-		for row in xrange(self.vertical_start_row, self.max_row):
+		for row in range(self.vertical_start_row, self.max_row):
 			ret.append(worksheet[row][col])
 		return ret
 

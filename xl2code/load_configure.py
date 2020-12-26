@@ -3,9 +3,9 @@ import os
 import sys
 import imp
 
-import xlsconfig
-import util
-from util import resolve_path, ExcelToCodeException
+from . import xlsconfig
+from . import util
+from .util import resolve_path, ExcelToCodeException
 
 ######################################################################
 ### 加载配置文件。cfg_file是python格式的文件。
@@ -21,7 +21,7 @@ def load_configure(cfg_file, option):
 	sys.path.insert(0, cfg_path)
 
 	cfg = imp.load_source("custom_configure", cfg_file)
-	for k, v in cfg.__dict__.iteritems():
+	for k, v in cfg.__dict__.items():
 		if k.startswith('_'):
 			continue
 
@@ -42,7 +42,7 @@ def load_configure(cfg_file, option):
 	safe_parse_path(option, "converter", "CONVERTER_PATH")
 	safe_parse_path(option, "locale_path", "LOCALE_OUTPUT_PATH")
 
-	for k in xlsconfig.DEPENDENCIES.keys():
+	for k in list(xlsconfig.DEPENDENCIES.keys()):
 		path = xlsconfig.DEPENDENCIES[k]
 		xlsconfig.DEPENDENCIES[k] = resolve_path(path)
 
@@ -76,7 +76,7 @@ def safe_parse_path(option, option_key, cfg_key):
 # 转义所有后缀为'_path'的变量
 def resolve_path_in_config(config):
 	for info in config:
-		keys = info.keys()
+		keys = list(info.keys())
 		for k in keys:
 			if k.endswith("_path"):
 				info[k] = resolve_path(info[k])

@@ -15,7 +15,7 @@ def generate_code():
 
 	configure_module = imp.load_source("temp_configures", configure_file_path)
 
-	for key, cfg in configure_module.configures.iteritems():
+	for key, cfg in configure_module.configures.items():
 		_generate(cfg["types"], key)
 
 def _generate(config, module_name):

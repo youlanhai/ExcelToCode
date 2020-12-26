@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 # 解析Excel表
 class ParseExcel(BaseStage):

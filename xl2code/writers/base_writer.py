@@ -2,7 +2,7 @@
 import util
 import xlsconfig
 
-INDENTS = [" " * (i * 4) for i in xrange(10)]
+INDENTS = [" " * (i * 4) for i in range(10)]
 
 class BaseWriter(object):
 
@@ -35,7 +35,7 @@ class BaseWriter(object):
 			return
 
 		for i, s in enumerate(self.cache):
-			if type(s) == unicode:
+			if type(s) == str:
 				self.cache[i] = s.encode('utf-8')
 		text = "".join(self.cache)
 		self.cache = []
@@ -77,7 +77,7 @@ class BaseWriter(object):
 			self.output("\n")
 
 	def write_module(self, module):
-		for k in sorted(module.iterkeys()):
+		for k in sorted(module.keys()):
 			v = module[k]
 			self.write_value(k, v)
 			self.output("\n")
@@ -94,7 +94,7 @@ class BaseWriter(object):
 		if sheet_types is None:
 			return
 
-		sheet_types = sheet_types.values()
+		sheet_types = list(sheet_types.values())
 		sheet_types.sort(key = lambda v : v[0])
 		for info in sheet_types:
 			col, field, text, type = info
@@ -105,7 +105,7 @@ class BaseWriter(object):
 	def write_constants(self, constants, sheet_name = None):
 		comments = self.get_field_comments(sheet_name)
 
-		for k in sorted(constants.iterkeys()):
+		for k in sorted(constants.keys()):
 			comment = comments.get(k)
 			if comment:
 				self.write_comment(comment)
@@ -121,7 +121,7 @@ class BaseWriter(object):
 		if not headers:
 			return comments
 
-		for header in headers.itervalues():
+		for header in headers.values():
 			col, field, text, type = header
 			col_name = util.int_to_base26(col) if col is not None else "None"
 			comment = "%s\t%s" % (col_name, text)

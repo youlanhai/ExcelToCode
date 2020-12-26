@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 from util import format_string
 
 class JsonWriter(BaseWriter):
@@ -54,7 +54,7 @@ class JsonWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == unicode:
+		elif tp == str:
 			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
@@ -86,7 +86,7 @@ class JsonWriter(BaseWriter):
 			if indent <= max_indent:
 				output("\n")
 
-			keys = value.keys()
+			keys = list(value.keys())
 			keys.sort()
 			for i, k in enumerate(keys):
 				if indent <= max_indent:

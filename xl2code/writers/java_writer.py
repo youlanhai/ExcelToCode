@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from json_writer import JsonWriter
+from .json_writer import JsonWriter
 import util
 
 # 当前Writer的功能是生成java专用的json格式，而不是java代码
@@ -27,7 +27,7 @@ class JavaWriter(JsonWriter):
 
 		sheet_types = module_info["sheet_types"]["main_sheet"]
 
-		texts = sheet_types.keys()
+		texts = list(sheet_types.keys())
 		texts.sort()
 
 		fields = [sheet_types[field][1] for field in texts]
@@ -44,7 +44,7 @@ class JavaWriter(JsonWriter):
 
 		body = []
 
-		keys = sheet.keys()
+		keys = list(sheet.keys())
 		keys.sort()
 		for k in keys:
 			row = sheet[k]

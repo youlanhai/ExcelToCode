@@ -37,7 +37,7 @@ def insert_rows(self, row_idx, cnt, above=False, copy_style=True, fill_formulae=
     old_fas   = set()
     new_cells = dict()
     new_fas   = dict()
-    for c in self._cells.values():
+    for c in list(self._cells.values()):
 
         old_coor = c.coordinate
 

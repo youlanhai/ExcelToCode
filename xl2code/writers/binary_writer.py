@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 from struct import pack
 import util
 
@@ -71,7 +71,7 @@ def w_size(tp, size):
 	if size <= 0xff:  		return pack("<BB", tp + 1, size)
 	if size <= 0xffff: 		return pack("<BH", tp + 2, size)
 	if size <= 0xffffffff: 	return pack("<BI", tp + 3, size)
-	raise ValueError, "size is too large."
+	raise ValueError("size is too large.")
 
 def w_str(l):
 	return w_size(T_STR0, l)
@@ -135,7 +135,7 @@ class BinaryWriter(BaseWriter):
 
 		# write string pool
 		strings = [None] * len(self.string_pool)
-		for s, i in self.string_pool.iteritems():
+		for s, i in self.string_pool.items():
 			strings[i - 1] = s
 
 		self.output(pack("<I", len(strings)))
@@ -160,7 +160,7 @@ class BinaryWriter(BaseWriter):
 		if name == "main_sheet" and self.generator_info.get("record_keys"):
 			self.write_value("main_length", len(sheet))
 
-			keys = sheet.keys()
+			keys = list(sheet.keys())
 			keys.sort()
 			self.write_value("main_keys", keys)
 
@@ -183,13 +183,13 @@ class BinaryWriter(BaseWriter):
 
 	def _write_key(self, value):
 		tp = type(value)
-		if tp == int or tp == long:
+		if tp == int or tp == int:
 			self.output(w_int(value))
 
 		elif tp == str:
 			self._write_str(value)
 
-		elif tp == unicode:
+		elif tp == str:
 			self._write_str(value.encode("utf-8"))
 
 		else:
@@ -204,7 +204,7 @@ class BinaryWriter(BaseWriter):
 		elif tp == bool:
 			self.output(w_bool(value))
 
-		elif tp == int or tp == long:
+		elif tp == int or tp == int:
 			self.output(w_int(value))
 
 		elif tp == float:
@@ -213,7 +213,7 @@ class BinaryWriter(BaseWriter):
 		elif tp == str:
 			self._write_str(value)
 
-		elif tp == unicode:
+		elif tp == str:
 			self._write_str(value.encode("utf-8"))
 
 		elif tp == list or tp == tuple:
@@ -226,7 +226,7 @@ class BinaryWriter(BaseWriter):
 
 		elif tp == dict:
 			self.output(w_dict(len(value)))
-			keys = value.keys()
+			keys = list(value.keys())
 			keys.sort()
 			for k in keys:
 				self._write_key(k)

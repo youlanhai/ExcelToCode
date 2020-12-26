@@ -17,7 +17,7 @@ class BaseStage(object):
 		self.exporter = exporter
 
 		data_modules = exporter.data_modules
-		keys = data_modules.keys()
+		keys = list(data_modules.keys())
 		if self.need_sort:
 			keys.sort()
 

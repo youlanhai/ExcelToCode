@@ -5,10 +5,10 @@ import traceback
 
 import xlsconfig
 import writers
-import stages
+from . import stages
 import util
 from tps import convention
-from data_module import DataModule, NewConverter
+from .data_module import DataModule, NewConverter
 
 
 class BaseExporter(object):

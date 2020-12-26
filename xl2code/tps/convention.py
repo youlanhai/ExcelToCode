@@ -2,7 +2,7 @@
 
 # 通用类型转换关系。可通过扩展转换表，来支持自定义的类型。
 import re
-import tp0
+from . import tp0
 from tps import TYPE_MODULES
 from util import log
 
@@ -11,7 +11,7 @@ FUNCTION_2_TYPE = {}
 
 _FUNCTION_2_TYPE = {
 	int 	: "int",
-	long 	: "long",
+	int 	: "long",
 	float 	: "float",
 	bool 	: "boolean",
 	tp0.to_int 	: "int",
@@ -27,7 +27,7 @@ def update_functions():
 
 	fun2type = {}
 	for module in TYPE_MODULES:
-		for key, val in module.__dict__.iteritems():
+		for key, val in module.__dict__.items():
 			if key.startswith("to_"):
 				fun2type[val] = key
 
@@ -66,7 +66,7 @@ def _find_function(name):
 def function2type(tp):
 	name = FUNCTION_2_TYPE.get(tp)
 	if name is None:
-		for t, f in TYPE_2_FUNCTION.iteritems():
+		for t, f in TYPE_2_FUNCTION.items():
 			if tp == f:
 				return t
 	return "String"

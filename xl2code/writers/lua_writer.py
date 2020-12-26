@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 from util import format_string
 
 class LuaWriter(BaseWriter):
@@ -25,7 +25,7 @@ class LuaWriter(BaseWriter):
 		if name == "main_sheet" and self.generator_info.get("record_keys"):
 			self.write_value("main_length", len(sheet), 0)
 
-			keys = sheet.keys()
+			keys = list(sheet.keys())
 			keys.sort()
 			self.write_value("main_keys", keys)
 
@@ -64,7 +64,7 @@ class LuaWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == unicode:
+		elif tp == str:
 			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple or tp == list:
@@ -91,7 +91,7 @@ class LuaWriter(BaseWriter):
 				output(self.dict_posfix)
 				return
 
-			keys = value.keys()
+			keys = list(value.keys())
 			keys.sort()
 
 			for k in keys:

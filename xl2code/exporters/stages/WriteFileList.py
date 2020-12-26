@@ -3,7 +3,7 @@ import os
 import xlsconfig
 import util
 import writers
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class WriteFileList(BaseStage):
 
@@ -11,7 +11,7 @@ class WriteFileList(BaseStage):
 
 	def process(self, export):
 		sheet = {}
-		for k, v in export.data_modules.iteritems():
+		for k, v in export.data_modules.items():
 			sheet[k] = v.info["parser"]
 
 		full_path = os.path.join(xlsconfig.TEMP_PATH, "files.py")

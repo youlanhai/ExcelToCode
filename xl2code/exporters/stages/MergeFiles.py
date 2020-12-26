@@ -5,7 +5,7 @@ import util
 import writers
 import xlsconfig
 from exporters.data_module import DataModule
-from MergeSheets import MergeSheets
+from .MergeSheets import MergeSheets
 
 class MergeFiles(MergeSheets):
 

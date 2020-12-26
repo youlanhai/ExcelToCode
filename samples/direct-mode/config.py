@@ -106,4 +106,4 @@ CUSTOM_STAGES = [
 
 # 自定义的初始化函数
 def post_init_method(cfg):
-	print "自定义初始化完毕"
+	print("自定义初始化完毕")

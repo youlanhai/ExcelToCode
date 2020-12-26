@@ -2,7 +2,7 @@
 import os
 import xlsconfig
 import util
-from direct_exporter import DirectExporter
+from .direct_exporter import DirectExporter
 
 STAGES_INFO = [
 	{"class" : "ParseExcel"},

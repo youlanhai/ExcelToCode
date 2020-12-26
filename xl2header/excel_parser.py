@@ -3,11 +3,11 @@ import json
 from os import path
 import openpyxl
 
-import xlsconfig
-import util
-from util import ExcelToCodeException, row_col_str, log
-import header_util
-from header import Header, Argument
+from . import xlsconfig
+from . import util
+from .util import ExcelToCodeException, row_col_str, log
+from . import header_util
+from .header import Header, Argument
 
 def format_number(f, cell, parser):
 	return str(f)
@@ -16,11 +16,11 @@ def format_number(f, cell, parser):
 FORMAT_MAP = {
 	type(None) : lambda value, cell, parser: "",
 	int 	: format_number,
-	long 	: format_number,
+	int 	: format_number,
 	float 	: format_number,
 	bool 	: lambda value, cell, parser: str(value).upper(),
 	str 	: lambda value, cell, parser: value.strip(),
-	unicode : lambda value, cell, parser: value.encode("utf-8").strip()
+	str : lambda value, cell, parser: value.encode("utf-8").strip()
 }
 
 
@@ -195,7 +195,7 @@ class ExcelParser(object):
 
 		header = None
 		row = self.argument_row_index
-		for col in xrange(self.sheet_proxy.max_column):
+		for col in range(self.sheet_proxy.max_column):
 			cell = self.sheet_proxy.get_cell(row, col)
 
 			if col % 2 == 0:
@@ -339,12 +339,12 @@ class VerticalSheetProxy(SheetProxy):
 
 		MAX_ROW, MAX_COLUMN = xlsconfig.MAX_COLUMN, xlsconfig.MAX_ROW
 
-		for c in xrange(0, MAX_COLUMN):
+		for c in range(0, MAX_COLUMN):
 			cell = self.worksheet.cell(self.start_row + 1, c + 1)
 			if cell is None or cell.value is None:
 				break
 			max_column = c + 1
-		for r in xrange(self.start_row, MAX_ROW):
+		for r in range(self.start_row, MAX_ROW):
 			cell = self.worksheet.cell(r + 1, self.header_index + 1)
 			if cell is None or cell.value is None:
 				break
@@ -355,7 +355,7 @@ class VerticalSheetProxy(SheetProxy):
 	# 获取一列有效数据.
 	def get_cells(self, col):
 		ret = []
-		for row in xrange(self.start_row, self.max_row):
+		for row in range(self.start_row, self.max_row):
 			ret.append(self.get_cell(row, col))
 		return ret
 
@@ -368,9 +368,9 @@ class VerticalSheetProxy(SheetProxy):
 		# 提取所有的单元格，然后重新分配位置。
 		# 该方法速度快，但是不安全。引用了非公有变量，可能插件升级后就无法使用了。
 		rows = {}
-		for r in xrange(start_row, self.max_row):
+		for r in range(start_row, self.max_row):
 			cells = []
-			for c in xrange(0, self.max_column):
+			for c in range(0, self.max_column):
 				cell = worksheet.cell(r + 1, c + 1)
 				cells.append(cell)
 				del _cells[(cell.row, cell.column)]
@@ -380,7 +380,7 @@ class VerticalSheetProxy(SheetProxy):
 			r += start_row
 			if header.index >= 0:
 				old_r = start_row + header.index
-				for c in xrange(0, self.max_column):
+				for c in range(0, self.max_column):
 					cell = rows[old_r][c]
 					row = r + 1
 					column = c + 1
@@ -390,7 +390,7 @@ class VerticalSheetProxy(SheetProxy):
 					cell.column = column
 			else:
 				# 补一行空数据
-				for c in xrange(self.data_index, self.max_column):
+				for c in range(self.data_index, self.max_column):
 					worksheet.cell(r + 1, c + 1).value = None
 
 			worksheet.cell(r + 1, self.header_index + 1).value = header.title
@@ -399,7 +399,7 @@ class VerticalSheetProxy(SheetProxy):
 
 		# 在末尾补上空的行
 		last_row = start_row + len(new_header.children)
-		for c in xrange(0, self.max_column):
+		for c in range(0, self.max_column):
 			worksheet.cell(last_row + 1, c + 1).value = None
 		return
 
@@ -413,12 +413,12 @@ class HorizontalSheetProxy(SheetProxy):
 		max_column = 0
 		max_row = 0
 
-		for c in xrange(xlsconfig.MAX_COLUMN):
+		for c in range(xlsconfig.MAX_COLUMN):
 			cell = self.worksheet.cell(self.header_index + 1, c + 1)
 			if cell is None or cell.value is None:
 				break
 			max_column = c + 1
-		for r in xrange(self.data_index, xlsconfig.MAX_ROW):
+		for r in range(self.data_index, xlsconfig.MAX_ROW):
 			cell = self.worksheet.cell(r + 1, 1)
 			if cell is None or cell.value is None:
 				break
@@ -429,7 +429,7 @@ class HorizontalSheetProxy(SheetProxy):
 	# 获取一行有效数据.
 	def get_cells(self, row):
 		ret = []
-		for col in xrange(self.max_column):
+		for col in range(self.max_column):
 			ret.append(self.get_cell(row, col))
 		return ret
 
@@ -443,9 +443,9 @@ class HorizontalSheetProxy(SheetProxy):
 		# 提取所有的单元格，然后重新分配位置。
 		# 该方法速度快，但是不安全。引用了非公有变量，可能插件升级后就无法使用了。
 		rows = {}
-		for r in xrange(start_row, max_row):
+		for r in range(start_row, max_row):
 			cells = []
-			for c in xrange(self.max_column):
+			for c in range(self.max_column):
 				cell = worksheet.cell(r + 1, c + 1)
 				cells.append(cell)
 				del _cells[(cell.row, cell.column)]
@@ -453,7 +453,7 @@ class HorizontalSheetProxy(SheetProxy):
 
 		for c, header in enumerate(new_header.children):
 			if header.index >= 0:
-				for r in xrange(start_row, max_row):
+				for r in range(start_row, max_row):
 					cell = rows[r][header.index]
 					row = r + 1
 					column = c + 1
@@ -463,7 +463,7 @@ class HorizontalSheetProxy(SheetProxy):
 					cell.column = column
 			else:
 				# 补一列空数据
-				for r in xrange(self.data_index, max_row):
+				for r in range(self.data_index, max_row):
 					worksheet.cell(r + 1, c + 1).value = None
 
 			worksheet.cell(self.header_index + 1, c + 1).value = header.title
@@ -472,7 +472,7 @@ class HorizontalSheetProxy(SheetProxy):
 
 		# 在末尾补上空的列
 		last_col = len(new_header.children)
-		for r in xrange(start_row, max_row):
+		for r in range(start_row, max_row):
 			worksheet.cell(r + 1, last_col + 1).value = None
 		return
 
@@ -493,11 +493,11 @@ class HorizontalSheetProxy(SheetProxy):
 				values = [header.title, header.field, header.field_type]
 				for r, value in enumerate(values):
 					self.worksheet.cell(start_row + r + 1, c + 1).value = value
-				for r in xrange(self.data_index, max_row):
+				for r in range(self.data_index, max_row):
 					self.worksheet.cell(r + 1, c + 1).value = None
 
 		# 在末尾补上空的列
 		last_col = len(new_header.children)
-		for r in xrange(start_row, max_row):
+		for r in range(start_row, max_row):
 			self.worksheet.cell(r + 1, last_col + 1).value = None
 		return

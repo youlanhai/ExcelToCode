@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import openpyxl
-import openpyxl_extend
+from . import openpyxl_extend
 import xlsconfig
 from openpyxl.styles import PatternFill
 from tps.convention import function2type
@@ -46,7 +46,7 @@ def create_header(input_file, converter, sheet_index):
 
 	if field_row > 0 and table.cell(row = field_row, column = 1).value != "ID":
 		table.insert_rows(field_row, 1, True)
-		for header, column in headers.iteritems():
+		for header, column in headers.items():
 			field = header_2_field.get(header)
 			if field is None:
 				continue

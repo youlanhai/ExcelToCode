@@ -25,7 +25,7 @@ def create_header_for_excels(excel_files):
 	util.log("=== create header for excels ...")
 
 	if xlsconfig.USE_OPENPYXL:
-		from gen_header_with_openpyxl import create_header
+		from .gen_header_with_openpyxl import create_header
 	else:
 		from gen_header_with_xlrd import create_header
 

@@ -2,7 +2,7 @@
 import os
 import util
 
-INDENTS = [" " * (i * 4) for i in xrange(10)]
+INDENTS = [" " * (i * 4) for i in range(10)]
 
 class BaseCodeGen(object):
 

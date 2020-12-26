@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 
 FORMAT_CHARS = {
 	'"'  : '&quot;',
@@ -45,7 +45,7 @@ class XMLWriter(BaseWriter):
 
 		item_key = name + "Item"
 
-		keys = sheet.keys()
+		keys = list(sheet.keys())
 		keys.sort()
 		for key in keys:
 			self._write_row(item_key, sheet[key], indent + 1)
@@ -70,7 +70,7 @@ class XMLWriter(BaseWriter):
 	def _write_dict(self, key, value, indent):
 		self._output_line(indent, "<%s>" % key)
 
-		keys = value.keys()
+		keys = list(value.keys())
 		keys.sort()
 
 		indent += 1
@@ -111,7 +111,7 @@ class XMLWriter(BaseWriter):
 		elif tp == str:
 			return self.format_str(value)
 
-		elif tp == unicode:
+		elif tp == str:
 			return self.format_str(value.encode("utf-8"))
 
 		else:

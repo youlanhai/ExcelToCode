@@ -2,7 +2,7 @@
 import traceback
 from tps import tp0
 import util
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 from parsers.base_parser import ConverterInfo
 
 class ConvertField(BaseStage):
@@ -36,7 +36,7 @@ class ConvertField(BaseStage):
 
 		multiKey = data_module.info["arguments"].get("multiKey")
 		main_sheet = data_module.main_sheet
-		for key, row in main_sheet.iteritems():
+		for key, row in main_sheet.items():
 			if multiKey:
 				for sub_row in row:
 					self.post_convert_row(col_2_cfg, key, sub_row)
@@ -63,7 +63,7 @@ class ConvertField(BaseStage):
 		return ret
 
 	def post_convert_row(self, col_2_cfg, key_value, row):
-		for col, cfg in col_2_cfg.iteritems():
+		for col, cfg in col_2_cfg.items():
 			value = row[col]
 			try:
 				row[col] = self.post_convert_value(cfg, value)

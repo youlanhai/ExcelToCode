@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 from util import format_string
 
 class PyWriter(BaseWriter):
@@ -43,7 +43,7 @@ class PyWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % format_string(value))
 
-		elif tp == unicode:
+		elif tp == str:
 			output('"%s"' % format_string(value.encode("utf-8")))
 
 		elif tp == tuple:
@@ -61,7 +61,7 @@ class PyWriter(BaseWriter):
 		elif tp == dict:
 			output("{")
 
-			keys = value.keys()
+			keys = list(value.keys())
 			keys.sort()
 
 			for k in keys:

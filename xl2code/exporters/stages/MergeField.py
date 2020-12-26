@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import util
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class NodeBase:
 	def __init__(self, key):
@@ -101,17 +101,17 @@ class MergeField(BaseStage):
 		multi_key = data_module.info["arguments"].get("multiKey", False)
 		try:
 			self.convert_sheet(sheet, types, multi_key)
-		except Exception, e:
+		except Exception as e:
 			util.log(e)
 			util.log_error("处理字段失败，%s", data_module.path)
 
 	def convert_sheet(self, sheet, types, multi_key):
 		col2type = {}
-		for type_info in types.itervalues():
+		for type_info in types.values():
 			col = type_info[0]
 			col2type[col] = TypeDescriptor(type_info[1])
 
-		for key in sheet.keys():
+		for key in list(sheet.keys()):
 			row = sheet[key]
 			ret = None
 			try:
@@ -122,7 +122,7 @@ class MergeField(BaseStage):
 				else:
 					ret = self.convert_field_row(col2type, key, row)
 				sheet[key] = ret
-			except Exception, e:
+			except Exception as e:
 				util.log("处理字段失败", key)
 				raise e
 		return

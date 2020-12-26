@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import util
 import xlsconfig
-from base_code_gen import BaseCodeGen
+from .base_code_gen import BaseCodeGen
 
 BUILTIN_TYPES = set((
 	"int", "long", "float", "boolean", "String",
 ))
 
-INDENTS = [" " * (i * 4) for i in xrange(10)]
+INDENTS = [" " * (i * 4) for i in range(10)]
 
 class JavaCodeGen(BaseCodeGen):
 
@@ -50,7 +50,7 @@ class JavaCodeGen(BaseCodeGen):
 		# info = (0, "ID", "编号", "int", )
 
 		items = []
-		for k, info in config.iteritems():
+		for k, info in config.items():
 			col, field, text, type = info
 			items.append([field, text, type, None])
 

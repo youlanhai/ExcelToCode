@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 from writers import BaseWriter
 
 import os
@@ -33,7 +33,7 @@ class WriteJavaFileEnum(BaseStage):
 		indent += 1
 
 		value_pairs = []
-		for outfile, data_module in exporter.data_modules.iteritems():
+		for outfile, data_module in exporter.data_modules.items():
 			enume_name = to_enum_name(outfile)
 			comment = data_module.info["arguments"].get("describe")
 			value_pairs.append((enume_name, comment))

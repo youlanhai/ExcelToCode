@@ -7,8 +7,8 @@ import subprocess
 import json
 import time
 
-import xlsconfig
-import util
+from . import xlsconfig
+from . import util
 
 class CSVJob(object):
 
@@ -73,7 +73,7 @@ class CSVJob(object):
 
 		group_count = len(files) // job
 		processes = []
-		for i in xrange(job):
+		for i in range(job):
 			start = i * group_count
 			end = start + group_count if i + 1 < job else len(files)
 			section = files[start : end]
@@ -111,7 +111,7 @@ class CSVJob(object):
 				util.log("subprocess[%d] exit." % (i, ))
 
 		if has_error:
-			raise util.ExcelToCodeException, "转换csv失败"
+			raise util.ExcelToCodeException("转换csv失败")
 
 		for fname in files:
 			self.record_file(fname)

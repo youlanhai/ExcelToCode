@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from base_writer import BaseWriter
+from .base_writer import BaseWriter
 
 class JavaScriptWriter(BaseWriter):
 
@@ -37,7 +37,7 @@ class JavaScriptWriter(BaseWriter):
 		elif tp == str:
 			output('"%s"' % (value, ))
 
-		elif tp == unicode:
+		elif tp == str:
 			output('"%s"' % (value.encode("utf-8"), ))
 
 		elif tp == tuple or tp == list:
@@ -56,7 +56,7 @@ class JavaScriptWriter(BaseWriter):
 
 		elif tp == dict:
 			output("{")
-			keys = value.keys()
+			keys = list(value.keys())
 			keys.sort()
 
 			for k in keys:

@@ -134,8 +134,8 @@ MERGE_TABLE = ()
 # 初始化开始回调。
 # @param cfg 	是xlsconfig模块，要修改参数需要修改cfg中的参数。
 def pre_init_method(cfg):
-	print "start init"
+	print("start init")
 
 # 初始化完成后回调
 def post_init_method(cfg):
-	print "post init finished"
+	print("post init finished")

@@ -10,7 +10,7 @@ def use_empty(arg): return None
 def to_empty(arg): return None
 
 def to_bool(arg):
-	if isinstance(arg, unicode) or isinstance(arg, str):
+	if isinstance(arg, str) or isinstance(arg, str):
 		arg = arg.lower()
 		if arg == "true":
 			return True
@@ -34,7 +34,7 @@ def to_float(arg):
 	return float(arg)
 
 def to_str(value):
-	if type(value) == unicode:
+	if type(value) == str:
 		return value.encode("utf-8")
 	elif type(value) != str:
 		return str(value)
@@ -68,7 +68,7 @@ def to_float_list(arg):
 
 # arg = "a:b, c:d"
 def to_dict(arg):
-	if type(arg) != unicode and type(arg) != str:
+	if type(arg) != str and type(arg) != str:
 		raise ValueError("string type needed. but %s was givent" % str(type(arg)))
 
 	return eval("{%s}" % arg)
@@ -157,7 +157,7 @@ def to_images(args):
 	return ret
 
 def to_float_list_2(args):
-	if type(args) != unicode:
+	if type(args) != str:
 		return None
 	ret = []
 
@@ -226,7 +226,7 @@ def to_path(args):
 def template_array(value_converter, args):
 	ret = []
 	values = None
-	if isinstance(args, str) or isinstance(args, unicode):
+	if isinstance(args, str) or isinstance(args, str):
 		values = args.split(',')
 	else:
 		values = args

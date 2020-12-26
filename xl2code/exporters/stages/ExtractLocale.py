@@ -3,7 +3,7 @@ import re
 import os
 import util
 import xlsconfig
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 FIELD_PATTERN = re.compile(r".*(\b\w+)")
 
@@ -45,7 +45,7 @@ class ExtractLocale(BaseStage):
 
 		multi_key = data_module.info.get("multi_key")
 
-		keys = types.keys()
+		keys = list(types.keys())
 		keys.sort()
 
 		fields = set()
@@ -77,11 +77,11 @@ class ExtractLocale(BaseStage):
 			fields.add(field)
 
 			if multi_key:
-				for k, rows in sheet.iteritems():
+				for k, rows in sheet.items():
 					for i, row in enumerate(rows):
 						extract_row_text(row, k, col, "%s_%s" % (field, i))
 			else:
-				for k, row in sheet.iteritems():
+				for k, row in sheet.items():
 					extract_row_text(row, k, col, field)
 
 		if len(texts) > 0:

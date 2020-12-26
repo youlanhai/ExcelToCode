@@ -15,7 +15,7 @@ from util import _S, ExcelToCodeException
 from load_configure import load_configure
 
 def main(argv):
-	print "stdout encoding:", sys.stdout.encoding
+	print("stdout encoding:", sys.stdout.encoding)
 
 
 	# util.redirect_iostream()
@@ -36,7 +36,7 @@ def main(argv):
 
 	try:
 		load_configure(option.config_file, option)
-	except ExcelToCodeException, e:
+	except ExcelToCodeException as e:
 		util.log(e)
 		exit(-1)
 	except:
@@ -96,7 +96,7 @@ def export_excel():
 		w1.report()
 		w2.report()
 
-	except ExcelToCodeException, e:
+	except ExcelToCodeException as e:
 		util.log(util.SPLIT_LINE)
 		util.log("错误：")
 		util.log(e)

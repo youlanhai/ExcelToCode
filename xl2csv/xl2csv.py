@@ -12,9 +12,9 @@ Excel的解析速度比较慢，可以用多进程转换为csv。
 from os import path
 from argparse import ArgumentParser
 
-import util
-from util import _S, log, log_error
-from excel_parser import ExcelParser
+from . import util
+from .util import _S, log, log_error
+from .excel_parser import ExcelParser
 
 def main():
 	parser = ArgumentParser(description = _S("将excel表格转换成csv文件"))
@@ -53,7 +53,7 @@ def main():
 def parse_config(config_file, input_path, output_path, option):
 	files = []
 	with open(config_file, "r") as f:
-		for line in f.xreadlines():
+		for line in f:
 			files.append(line.strip())
 
 	parse_files(files, input_path, output_path, option)

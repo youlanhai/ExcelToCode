@@ -2,7 +2,7 @@
 import os
 import xlsconfig
 import writers
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class WriteConfigure(BaseStage):
 
@@ -16,7 +16,7 @@ class WriteConfigure(BaseStage):
 		wt.begin_write()
 
 		sheet = {}
-		for k, v in exporter.configures.iteritems():
+		for k, v in exporter.configures.items():
 			sheet[k] = {
 				"types" : v.types,
 				"arguments" : v.arguments

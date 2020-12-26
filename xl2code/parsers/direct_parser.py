@@ -2,7 +2,7 @@
 import xlsconfig
 import util
 from tps import tp0, convention
-from base_parser import ConverterInfo, BaseParser
+from .base_parser import ConverterInfo, BaseParser
 
 # 利用Excel表头描述，进行导表，不需要转换器
 class DirectParser(BaseParser):
@@ -26,7 +26,7 @@ class DirectParser(BaseParser):
 
 		self.key_name = field_row[0]
 
-		for header, col in self.header_2_col.iteritems():
+		for header, col in self.header_2_col.items():
 			field = field_row[col]
 
 			if field == "":
@@ -37,7 +37,7 @@ class DirectParser(BaseParser):
 			method = None
 			try:
 				method = convention.type2function(type)
-			except util.ExcelToCodeException, e:
+			except util.ExcelToCodeException as e:
 				util.log_error("无效的类型'%s'，at %s, %s", type, self.row_col_str(self.type_row_index, col), e)
 				continue
 

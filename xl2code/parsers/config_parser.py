@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import util
 from tps import convention
-from base_parser import ConverterInfo, BaseParser
+from .base_parser import ConverterInfo, BaseParser
 
 class ConfigParser(BaseParser):
 

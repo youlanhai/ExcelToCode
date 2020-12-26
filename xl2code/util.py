@@ -4,10 +4,10 @@ import sys
 import shutil
 import re
 import time
-import xlsconfig
+from . import xlsconfig
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
-print "sys encoding:", sys_encoding
+print("sys encoding:", sys_encoding)
 
 has_error = False
 
@@ -26,7 +26,7 @@ class ExcelToCodeException(Exception):
 
 def _S(s):
 	if sys_encoding != "utf-8":
-		if isinstance(s, unicode):
+		if isinstance(s, str):
 			return s.encode(sys_encoding)
 		s = str(s)
 		try:
@@ -37,7 +37,7 @@ def _S(s):
 
 def to_utf8(s):
 	tp = type(s)
-	if tp == unicode:
+	if tp == str:
 		return s.encode("utf-8")
 	if tp == str:
 		return s
@@ -94,7 +94,7 @@ def import_converter(filename):
 	# 旧版CONFIG是dict格式的，这里要做一个兼容
 	if isinstance(cfg, dict):
 		new_cfg = []
-		for k, v in cfg.iteritems():
+		for k, v in cfg.items():
 			new_v = list(v)
 			new_v.insert(0, k)
 			new_cfg.append(new_v)
@@ -106,14 +106,14 @@ def log(*args):
 	ret = []
 	if sys_encoding == "utf-8":
 		for v in args:
-			if isinstance(v, unicode):
+			if isinstance(v, str):
 				v = v.encode('utf-8')
 			else:
 				v = str(v)
 			ret.append(v)
 	else:
 		for v in args:
-			if not isinstance(v, unicode):
+			if not isinstance(v, str):
 				v = str(v)
 				try:
 					v = v.decode('utf-8')
@@ -126,9 +126,9 @@ def log(*args):
 
 	try:
 		msg = " ".join(ret)
-		print msg
+		print(msg)
 	except:
-		print ret
+		print(ret)
 
 def log_verbose(*args):
 	pass
@@ -323,10 +323,10 @@ def resolve_path(path, namespace = None):
 # https://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-from-json
 def byteify(input):
 	if isinstance(input, dict):
-		return {byteify(key): byteify(value) for key, value in input.iteritems()}
+		return {byteify(key): byteify(value) for key, value in input.items()}
 	elif isinstance(input, list):
 		return [byteify(element) for element in input]
-	elif isinstance(input, unicode):
+	elif isinstance(input, str):
 		return input.encode('utf-8')
 	else:
 		return input

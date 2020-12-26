@@ -7,7 +7,7 @@ import util
 import writers
 import xlsconfig
 from exporters.data_module import DataModule
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class MergeSheets(BaseStage):
 
@@ -24,10 +24,10 @@ class MergeSheets(BaseStage):
 
 			sub_files = []
 
-			for i in xrange(1, len(value)):
+			for i in range(1, len(value)):
 				compiled_pattern = re.compile(value[i])
 
-				for infile in data_modules.iterkeys():
+				for infile in data_modules.keys():
 					if compiled_pattern.match(infile):
 						sub_files.append(infile)
 

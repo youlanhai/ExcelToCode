@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class ExtractConstant(BaseStage):
 
@@ -12,7 +12,7 @@ class ExtractConstant(BaseStage):
 
 		data_module.main_sheet = None
 		if len(sheet) > 0:
-			no = min(sheet.iterkeys())
+			no = min(sheet.keys())
 			data_module.constants = sheet[no]
 
 		return

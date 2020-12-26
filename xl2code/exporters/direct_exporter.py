@@ -5,7 +5,7 @@ import xlsconfig
 import util
 
 from parsers import DirectParser
-from base_exporter import BaseExporter
+from .base_exporter import BaseExporter
 
 STAGES_INFO = [
 	{"class" : "ParseExcel"},
@@ -119,7 +119,7 @@ class DirectExporter(BaseExporter):
 			if to_name != pattern[0]:
 				continue
 
-			for j in xrange(1, len(pattern)):
+			for j in range(1, len(pattern)):
 				if sub_name == pattern[j]:
 					return
 

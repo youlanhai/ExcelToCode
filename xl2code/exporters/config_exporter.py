@@ -7,7 +7,7 @@ import xlsconfig
 import util
 
 from parsers import ConfigParser
-from base_exporter import BaseExporter
+from .base_exporter import BaseExporter
 
 STAGES_INFO = [
 	{"class" : "ParseExcel"},

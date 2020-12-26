@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
-from header import Header, Argument
-import util
+from .header import Header, Argument
+from . import util
 
 SPLITER_PATTERN = re.compile(r"\[|\{|\]|\}")
 
@@ -12,7 +12,7 @@ def gen_header_tree(list_root, filename = ""):
 	parent = root
 	indent = 0
 	for field, header in lex_fields(list_root.children):
-		print "merge_fields", field
+		print("merge_fields", field)
 
 		if field == '{' or field == '[':
 			value = header.clone()

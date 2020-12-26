@@ -4,7 +4,7 @@ import xlsconfig
 from writers import JsonWriter
 import util
 from util import to_utf8, to_class_name, format_slash
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class WriteJavaFileList(BaseStage):
 
@@ -26,7 +26,7 @@ class WriteJavaFileList(BaseStage):
 		class_name_format = to_utf8(info.get("class_name_format"))
 		enum_name_format = to_utf8(info.get("enum_name_format"))
 
-		keys = exporter.data_modules.keys()
+		keys = list(exporter.data_modules.keys())
 		keys.sort()
 
 		ret = []

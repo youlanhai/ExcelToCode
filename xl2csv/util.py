@@ -2,7 +2,7 @@
 import sys
 import os
 from os import path
-import numfmt
+from . import numfmt
 
 sys_encoding = (sys.stdout.encoding or "utf-8").lower()
 
@@ -13,7 +13,7 @@ class ExcelToCodeException(Exception):
 
 def _S(s):
 	if sys_encoding != "utf-8":
-		if isinstance(s, unicode):
+		if isinstance(s, str):
 			return s.encode(sys_encoding)
 		s = str(s)
 		try:
@@ -29,28 +29,28 @@ def log_error(msg, *args):
 
 	global has_error
 	has_error = True
-	print _S("错误："), _S(msg)
+	print(_S("错误："), _S(msg))
 
 def log(*args):
 	ret = []
 	if sys_encoding == "utf-8":
 		for v in args:
-			if isinstance(v, unicode):
+			if isinstance(v, str):
 				v = v.encode('utf-8')
 			else:
 				v = str(v)
 			ret.append(v)
 	else:
 		for v in args:
-			if not isinstance(v, unicode):
+			if not isinstance(v, str):
 				v = str(v).decode('utf-8')
 			ret.append(v)
 
 	try:
 		msg = " ".join(ret)
-		print msg
+		print(msg)
 	except:
-		print ret
+		print(ret)
 
 
 def int_to_base26(value):
@@ -76,8 +76,8 @@ def ensure_folder_exist(file_path):
 	if not path.isdir(output_dir):
 		try:
 			os.makedirs(output_dir)
-		except Exception, e:
-			print e
+		except Exception as e:
+			print(e)
 
 	return
 

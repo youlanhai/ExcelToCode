@@ -3,7 +3,7 @@ import os
 import xlsconfig
 import util
 import writers
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class WriteSheets(BaseStage):
 
@@ -25,14 +25,14 @@ class WriteSheets(BaseStage):
 				for name in only_files:
 					data_module = data_modules.get(name)
 					if not data_module:
-						print "Failed find data module:", name
+						print("Failed find data module:", name)
 						continue
 
 					outfile = data_module.info["outfile"]
 					self.write_one_sheet(writer_info, outfile, data_module)
 				continue
 
-			for data_module in data_modules.itervalues():
+			for data_module in data_modules.values():
 				outfile = data_module.info["outfile"]
 				self.write_one_sheet(writer_info, outfile, data_module)
 		return
@@ -61,7 +61,7 @@ class WriteSheets(BaseStage):
 
 		sheets = getattr(data_module, "sheets", None)
 		if sheets is not None:
-			keys = sheets.keys()
+			keys = list(sheets.keys())
 			keys.sort()
 			for k in keys:
 				wt.write_sheet(k, sheets[k])

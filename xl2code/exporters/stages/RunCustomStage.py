@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import xlsconfig
 import util
-from BaseStage import BaseStage
+from .BaseStage import BaseStage
 
 class RunCustomStage(BaseStage):
 
