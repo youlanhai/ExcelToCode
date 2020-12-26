@@ -52,7 +52,7 @@ def main():
 
 def parse_config(config_file, input_path, output_path, option):
 	files = []
-	with open(config_file, "r") as f:
+	with open(config_file, "r", encoding = "utf-8") as f:
 		for line in f:
 			files.append(line.strip())
 

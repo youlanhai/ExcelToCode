@@ -29,7 +29,7 @@ class CSVJob(object):
 		self.parser_cache = {}
 		cache_file = path.join(self.temp_path, "cache.json")
 		try:
-			with open(cache_file, "r") as f:
+			with open(cache_file, "r", encoding = "utf-8") as f:
 				self.parser_cache = json.load(f)
 		except:
 			pass
@@ -38,7 +38,7 @@ class CSVJob(object):
 		cache_file = path.join(self.temp_path, "cache.json")
 
 		content = json.dumps(self.parser_cache, ensure_ascii = False, indent = 4, sort_keys = True)
-		with open(cache_file, "w") as f:
+		with open(cache_file, "w", encoding = "utf-8") as f:
 			f.write(content)
 
 	def record_file(self, fname):
@@ -79,7 +79,7 @@ class CSVJob(object):
 			section = files[start : end]
 
 			config_file = path.join(self.temp_path, "job-%d.txt" % i)
-			with open(config_file, "w") as f:
+			with open(config_file, "w", encoding = "utf-8") as f:
 				for name in section:
 					f.write(name)
 					f.write('\n')

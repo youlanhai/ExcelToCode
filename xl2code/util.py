@@ -151,7 +151,7 @@ def ensure_package_exist(root, file_path):
 
 		os.mkdir(full_path)
 		init_path = os.path.join(full_path, "__init__.py")
-		with open(init_path, "w") as f:
+		with open(init_path, "w", encoding = "utf-8") as f:
 			f.close()
 
 	return

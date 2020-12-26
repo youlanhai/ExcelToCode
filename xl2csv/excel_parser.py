@@ -149,6 +149,6 @@ class ExcelParser(object):
 
 	def save_sheet(self, sheet, output_path):
 		util.ensure_folder_exist(output_path)
-		with open(output_path, "w") as f:
+		with open(output_path, "w", encoding = "utf-8") as f:
 			writer = csv.writer(f)
 			writer.writerows(sheet)
