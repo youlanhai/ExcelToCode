@@ -28,7 +28,7 @@ class BaseWriter(object):
 			self.close()
 
 	def open_file(self):
-		self.handle = open(self.file_path, "w", encoding = "utf-8")
+		self.handle = open(self.file_path, "w", encoding = "utf-8", newline = "\n")
 
 	def flush(self):
 		if len(self.cache) == 0:

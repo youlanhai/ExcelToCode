@@ -244,7 +244,7 @@ class ExcelParser(object):
 		}
 
 		util.ensure_folder_exist(output_path)
-		with open(output_path, "w", encoding = "utf-8") as f:
+		with open(output_path, "w", encoding = "utf-8", newline = "\n") as f:
 			json.dump(data, f, indent = 4, sort_keys=True, ensure_ascii = False)
 
 	def save_as_tree(self, node, data):

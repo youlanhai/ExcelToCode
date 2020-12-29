@@ -30,7 +30,7 @@ class BaseCodeGen(object):
 
 		util.log("生成", path)
 
-		with open(path, "w", encoding = "utf-8") as f:
+		with open(path, "w", encoding = "utf-8", newline = "\n") as f:
 			f.write(content)
 
 		return

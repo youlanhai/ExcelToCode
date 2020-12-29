@@ -95,7 +95,7 @@ class ExtractLocale(BaseStage):
 		fname = outfile.replace('/', '_').replace('\\', '_')
 		file_path = os.path.join(xlsconfig.LOCALE_OUTPUT_PATH, fname + ".txt")
 
-		with open(file_path, "a+", encoding="utf-8") as f:
+		with open(file_path, "a+", encoding = "utf-8", newline = "\n") as f:
 			for name, text in texts:
 				f.write("%s\n%s\n" % (name, text))
 

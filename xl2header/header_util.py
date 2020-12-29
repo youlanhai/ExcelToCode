@@ -118,7 +118,7 @@ def tree_to_list(children, root):
 SPLITER = "==========================================="
 
 def save_header_list(file_path, root, arguments):
-	with open(file_path, "w", encoding = "utf-8") as f:
+	with open(file_path, "w", encoding = "utf-8", newline = "\n") as f:
 		for key, value in arguments.values:
 			f.write("%s, %s\n" % (key, value))
 
